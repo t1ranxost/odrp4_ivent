@@ -121,7 +121,7 @@
             role: "Ивентер",
             discord: "1285106008393257057",
             status: "Онлайн",
-            eventsCount: "-",
+            eventsCount: "1",
             joinDate: "14.03.26",
             rating: "Модератор",
             fullDetails: {
