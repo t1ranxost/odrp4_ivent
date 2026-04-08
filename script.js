@@ -28,8 +28,8 @@
     }
 
     // ========== ДАННЫЕ ИВЕНТОВ ==========
-    // 🟡 Ожидает
-    // ✅ Одобрен
+    // 🟡Скоро
+    // ✅Одобрен
     const colorteap = 0
 
     let eventsData = [
@@ -40,9 +40,9 @@
             organizer: "Нет",
             date: "06.04, 13:25 - 21.50 - 22.05",
             status: "Проведен",
-            rating: "-",
+            rating: "15.000$",
             members: 12 ,
-            callStatus: "✅ Одобрен",
+            callStatus: "✅Одобрен",
             
             fullDetails: {
                 description: "Есть 6 цветов, игроки должны встать на разные цвета (любые). После чего я закрываю забором и выбираю любого игрока. Он выбирает цвет. И эти цвета увеличиваются",
@@ -60,8 +60,8 @@
             date: "08.04, 13:25 - 15:00 - 15:20",
             status: "Проведен",
             rating: "-",
-            members: 20-30 ,
-            callStatus: "✅ Одобрен",
+            members: "20-30" ,
+            callStatus: "✅Одобрен",
             
             fullDetails: {
                 description: "4 союз напал на Антанта. Я являлся Маршаром. Сказал красивую речь. В итоге 4 союз выйграл",
@@ -78,9 +78,9 @@
             organizer: "Нет",
             date: "08.04, 13:25 - 13:38",
             status: "Проведен",
-            rating: "Биту И 40к",
-            members: 10-11 ,
-            callStatus: "🟡 Ожидает",
+            rating: "Биту и 40к",
+            members: "10-11" ,
+            callStatus: "✅Одобрен",
             
             fullDetails: {
                 description: "Надо убить людей битой в маленькой комнате с выключенным светом.",
@@ -99,7 +99,7 @@
             status: "Проведен",
             rating: "45.000$",
             members: 10 ,
-            callStatus: "🟡 Ожидает",
+            callStatus: "🟡Скоро",
             
             fullDetails: {
                 description: "10 человек прячутся , мы их ищем и ебашим",
@@ -118,13 +118,13 @@
             role: "Глава ивент-отдела",
             discord: "565584233981280270",
             status: "Онлайн",
-            eventsCount: "-",
+            eventsCount: "Нет нормы",
             joinDate: "21.01.26",
             rating: "Судо-Куратор",
             fullDetails: {
                 responsibilities: "Имеет полное владение над отделом Ивентологии, может самостоятельно изменять состав отдела Ивентологии и их норму/правила.",
-                contacts: "",
-                achievements: "",
+                contacts: "https://admin.unionteams.ru/4/admin/76561198386405573",
+                achievements: "0",
                 notes: ""
             }
         },
@@ -134,13 +134,13 @@
             role: "Зам.Главы ивент-отдела",
             discord: "694286975158583317",
             status: "Онлайн",
-            eventsCount: "-",
+            eventsCount: "Нет нормы",
             joinDate: "21.01.26",
             rating: "Ассистент",
             fullDetails: {
                 responsibilities: "Имеет все полномочия нижестоящих рангов, а также имеет право набирать новых кадров в отдел, определять курс развития отдела и изменять норму и правила с разрешения/уведомления об этом Главы Ивентологии.",
-                contacts: "",
-                achievements: "",
+                contacts: "https://admin.unionteams.ru/4/admin/76561199196300974",
+                achievements: "0",
                 notes: ""
             }
         },
@@ -150,34 +150,18 @@
             role: "Ст.Ивентер",
             discord: "1066705962972495922",
             status: "Онлайн",
-            eventsCount: "-",
+            eventsCount: "Нет нормы",
             joinDate: "07.02.26",
             rating: "Ст.Администратор",
             fullDetails: {
                 responsibilities: "Имеет все полномочия Ивентера, а также имеет право корректировать работу Ивентеров и давать рекомендации по поводу ивентов, выдавать наказания за их ошибки, а также одобрять отчётности.",
-                contacts: "",
-                achievements: "",
+                contacts: "https://admin.unionteams.ru/4/admin/76561199236074729",
+                achievements: "1",
                 notes: ""
             }
         },
         {
             id: 4,
-            name: "gans7824",
-            role: "Ивентер",
-            discord: "1351313614912491652",
-            status: "Онлайн",
-            eventsCount: "Нет нормы",
-            joinDate: "10.01.26",
-            rating: "Ст.Администратор",
-            fullDetails: {
-                responsibilities: "Отвечает за таблицу ТАКЖЕ: Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до  завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту. ",
-                contacts: "",
-                achievements: "",
-                notes: ""
-            }
-        },
-        {
-            id: 5,
             name: "T1Ran",
             role: "Ивентер",
             discord: "1246076621484724320",
@@ -187,29 +171,13 @@
             rating: "Оператор",
             fullDetails: {
                 responsibilities: "Отвечает за таблицу ТАКЖЕ: Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до  завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту. ",
-                contacts: "",
-                achievements: "",
+                contacts: "https://admin.unionteams.ru/4/admin/76561199705616791",
+                achievements: "11",
                 notes: ""
             }
         },
         {
-            id: 6,
-            name: "ratatu1cc",
-            role: "Ивентер",
-            discord: "1285106008393257057",
-            status: "Онлайн",
-            eventsCount: "1",
-            joinDate: "14.03.26",
-            rating: "Модератор",
-            fullDetails: {
-                responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до  завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту. ",
-                contacts: "",
-                achievements: "",
-                notes: ""
-            }
-        },
-        {
-            id: 7,
+            id: 5,
             name: "Дмитрий Морозов",
             role: "Ивентер",
             discord: "859747626115006474",
@@ -219,13 +187,13 @@
             rating: "Оператор",
             fullDetails: {
                 responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до  завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту. ",
-                contacts: "",
-                achievements: "",
+                contacts: "https://admin.unionteams.ru/4/admin/76561199403370553",
+                achievements: "11",
                 notes: ""
             }
         },
         {
-            id: 8,
+            id: 6,
             name: "Nintendo",
             role: "Ивентер",
             discord: "1160166622703652905",
@@ -235,8 +203,8 @@
             rating: "Модератор",
             fullDetails: {
                 responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до  завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту. ",
-                contacts: "",
-                achievements: "",
+                contacts: "https://admin.unionteams.ru/4/admin/76561199563030900",
+                achievements: "0",
                 notes: ""
             }
         },
@@ -364,7 +332,7 @@
             <div style="margin-top: 12px; background: var(--card-bg); padding: 12px; border-radius: 24px; border:1px solid var(--card-border);">
                 <div style="font-weight: 700; margin-bottom: 10px;">ПОДРОБНОСТИ:</div>
                 <div><i class="fas fa-clipboard-list"></i> Описание: ${event.fullDetails.description}</div>
-                <div><i class="fas fa-tasks"></i> ${event.fullDetails.tasks}</div>
+                <div><i class="fas fa-tasks"></i>${event.fullDetails.tasks}</div>
                 <div><i class="fas fa-comment-dots"></i>${event.fullDetails.feedback}</div>
                 <div><i class="fas fa-gift"></i> ${event.fullDetails.rewards}</div>
                 <div><i class="fas fa-phone-alt"></i>${event.fullDetails.extra}</div>
@@ -386,8 +354,8 @@
             <div style="margin-top: 12px; background: var(--card-bg); padding: 12px; border-radius: 24px; border:1px solid var(--card-border);">
                 <div style="font-weight: 700; margin-bottom: 10px;">👤 РАСШИРЕННАЯ ИНФОРМАЦИЯ:</div>
                 <div><i class="fas fa-briefcase"></i> Обязанности: ${member.fullDetails.responsibilities}</div>
-                <div><i class="fas fa-address-card"></i>${member.fullDetails.contacts}</div>
-                <div><i class="fas fa-trophy"></i> ${member.fullDetails.achievements}</div>
+                <div><i class="fas fa-address-card">Ссылка на таблицу: </i>${member.fullDetails.contacts}</div>
+                <div><i class="fas fa-trophy">Тикеты в неделю: </i> ${member.fullDetails.achievements}</div>
                 <div><i class="fas fa-sticky-note"></i>${member.fullDetails.notes}</div>
             </div>
         `;
@@ -495,6 +463,52 @@
     initTheme();
 
     // Навигация
+    const navItemss = document.querySelectorAll('.nav-item');
+    navItemss.forEach(item => {
+        item.addEventListener('click', () => {
+            navItemss.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            const tab = item.getAttribute('data-tab');
+            if (tab === 'events_table') renderEventsTable();
+            else if (tab === 'team_table') renderTeamTable();
+            else if (tab === 'new_event') showAddEventForm();
+            else if (tab === 'new_event') showAddEventForm();
+            else if (tab === 'event_guidee') {
+                document.getElementById('eventDynamicContent').innerHTML = `
+                    <div class="stats-grid">
+                        <!-- Карточка 1: Ивентеры (13) -->
+                        <div class="stat-card">
+                            <div class="stat-value" id="valueRecruiters">6</div>
+                            <div class="stat-label">Ивентеры</div>
+                            <div class="stat-sub">активных сотрудников</div>
+                        </div>
+
+                        <!-- Карточка 2: Проведенно Ивентов -->
+                        <div class="stat-card">
+                            <div class="stat-value" id="valueRecruited">4</div>
+                            <div class="stat-label">Проведенно Ивентов</div>
+                            <div class="stat-sub">успешно проведенные ивенты</div>
+                        </div>
+
+                        <!-- Карточка 3: Тикеты 7д (170) -->
+                        <div class="stat-card">
+                            <div class="stat-value" id="valueTickets">23</div>
+                            <div class="stat-label">ТИКЕТЫ</div>
+                            <div class="stat-sub">за последние 7 дней</div>
+                        </div>
+
+                        <!-- Карточка 4: Онлайн (2) -->
+                        <div class="stat-card">
+                            <div class="stat-value" id="valueOnline">6</div>
+                            <div class="stat-label">ОНЛАЙН</div>
+                            <div class="stat-sub">сейчас вне отпуска</div>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+    });
+
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -542,12 +556,26 @@
                             <p>ㅤ</p>
                             <b><p style="font-size: 19px;" >RP-Мероприятия</p></b>
                             <p>Помимо ивентов, вам также доступны РП-Мероприятия.
-                            Такие мероприятия представляют собой сюжетные или ситуационные ролевые отыгровки в пределах RP-зоны и направлены на создание “живого” игрового процесса.</p>
+                            Такие мероприятия представляют собой сюжетные или ситуационные ролевые отыгровки в пределах RP-зоны и направлены на создание “живого” игрового процесса.</p>                          
                             <p style="color: #818181">РП-мероприятие засчитывается как полноценный ивент и учитывается в норме Ивентера. Призы за участие в РП-Мероприятиях можно не выдавать.</p>
-                        </div>
+                             </div>
+                                <p>ㅤ</p>
+                                <p>ㅤ</p>
+                                <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ca6019;">ЧТО ВЫ ОБЯЗАНЫ ДЕЛАТЬ?</p></b>
+                                <p>ㅤ</p>
+                                <p>ㅤ</p>
+                                <div class="metod_one" style="padding: 10px; margin: 5px; border-radius: 18px;">
+                                    <b><p style="font-size: 19px;" >После ивента/РП-Мероприятия</p></b>
+                                    <p>Убрать всё, что было построено/создано. Написать отчёт в специальный канал.</p>
+                                    <p>ㅤ</p>
+                                    <b><p style="font-size: 19px;" >Лаги</p></b>
+                                    <p>Если во время ивента появились лаги или высокий пинг — ивент нужно как можно быстрее прекратить и сообщить Главе/Зам. Главы.</p>
+                                </div>
+                                    <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ca1919;">ЧТО НЕЛЬЗЯ ДЕЛАТЬ?</p></b>
+                                    <div>
 
-
-                    </div>
+                                    </div>
+                                </div>
                 `;
             }
         });
