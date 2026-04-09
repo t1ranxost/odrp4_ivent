@@ -503,6 +503,12 @@
                             <div class="stat-label">ОНЛАЙН</div>
                             <div class="stat-sub">сейчас вне отпуска</div>
                         </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" id="valueOnline">98.000$</div>
+                            <div class="stat-label">ПРИЗОВЫЕ</div>
+                            <div class="stat-sub">выданно валюты в неделю</div>
+                        </div>
                     </div>
                 `;
             }
