@@ -831,6 +831,6 @@
             transform: scale(0.95);
             filter: brightness(0.9);
         }
-        .btn-approved { background: #2b7e3a; color: white; }
-        .btn-soon { background: #e67e22; color: white; }
-        .btn-completed { background: #1e6f9f; color: white; }
+        .btn-approved { background: #2b7e3a; color: white; padding: 4px; margin: 5px; }
+        .btn-soon { background: #e67e22; color: white; padding: 4px; margin: 5px; }
+        .btn-completed { background: #9f1e1e; color: white; padding: 4px; margin: 5px; }
