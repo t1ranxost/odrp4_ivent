@@ -3,7 +3,7 @@
 
 
     let eventsData = [
-        { id: 10, name: "Тест", platform: "T1Ran", organizer: "Нет", date: "10.04, 13:25 - 20.20 - 20.30", status: "Проведен", rating: "11.111$", members: 13, callStatus: "🟡Скоро", fullDetails: { description: "Просто надо пройти паркур", tasks: "", feedback: "", rewards: "", extra:"" } },
+        { id: 10, name: "Паркур", platform: "T1Ran", organizer: "Нет", date: "10.04, 13:25 - 20.20 - 20.30", status: "Проведен", rating: "11.111$", members: 13, callStatus: "🟡Скоро", fullDetails: { description: "Просто надо пройти паркур", tasks: "", feedback: "", rewards: "", extra:"" } },
         { id: 9, name: "Смертельные собаки", platform: "T1Ran", organizer: "Нет", date: "10.04, 13:25 - 20.00 - 20.10", status: "Проведен", rating: "10.000$", members: 10, callStatus: "🟡Скоро", fullDetails: { description: "Три собаки и игроки должны от них убегать кто выживет получит 10.000$", tasks: "", feedback: "", rewards: "", extra:"" } },
         { id: 8, name: "Правильный ответ...!", platform: "T1Ran", organizer: "Нет", date: "10.04, 13:25 - 19.35 - 19.53", status: "Проведен", rating: "15.000$", members: 13, callStatus: "🟡Скоро", fullDetails: { description: "Людям задают вопрос про сервер ОДРП и они должны отвечать правда или не правда", tasks: "", feedback: "", rewards: "", extra:"" } },
         { id: 7, name: "Выбери Цвет", platform: "T1Ran", organizer: "Нет", date: "10.04, 13:25 - 18.45 - 18.55", status: "Проведен", rating: "10.000$", members: 12, callStatus: "🟡Скоро", fullDetails: { description: "Есть 6 цветов, игроки должны встать на разные цвета (любые). После чего я закрываю забором и выбираю любого игрока. Он выбирает цвет. И эти цвета увеличиваются", tasks: "", feedback: "", rewards: "", extra:"" } },
