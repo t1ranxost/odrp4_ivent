@@ -28,6 +28,38 @@
     ];
 
      // ЗАГРУЗКА СОХРАНЁННЫХ СТАТУСОВ ИЗ LOCALSTORAGE
+     // ФУНКЦИЯ ПОДСЧЁТА СУММЫ ПРИЗОВЫХ
+    function calculateTotalPrizes() {
+        let total = 0;
+        for (let event of eventsData) {
+            let ratingStr = String(event.rating);
+            // Убираем знак доллара и пробелы, оставляем только цифры и точку
+            let match = ratingStr.match(/(\d+(?:[.,]\d+)?)/);
+            if (match) {
+                let num = parseFloat(match[1].replace(',', '.'));
+                if (!isNaN(num)) {
+                    total += num;
+                }
+            }
+        }
+        return total;
+    }
+
+    // ОБНОВЛЕНИЕ СТАТИСТИКИ В РАЗДЕЛЕ "НОРМА"
+    function updateNormStats() {
+        const totalPrizes = calculateTotalPrizes();
+        const normContainer = document.getElementById('normStatsContainer');
+        if (normContainer) {
+            // Обновляем карточку с призовыми
+            const prizeCard = normContainer.querySelector('.stat-card:last-child .stat-value');
+            if (prizeCard) {
+                prizeCard.innerHTML = totalPrizes.toLocaleString('ru-RU') + '$';
+                prizeCard.style.color = '#5fe147';
+            }
+        }
+    }
+
+    // ЗАГРУЗКА СОХРАНЁННЫХ СТАТУСОВ ИЗ LOCALSTORAGE
     function loadSavedStatuses() {
         const saved = localStorage.getItem('unionEventsStatuses');
         if (saved) {
@@ -65,6 +97,21 @@
             event.callStatus = newStatus;
             saveStatuses(); // СОХРАНЯЕМ ПОСЛЕ ИЗМЕНЕНИЯ
             renderEventsTable();
+            showNotif(`✅ Статус изменён на "${newStatus}"`);
+            return true;
+        }
+        return false;
+    }
+
+     function changeEventStatus(eventId, newStatus) {
+        if (!EDITORS.includes(currentUser)) return false;
+        const event = eventsData.find(e => e.id === eventId);
+        if (event) {
+            event.callStatus = newStatus;
+            saveStatuses();
+            renderEventsTable();
+            // Обновляем статистику в норме, если она открыта
+            updateNormStats();
             showNotif(`✅ Статус изменён на "${newStatus}"`);
             return true;
         }
@@ -112,7 +159,7 @@
                 cell.innerHTML = `
                     <button class="status-change-btn btn-approved" data-id="${event.id}" data-status="✅Одобрен">✅ Одобрен</button>
                     <button class="status-change-btn btn-soon" data-id="${event.id}" data-status="🟡Скоро">🟡 Скоро</button>
-                    <button class="status-change-btn btn-completed" data-id="${event.id}" data-status="🔴Отказ">🔴 Отказ</button>
+                    <button class="status-change-btn btn-completed" data-id="${event.id}" data-status="✅Проведен">✅ Проведен</button>
                 `;
             }
         });
@@ -208,7 +255,7 @@
     document.getElementById('themeToggleBtn')?.addEventListener('click', toggleTheme);
     initTheme();
 
-    // НАВИГАЦИЯ (ТВОЯ МЕТОДИЧКА - НЕТРОНУТАЯ)
+    // НАВИГАЦИЯ (ТВОЯ МЕТОДИЧКА - НЕТРОНУТАЯ, НО С ОБНОВЛЯЕМОЙ СУММОЙ)
     const navs = document.querySelectorAll('.nav-item');
     navs.forEach(n => {
         n.addEventListener('click', () => {
@@ -218,13 +265,14 @@
             if (tab === 'events_table') renderEventsTable();
             else if (tab === 'team_table') renderTeamTable();
             else if (tab === 'event_guidee') {
+                const totalPrizes = calculateTotalPrizes();
                 document.getElementById('eventDynamicContent').innerHTML = `
-                    <div class="stats-grid">
+                    <div class="stats-grid" id="normStatsContainer">
                         <div class="stat-card"><div class="stat-value">6</div><div class="stat-label">Ивентеры</div><div class="stat-sub">активных сотрудников</div></div>
                         <div class="stat-card"><div class="stat-value">10</div><div class="stat-label">Проведенно Ивентов</div><div class="stat-sub">успешно проведенные ивенты</div></div>
                         <div class="stat-card"><div class="stat-value">-</div><div class="stat-label">ТИКЕТЫ</div><div class="stat-sub">за последние 7 дней</div></div>
                         <div class="stat-card"><div class="stat-value">6</div><div class="stat-label">ОНЛАЙН</div><div class="stat-sub">сейчас вне отпуска</div></div>
-                        <div class="stat-card"><div class="stat-value" style="color: #5fe147;">98.000$</div><div class="stat-label">ПРИЗОВЫЕ</div><div class="stat-sub">выданно валюты в неделю</div></div>
+                        <div class="stat-card"><div class="stat-value" style="color: #5fe147;">${totalPrizes.toLocaleString('ru-RU')}$</div><div class="stat-label">ПРИЗОВЫЕ</div><div class="stat-sub">выданно валюты в неделю</div></div>
                     </div>
                 `;
             } else if (tab === 'event_guide') {
@@ -239,35 +287,27 @@
                             <b><p style="font-size: 19px;">Кто может проводить ивенты?</p></b>
                             <p>Проводить ивенты можно с ранга «Оператор», если вы состоите в отделе Ивентологии.</p>
                             <p style="color: #818181">С рангов ниже — только с разрешения Главы отдела или Куратора сервера.</p>
-                            <p>ㅤ</p>
                             <b><p style="font-size: 19px;">Кол-во администрации на ивенте</p></b>
                             <p>В ивенте может участвовать не более 25% от всей наборной администрации.</p>
                             <p style="color: #818181">(Например: 10 админов → максимум участвуют 3, округление вверх)</p>
-                            <p>ㅤ</p>
                             <b><p style="font-size: 19px;">Игнор завалов</p></b>
                             <p>Если завал начался во время ивента, его разрешено игнорировать.</p>
-                            <p>ㅤ</p>
                             <b><p style="font-size: 19px;">Самостоятельность</p></b>
                             <p>Каждый Ивентер может проводить ивенты без разрешения от Ст. Администрации.</p>
                             <p style="color: #818181">Если ты на испытательном сроке — нужно одобрение от Ст. Ивентера.</p>
-                            <p>ㅤ</p>
                             <b><p style="font-size: 19px;">Награды</p></b>
                             <p>Если игрок использует баги/преимущества/нарушал правила, что привело его к победе — Ивентер может не выдавать приз.</p>
                             <p style="color: #818181">Если победа честная — Ивентер обязан выдать приз (если он конечно есть).</p>
-                            <p>ㅤ</p>
                             <b><p style="font-size: 19px;">RP-Мероприятия</p></b>
                             <p>Помимо ивентов, вам также доступны РП-Мероприятия. Такие мероприятия представляют собой сюжетные или ситуационные ролевые отыгровки в пределах RP-зоны и направлены на создание "живого" игрового процесса.</p>
                             <p style="color: #818181">РП-мероприятие засчитывается как полноценный ивент и учитывается в норме Ивентера. Призы за участие в РП-Мероприятиях можно не выдавать.</p>
-                            <p>ㅤ</p>
                         </div>
                         <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ca6019;">ЧТО ВЫ ОБЯЗАНЫ ДЕЛАТЬ?</p></b>
                         <div class="metod_one">
                             <b><p style="font-size: 19px;">После ивента/РП-Мероприятия</p></b>
                             <p>Убрать всё, что было построено/создано. Написать отчёт в специальный канал.</p>
-                            <p>ㅤ</p>
                             <b><p style="font-size: 19px;">Лаги</p></b>
                             <p>Если во время ивента появились лаги или высокий пинг — ивент нужно как можно быстрее прекратить и сообщить Главе/Зам. Главы.</p>
-                            <p>ㅤ</p>
                         </div>
                         <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ca1919;">ЧТО НЕЛЬЗЯ ДЕЛАТЬ?</p></b>
                     </div>
