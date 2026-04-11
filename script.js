@@ -273,10 +273,10 @@
                 const totalPrizes = calculateTotalPrizes();
                 document.getElementById('eventDynamicContent').innerHTML = `
                     <div class="stats-grid" id="normStatsContainer">
-                        <div class="stat-card"><div class="stat-value">6</div><div class="stat-label">Ивентеры</div><div class="stat-sub">активных сотрудников</div></div>
+                        <div class="stat-card"><div class="stat-value">9</div><div class="stat-label">Ивентеры</div><div class="stat-sub">активных сотрудников</div></div>
                         <div class="stat-card"><div class="stat-value">10</div><div class="stat-label">Проведенно Ивентов</div><div class="stat-sub">успешно проведенные ивенты</div></div>
                         <div class="stat-card"><div class="stat-value">-</div><div class="stat-label">ТИКЕТЫ</div><div class="stat-sub">за последние 7 дней</div></div>
-                        <div class="stat-card"><div class="stat-value">6</div><div class="stat-label">ОНЛАЙН</div><div class="stat-sub">сейчас вне отпуска</div></div>
+                        <div class="stat-card"><div class="stat-value">8</div><div class="stat-label">ОНЛАЙН</div><div class="stat-sub">сейчас вне отпуска</div></div>
                         <div class="stat-card"><div class="stat-value" style="color: #5fe147;">${totalPrizes.toLocaleString('ru-RU')}$</div><div class="stat-label">ПРИЗОВЫЕ</div><div class="stat-sub">выданно валюты в неделю</div></div>
                     </div>
                 `;
