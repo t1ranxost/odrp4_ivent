@@ -94,7 +94,7 @@ const VALID_LOGINS = [
 ];
 
 const USER_PASSWORD = "ivent4";
-const CREATOR_PASSWORD = "cryt2026";
+const CREATOR_PASSWORD = "creator2026";
 
 let currentUser = null;
 let isEditor = false;
