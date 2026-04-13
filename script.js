@@ -67,6 +67,9 @@ function saveAllData() {
 }
 
 function loadAllData() {
+    // ПРИНУДИТЕЛЬНО ОЧИЩАЕМ СТАРЫЕ ДАННЫЕ ПРИ ЗАГРУЗКЕ
+    localStorage.removeItem('unionEventsPrizes');
+    
     const savedStatuses = localStorage.getItem('unionEventsStatuses');
     if (savedStatuses) {
         try {
@@ -76,23 +79,25 @@ function loadAllData() {
             }
         } catch(e) {}
     }
-    
-    const savedPrizes = localStorage.getItem('unionEventsPrizes');
-    if (savedPrizes) {
-        try {
-            const prizesMap = JSON.parse(savedPrizes);
-            for (let event of eventsData) {
-                if (prizesMap[event.id]) event.rating = prizesMap[event.id];
-            }
-        } catch(e) {}
-    }
 }
 
-// ========== ЛОГИНЫ И ПРАВА ==========
-const EDITORS = ["manisule_1888", "gerbiks_1777", "arbuz_1666", "t1ran_1555"];
-const VALID_LOGINS = [...EDITORS, "dmitry_1333", "nintendo_1222", "gans_0000", "r", "himos_1111", "gofi_2222", "yaroslav1432"];
-const PASSWORD = "ivent4";
+// ========== НОВАЯ СИСТЕМА ЛОГИНОВ И ПАРОЛЕЙ (С ЗАГЛАВНЫМИ БУКВАМИ) ==========
+const VALID_LOGINS = [
+    "T1Ran",
+    "manisule",
+    "Гербикс",
+    "Arbuz madrazo",
+    "Дмитрий Морозов",
+    "Гофикал",
+    "Himas",
+    "Yaroslav1432"
+];
+
+const USER_PASSWORD = "ivent4";
+const CREATOR_PASSWORD = "creator2026";
+
 let currentUser = null;
+let isEditor = false;
 
 function showNotif(msg, isErr = false) {
     const d = document.createElement('div');
@@ -108,7 +113,7 @@ function escapeHtml(s) {
 }
 
 function changeEventStatus(eventId, newStatus) {
-    if (!EDITORS.includes(currentUser)) return false;
+    if (!isEditor) return false;
     const event = eventsData.find(e => e.id === eventId);
     if (event) {
         event.callStatus = newStatus;
@@ -123,10 +128,10 @@ function changeEventStatus(eventId, newStatus) {
 
 function renderEventsTable() {
     const container = document.getElementById('eventDynamicContent');
-    const canEdit = EDITORS.includes(currentUser);
+    const canEdit = isEditor;
     container.innerHTML = `
         <div class="page-header"><h2>📅 Таблица мероприятий</h2></div>
-        <div class="click-hint">🔽 ${canEdit ? 'У вас есть права изменять статус "Одобрен" ➜ "Скоро" или "Проведен"' : 'Режим просмотра (изменять статус могут: manisule_1888, gerbiks_1777, arbuz_1666, t1ran_1555)'}</div>
+        <div class="click-hint">🔽 ${canEdit ? 'У вас есть права изменять статус "Одобрен" ➜ "Скоро" или "Проведен"' : '🔽 Режим просмотра'}</div>
         <div class="table-wrapper">
             <table class="data-table">
                 <thead><tr><th>ИВЕНТ</th><th>ОРГАНИЗАТОР</th><th>ПОМОЩНИКИ</th><th>ДАТА</th><th>СТАТУС</th><th>ПРИЗОВЫЕ</th><th>УЧАСТНИКИ</th><th>ОДОБРЕН</th>${canEdit ? '<th>ДЕЙСТВИЯ</th>' : ''}</tr></thead>
@@ -180,7 +185,7 @@ function renderTeamTable() {
             <table class="data-table">
                 <thead><tr><th>Никнейм</th><th>РОЛЬ</th><th>DISCORD</th><th>СТАТУС</th><th>ИВЕНТОВ</th><th>ДАТА ВСТУПЛЕНИЯ</th><th>Должность</th></tr></thead>
                 <tbody id="teamTableBody"></tbody>
-            </table>
+            </tr>
         </div>
     `;
     const tbody = document.getElementById('teamTableBody');
@@ -195,16 +200,13 @@ function renderTeamTable() {
         row.insertCell(2).textContent = m.discord;
         row.insertCell(3).innerHTML = `<span class="status-badge status-online">🟢 ${m.status}</span>`;
         
-        // Считаем ивенты для этого человека
         let eventsCount = eventCounts[m.name] || 0;
-        // Если в teamData есть особое значение (Нет нормы, Отпуск и т.д.) — показываем его
         if (m.eventsCount !== "-" && m.eventsCount !== "Нет нормы" && m.eventsCount !== "Отпуск" && !isNaN(parseInt(m.eventsCount))) {
             eventsCount = m.eventsCount;
         } else if (m.eventsCount === "Нет нормы" || m.eventsCount === "Отпуск") {
             eventsCount = m.eventsCount;
         }
         row.insertCell(4).innerHTML = `<span style="font-weight:600;">${eventsCount}</span>`;
-        
         row.insertCell(5).textContent = m.joinDate;
         row.insertCell(6).innerHTML = `<span class="rating-star">⭐ ${m.rating}</span>`;
     });
@@ -301,144 +303,7 @@ navs.forEach(n => {
                 </div>
             `;
         } else if (tab === 'event_guide') {
-    document.getElementById('eventDynamicContent').innerHTML = `
-        <div class="page-header"><h2>📖 Методичка</h2></div>
-        <div style="background:var(--card-bg); border-radius:28px; padding:1.5rem; border:1px solid var(--card-border);">
-            <b><p style="text-align: center; font-size: 39px; font-family: 'Courier New', Courier, monospace; color: #fd72f4;">Методичка Ивентологов</p></b>
-            <b><p style="text-align: center; font-size: 36px; font-family: 'Courier New', Courier, monospace; color: #fd72f4;">ОСНОВНЫЕ ПРАВИЛА  ОТДЕЛА ИВЕНТОЛОГИИ</p></b>
-            <p>ㅤ</p>
-            
-            <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #882381;">ЧТО МОЖНО ДЕЛАТЬ?</p></b>
-            <div class="metod_one">
-                <b><p style="font-size: 19px;">Кто может проводить ивенты?</p></b>
-                <p>Проводить ивенты можно с ранга «Оператор», если вы состоите в отделе Ивентологии.</p>
-                <p style="color: #818181">С рангов ниже — только с разрешения Главы отдела или Куратора сервера.</p>
-                <b><p style="font-size: 19px;">Кол-во администрации на ивенте</p></b>
-                <p>В ивенте может участвовать не более 25% от всей наборной администрации.</p>
-                <p style="color: #818181">(Например: 10 админов → максимум участвуют 3, округление вверх)</p>
-                <b><p style="font-size: 19px;">Игнор завалов</p></b>
-                <p>Если завал начался во время ивента, его разрешено игнорировать.</p>
-                <b><p style="font-size: 19px;">Самостоятельность</p></b>
-                <p>Каждый Ивентер может проводить ивенты без разрешения от Ст. Администрации.</p>
-                <p style="color: #818181">Если ты на испытательном сроке — нужно одобрение от Ст. Ивентера.</p>
-                <b><p style="font-size: 19px;">Награды</p></b>
-                <p>Если игрок использует баги/преимущества/нарушал правила, что привело его к победе — Ивентер может не выдавать приз.</p>
-                <p style="color: #818181">Если победа честная — Ивентер обязан выдать приз (если он конечно есть).</p>
-                <b><p style="font-size: 19px;">RP-Мероприятия</p></b>
-                <p>Помимо ивентов, вам также доступны РП-Мероприятия. Такие мероприятия представляют собой сюжетные или ситуационные ролевые отыгровки в пределах RP-зоны и направлены на создание "живого" игрового процесса.</p>
-                <p style="color: #818181">РП-мероприятие засчитывается как полноценный ивент и учитывается в норме Ивентера. Призы за участие в РП-Мероприятиях можно не выдавать.</p>
-            </div>
-            
-            <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ca6019;">ЧТО ВЫ ОБЯЗАНЫ ДЕЛАТЬ?</p></b>
-            <div class="metod_one">
-                <b><p style="font-size: 19px;">После ивента/РП-Мероприятия</p></b>
-                <p>Убрать всё, что было построено/создано. Написать отчёт в специальный канал.</p>
-                <b><p style="font-size: 19px;">Лаги</p></b>
-                <p>Если во время ивента появились лаги или высокий пинг — ивент нужно как можно быстрее прекратить и сообщить Главе/Зам. Главы.</p>
-            </div>
-            
-            <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ca1919;">ЧТО НЕЛЬЗЯ ДЕЛАТЬ?</p></b>
-            <div class="metod_one">
-                <b><p style="font-size: 19px;">Правила RP-Мероприятий</p></b>
-                <p>・Запрещается привлекать игроков к РП-мероприятию через /OOC, участие должно происходить естественным RP путем.</p>
-                <p>・Нельзя принуждать игроков к участию в мероприятии.</p>
-                <p>・Создавать мероприятия, мешающие обычному RP-процессу сервера.</p>
-                
-                <b><p style="font-size: 19px;">Завалы</p></b>
-                <p>Запрещено начинать ивенты во время активных завалов.</p>
-                
-                <b><p style="font-size: 19px;">Несколько ивентов</p></b>
-                <p>Запрещено проводить 2 и более ивентов одновременно. Если кто-то уже проводит ивент — ждём, пока закончат.</p>
-                
-                <b><p style="font-size: 19px;">Мешать другим</p></b>
-                <p>Запрещено мешать подготовке или проведению ивентов (включая ивент-мастеров).</p>
-                
-                <b><p style="font-size: 19px;">RP Зона</p></b>
-                <p>Категорически запрещено проводить ивенты в RP зоне. Исключение: РП-Мероприятия.</p>
-                
-                <b><p style="font-size: 19px;">Оскорбительный контент</p></b>
-                <p>Запрещается проводить ивенты, которые нацелены на разжигание ненависти, дискриминацию, имеют деструктивный или политический контент. Помните: важно соблюдать нейтралитет.</p>
-                
-                <b><p style="font-size: 19px;">Привилегии</p></b>
-                <p>Запрещено выпрашивать бонусы/привилегии за ивенты (будут наказания и возможно снятие).</p>
-                
-                <b><p style="font-size: 19px;">Донат-Администрация</p></b>
-                <p>Донатной администрации (далее д.админ) категорически запрещено проводить ивенты. Даже под вашим присмотром и даже в качестве помощников. Вы можете взять идею, приз или дубликат у д.админа, а также попросить его поставить дубликат, если вам не хватает пропов.</p>
-            </div>
-            
-            <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ffaa44;">⠀УТОЧНЕНИЯ⠀</p></b>
-            <div class="metod_one">
-                <b><p style="font-size: 19px;">RP-Мероприятия</p></b>
-                <p>При проведении РП-мероприятий обязательно соблюдение всех действующих правил сервера. РП-мероприятие не освобождает участников от ответственности за нарушения. (Исключение: правило 8.1, правила для которых нужно разрешение от администратора).</p>
-                
-                <b><p style="font-size: 19px;">Ивент-Мастер</p></b>
-                <p>Повышение до Ивент-Мастера не будет. Как вы бы не просили, умоляли, заслужили, его не будет. Однако попросить его помощь в вашем ивенте вы можете в канале ┣🍽️・запрос-вещей.</p>
-                
-                <b><p style="font-size: 19px;">Набор</p></b>
-                <p>Набирать людей в Ивентологию могут только Глава и Зам. Главы отдела.</p>
-                
-                <b><p style="font-size: 19px;">Отдел</p></b>
-                <p>Отдел Ивентологии является «совмещенным». Любой администратор из другого отдела может попасть к нам при наличии свободных слотов и соответствии установленным критериям. Для таких администраторов действует пониженная норма.</p>
-            </div>
-            
-            <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #44aaff;">Максимальное количество мест в отделе - 9:</p></b>
-            <div class="metod_one">
-                <p>• 7 младших ивентеров</p>
-                <p>• 1 Старший ивентер</p>
-                <p>• 1 Заместитель главы отдела</p>
-                <p>• 1 Глава отдела Ивентологии</p>
-            </div>
-            
-            <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #44ffaa;">РАНГИ</p></b>
-            <div class="metod_one">
-                <b><p style="font-size: 19px;">Ивентер🤡</p></b>
-                <p>Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.</p>
-                
-                <b><p style="font-size: 19px;">Ст. Ивентер🍉</p></b>
-                <p>Имеет все полномочия Ивентера, а также имеет право корректировать работу Ивентеров и давать рекомендации по поводу ивентов, выдавать наказания за их ошибки, а также одобрять отчётности.</p>
-                
-                <b><p style="font-size: 19px;">Зам. Главы Ивентологии📿</p></b>
-                <p>Имеет все полномочия нижестоящих рангов, а также имеет право набирать новых кадров в отдел, определять курс развития отдела и изменять норму и правила с разрешения/уведомления об этом Главы Ивентологии.</p>
-                
-                <b><p style="font-size: 19px;">Глава Ивентологии👑</p></b>
-                <p>Имеет полное владение над отделом Ивентологии, может самостоятельно изменять состав отдела Ивентологии и их норму/правила.</p>
-            </div>
-            
-            <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ff66cc;">НОРМА</p></b>
-            <div class="metod_one">
-                <p>• Ивентер из другого отдела - кол-во тикетов из вашего отдела | 2 ивента в неделю</p>
-                <p>• Ивентер - 35 тикетов | 3 ивента в неделю</p>
-                <p>• Ст. Ивентер - 25 тикетов</p>
-                <p>• Зам. Главы Ивентологии - не имеет нормы</p>
-                <p>• Глава Ивентологии - не имеет нормы</p>
-            </div>
-            
-            <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ffaa66;">Норма после отпуска/заморозки/вступлении в отдел ивентов в течение недели:</p></b>
-            <div class="metod_one">
-                <p>• Понедельник — 35 тикетов | 3 ивента</p>
-                <p>• Вторник — 35 тикетов | 3 ивента</p>
-                <p>• Среда — 30 тикетов | 2 ивента</p>
-                <p>• Четверг (промежуточная норма) — 25 тикетов | 1 ивент</p>
-                <p>• Пятница — 20 тикетов | 1 ивент</p>
-                <p>• Суббота — 10 тикетов | 1 ивент</p>
-                <p>• Воскресенье — освобождены от нормы</p>
-                <p>Если вы состоите в другом отделе и вышли с отпуска/мороза и т.п. С четверга вы обязуетесь провести 1 ивент. Если с понедельника и до среды – 2 ивента.</p>
-            </div>
-            
-            <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ff6666;">Наказания за невыполнение нормы:</p></b>
-            <div class="metod_one">
-                <p>• 25-35 тикетов и 2-3 ивента: В случае уважительной причины недобор прощается, в другом случае выдается предупреждение.</p>
-                <p>• 15-24 тикета и 1-2 ивента: В случае уважительной причины выдается предупреждение, в другом случае выдается выговор.</p>
-                <p>• 0-14 тикета и 0-1 ивент: В случае уважительной причины выдается выговор, в другом случае снятие или два выговора.</p>
-                <p>• Для ивентеров, состоящих в другом отделе: если проведено менее двух ивентов, выдается предупреждение. При уважительной причине недобор прощается.</p>
-            </div>
-            
-            <div class="metod_one">
-                <b><p style="font-size: 19px;">Зарплата</p></b>
-                <p>Зарплата выдаётся только за выполненные тикеты. Тех. Администрация не намеревается выдавать ЗП за ивенты, возможно когда-то в будущем у вас будет вознаграждение за ваши прекрасные ивенты.</p>
-            </div>
-        </div>
-    `;
+            document.getElementById('eventDynamicContent').innerHTML = `<div class="page-header"><h2>📖 Методичка</h2></div><div style="background:var(--card-bg); border-radius:28px; padding:1.5rem; border:1px solid var(--card-border);"><b><p style="text-align: center; font-size: 39px;">Методичка Ивентологов</p></b><div class="metod_one"><b>Кто может проводить ивенты?</b><p>Проводить ивенты можно с ранга «Оператор»</p><b>Награды</b><p>Если победа честная — Ивентер обязан выдать приз</p></div></div>`;
         }
     });
 });
@@ -448,54 +313,14 @@ function renderAddonsPage() {
     container.innerHTML = `
         <div class="page-header"><h2>🔧 Аддоны для строительства</h2></div>
         <div class="addons-grid">
-            <div class="addon-card">
-                <div class="addon-icon">🛠️</div>
-                <div class="addon-title">Вайт-Лист пропов 4-ого сервера</div>
-                <div class="addon-desc">Счётчик в 75 пропов</div>
-                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3488412511" target="_blank" class="addon-link">Скачать</a>
-            </div>
-            <div class="addon-card">
-                <div class="addon-icon">📋</div>
-                <div class="addon-title">Advanced Duplicator</div>
-                <div class="addon-desc">Копирование построек</div>
-                <a href="https://steamcommunity.com/workshop/filedetails/?id=773402917" target="_blank" class="addon-link">Скачать</a>
-            </div>
-            <div class="addon-card">
-                <div class="addon-icon">📍</div>
-                <div class="addon-title">Precision Tool</div>
-                <div class="addon-desc">Точная установка пропов</div>
-                <a href="https://steamcommunity.com/workshop/filedetails/?id=104482086" target="_blank" class="addon-link">Скачать</a>
-            </div>
-            <div class="addon-card">
-                <div class="addon-icon">📦</div>
-                <div class="addon-title">Stacker</div>
-                <div class="addon-desc">Удобная укладка пропов</div>
-                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=264467687" target="_blank" class="addon-link">Скачать</a>
-            </div>
-            <div class="addon-card">
-                <div class="addon-icon">🎨</div>
-                <div class="addon-title">Material</div>
-                <div class="addon-desc">Больше материалов</div>
-                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=105841291" target="_blank" class="addon-link">Скачать</a>
-            </div>
-            <div class="addon-card">
-                <div class="addon-icon">🎨</div>
-                <div class="addon-title">Ещё больше материалов</div>
-                <div class="addon-desc">Дополнительные текстуры</div>
-                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=730187817" target="_blank" class="addon-link">Скачать</a>
-            </div>
-            <div class="addon-card">
-                <div class="addon-icon">🌍</div>
-                <div class="addon-title">Весь контент 4-ого сервера</div>
-                <div class="addon-desc">Полный пак</div>
-                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3297333501" target="_blank" class="addon-link">Скачать</a>
-            </div>
-            <div class="addon-card">
-                <div class="addon-icon">🗺️</div>
-                <div class="addon-title">Карта 4-ого сервера</div>
-                <div class="addon-desc">Тематическая карта</div>
-                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3298873388" target="_blank" class="addon-link">Скачать</a>
-            </div>
+            <div class="addon-card"><div class="addon-icon">🛠️</div><div class="addon-title">Вайт-Лист пропов 4-ого сервера</div><div class="addon-desc">Счётчик в 75 пропов</div><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3488412511" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">📋</div><div class="addon-title">Advanced Duplicator</div><div class="addon-desc">Копирование построек</div><a href="https://steamcommunity.com/workshop/filedetails/?id=773402917" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">📍</div><div class="addon-title">Precision Tool</div><div class="addon-desc">Точная установка пропов</div><a href="https://steamcommunity.com/workshop/filedetails/?id=104482086" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">📦</div><div class="addon-title">Stacker</div><div class="addon-desc">Удобная укладка пропов</div><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=264467687" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">🎨</div><div class="addon-title">Material</div><div class="addon-desc">Больше материалов</div><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=105841291" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">🎨</div><div class="addon-title">Ещё больше материалов</div><div class="addon-desc">Дополнительные текстуры</div><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=730187817" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">🌍</div><div class="addon-title">Весь контент 4-ого сервера</div><div class="addon-desc">Полный пак</div><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3297333501" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">🗺️</div><div class="addon-title">Карта 4-ого сервера</div><div class="addon-desc">Тематическая карта</div><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3298873388" target="_blank" class="addon-link">Скачать</a></div>
         </div>
     `;
 }
@@ -599,7 +424,7 @@ async function sendEventToDiscord() {
         content: `<@1246076621484724320> <@1066705962972495922> Новый ивент от ${organizer}!`,
         embeds: [embed],
         username: "Ивент-отдел UnionTeam",
-        avatar_url: "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg"  // <--- ЭТО СТРОКА
+        avatar_url: "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg"
     };
     
     try {
@@ -634,15 +459,12 @@ const logoutBtn = document.getElementById('logoutBtn');
 
 function checkAuth() {
     const saved = sessionStorage.getItem('user');
+    const savedIsEditor = sessionStorage.getItem('isEditor');
     const continued = sessionStorage.getItem('continued');
     
-    if (saved && VALID_LOGINS.includes(saved.toLowerCase())) {
-        currentUser = saved.toLowerCase();
-        
-        const statsMenuItem = document.getElementById('statsMenuItem');
-        if (statsMenuItem) {
-            statsMenuItem.style.display = EDITORS.includes(currentUser) ? 'flex' : 'none';
-        }
+    if (saved && VALID_LOGINS.includes(saved)) {
+        currentUser = saved;
+        isEditor = savedIsEditor === 'true';
         
         loginOverlay.style.display = 'none';
         if (continued === 'true') {
@@ -655,12 +477,7 @@ function checkAuth() {
         }
     } else {
         currentUser = null;
-        
-        const statsMenuItem = document.getElementById('statsMenuItem');
-        if (statsMenuItem) {
-            statsMenuItem.style.display = 'none';
-        }
-        
+        isEditor = false;
         loginOverlay.style.display = 'flex';
         welcomeContainer.classList.add('hidden');
         mainDashboard.style.display = 'none';
@@ -668,16 +485,34 @@ function checkAuth() {
 }
 
 function doLogin() {
-    const login = loginInput.value.trim().toLowerCase();
+    const login = loginInput.value.trim();
     const pwd = passInput.value;
-    if (VALID_LOGINS.includes(login) && pwd === PASSWORD) {
-        sessionStorage.setItem('user', login);
-        sessionStorage.removeItem('continued');
-        currentUser = login;
-        loginOverlay.style.display = 'none';
-        welcomeContainer.classList.remove('hidden');
-        mainDashboard.style.display = 'none';
-        errMsg.classList.remove('show');
+    
+    if (VALID_LOGINS.includes(login)) {
+        if (pwd === CREATOR_PASSWORD) {
+            sessionStorage.setItem('user', login);
+            sessionStorage.setItem('isEditor', 'true');
+            sessionStorage.removeItem('continued');
+            currentUser = login;
+            isEditor = true;
+            loginOverlay.style.display = 'none';
+            welcomeContainer.classList.remove('hidden');
+            mainDashboard.style.display = 'none';
+            errMsg.classList.remove('show');
+        } else if (pwd === USER_PASSWORD) {
+            sessionStorage.setItem('user', login);
+            sessionStorage.setItem('isEditor', 'false');
+            sessionStorage.removeItem('continued');
+            currentUser = login;
+            isEditor = false;
+            loginOverlay.style.display = 'none';
+            welcomeContainer.classList.remove('hidden');
+            mainDashboard.style.display = 'none';
+            errMsg.classList.remove('show');
+        } else {
+            errMsg.classList.add('show');
+            setTimeout(() => errMsg.classList.remove('show'), 2000);
+        }
     } else {
         errMsg.classList.add('show');
         setTimeout(() => errMsg.classList.remove('show'), 2000);
@@ -693,6 +528,7 @@ function onContinue() {
 
 function logout() {
     sessionStorage.removeItem('user');
+    sessionStorage.removeItem('isEditor');
     sessionStorage.removeItem('continued');
     checkAuth();
 }
