@@ -1,6 +1,7 @@
 // ========== ТВОИ ДАННЫЕ ==========
 let eventsData = [
-    { id: 1, name: "Пол это лава", platform: "T1Ran", organizer: "Нет", date: "13.04.26, 18.30 - 18.45", status: "Проведен", rating: "10.000$", members: 10, callStatus: "🟡Скоро", fullDetails: { description: "Сначала открытая местность потом появиться пропы и через 3 секунды открывается пол. Те кто не встал на проп погибают.", tasks: "", feedback: "", rewards: "", extra: "" } }
+    { id: 1, name: "Пол это лава", platform: "T1Ran", organizer: "Нет", date: "13.04.26, 18.30 - 18.45", status: "Проведен", rating: "10.000$", members: 10, callStatus: "🟡Скоро", fullDetails: { description: "Сначала открытая местность потом появиться пропы и через 3 секунды открывается пол. Те кто не встал на проп погибают.", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 2, name: "Паркур", platform: "somcop", organizer: "Нет", date: "14.04.26, 19.15 - 19:25", status: "Проведен", rating: "10.000$", members: 9, callStatus: "🟡Скоро", fullDetails: { description: "паркур средней сложности и длины,дается неограниченное количество попыток для прохождения", tasks: "", feedback: "", rewards: "", extra: "" } }
 ];
 
 let teamData = [
@@ -16,27 +17,15 @@ let teamData = [
     { id: 7, name: "Himas", role: "Ивентер", discord: "1467081827670954015", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199683531094", achievements: "0", notes: "" } },
     { id: 8, name: "yaroslav1432", role: "Ивентер", discord: "1286725096278331565", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199775920153", achievements: "0", notes: "" } },
     { id: 9, name: "Foxy", role: "Ивентер", discord: "1344959502436532304", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Модератор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199775920153", achievements: "0", notes: "" } },
-    { id: 10, name: "somcop", role: "Ивентер", discord: "76561199768219919", status: "Онлайн", eventsCount: "0", joinDate: "13.04.26", rating: "Модератор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } }
+    { id: 10, name: "somcop", role: "Ивентер", discord: "76561199768219919", status: "Онлайн", eventsCount: "-", joinDate: "13.04.26", rating: "Модератор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } }
 ];
 
-// Функция подсчёта ивентов по организатору
-function countEventsByOrganizer() {
-    const counts = {};
-    for (let event of eventsData) {
-        const organizer = event.organizer;
-        if (organizer && organizer !== "Нет") {
-            counts[organizer] = (counts[organizer] || 0) + 1;
-        }
-    }
-    return counts;
-}
-
-// Функция подсчёта ивентов по платформе
+// Функция подсчёта ивентов по организатору (platform)
 function countEventsByPlatform() {
     const counts = {};
     for (let event of eventsData) {
         const platform = event.platform;
-        if (platform && platform !== "Нет") {
+        if (platform && platform !== "Нет" && platform !== "") {
             counts[platform] = (counts[platform] || 0) + 1;
         }
     }
@@ -84,8 +73,6 @@ function saveAllData() {
 }
 
 function loadAllData() {
-    localStorage.removeItem('unionEventsPrizes');
-    
     const savedStatuses = localStorage.getItem('unionEventsStatuses');
     if (savedStatuses) {
         try {
@@ -200,10 +187,15 @@ function renderTeamTable() {
     const juniorMembers = teamData.filter(m => m.category === "Младший состав");
     
     function renderMemberCard(m, type) {
-        const eventsCount = getEventsCountForMember(m, eventCounts);
+        let eventsCount = eventCounts[m.name] || 0;
+        if (m.eventsCount !== "-" && m.eventsCount !== "Нет нормы" && m.eventsCount !== "Отпуск" && !isNaN(parseInt(m.eventsCount))) {
+            eventsCount = m.eventsCount;
+        } else if (m.eventsCount === "Нет нормы" || m.eventsCount === "Отпуск") {
+            eventsCount = m.eventsCount;
+        }
+        
         const cardClass = type === 'senior' ? 'senior' : 'junior';
         
-        // Рейтинг звездами
         const ratingValue = parseFloat(m.rating);
         let starsHtml = '';
         if (!isNaN(ratingValue)) {
@@ -217,7 +209,6 @@ function renderTeamTable() {
             starsHtml = `<span class="rating-star">${m.rating}</span>`;
         }
         
-        // Статус (Онлайн/Оффлайн)
         const statusHtml = m.status === "Онлайн" 
             ? '<span class="team-status online">🟢 Онлайн</span>' 
             : '<span class="team-status offline">🔴 ' + m.status + '</span>';
@@ -293,27 +284,6 @@ function renderTeamTable() {
             if (member) openTeamModal(member);
         });
     });
-}
-
-function getEventsCountForMember(m, eventCounts) {
-    let eventsCount = eventCounts[m.name] || 0;
-    if (m.eventsCount !== "-" && m.eventsCount !== "Нет нормы" && m.eventsCount !== "Отпуск" && !isNaN(parseInt(m.eventsCount))) {
-        eventsCount = m.eventsCount;
-    } else if (m.eventsCount === "Нет нормы" || m.eventsCount === "Отпуск") {
-        eventsCount = m.eventsCount;
-    }
-    return eventsCount;
-}
-
-// Вспомогательная функция для подсчёта ивентов участника
-function getEventsCountForMember(m, eventCounts) {
-    let eventsCount = eventCounts[m.name] || 0;
-    if (m.eventsCount !== "-" && m.eventsCount !== "Нет нормы" && m.eventsCount !== "Отпуск" && !isNaN(parseInt(m.eventsCount))) {
-        eventsCount = m.eventsCount;
-    } else if (m.eventsCount === "Нет нормы" || m.eventsCount === "Отпуск") {
-        eventsCount = m.eventsCount;
-    }
-    return eventsCount;
 }
 
 function attachRowClicks() {
@@ -406,144 +376,7 @@ navs.forEach(n => {
                 </div>
             `;
         } else if (tab === 'event_guide') {
-            document.getElementById('eventDynamicContent').innerHTML = `
-                <div class="page-header"><h2>📖 Методичка</h2></div>
-                <div style="background:var(--card-bg); border-radius:28px; padding:1.5rem; border:1px solid var(--card-border);">
-                    <b><p style="text-align: center; font-size: 39px; font-family: 'Courier New', Courier, monospace; color: #fd72f4;">Методичка Ивентологов</p></b>
-                    <b><p style="text-align: center; font-size: 36px; font-family: 'Courier New', Courier, monospace; color: #fd72f4;">ОСНОВНЫЕ ПРАВИЛА  ОТДЕЛА ИВЕНТОЛОГИИ</p></b>
-                    <p>ㅤ</p>
-                    
-                    <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #882381;">ЧТО МОЖНО ДЕЛАТЬ?</p></b>
-                    <div class="metod_one">
-                        <b><p style="font-size: 19px;">Кто может проводить ивенты?</p></b>
-                        <p>Проводить ивенты можно с ранга «Оператор», если вы состоите в отделе Ивентологии.</p>
-                        <p style="color: #818181">С рангов ниже — только с разрешения Главы отдела или Куратора сервера.</p>
-                        <b><p style="font-size: 19px;">Кол-во администрации на ивенте</p></b>
-                        <p>В ивенте может участвовать не более 25% от всей наборной администрации.</p>
-                        <p style="color: #818181">(Например: 10 админов → максимум участвуют 3, округление вверх)</p>
-                        <b><p style="font-size: 19px;">Игнор завалов</p></b>
-                        <p>Если завал начался во время ивента, его разрешено игнорировать.</p>
-                        <b><p style="font-size: 19px;">Самостоятельность</p></b>
-                        <p>Каждый Ивентер может проводить ивенты без разрешения от Ст. Администрации.</p>
-                        <p style="color: #818181">Если ты на испытательном сроке — нужно одобрение от Ст. Ивентера.</p>
-                        <b><p style="font-size: 19px;">Награды</p></b>
-                        <p>Если игрок использует баги/преимущества/нарушал правила, что привело его к победе — Ивентер может не выдавать приз.</p>
-                        <p style="color: #818181">Если победа честная — Ивентер обязан выдать приз (если он конечно есть).</p>
-                        <b><p style="font-size: 19px;">RP-Мероприятия</p></b>
-                        <p>Помимо ивентов, вам также доступны РП-Мероприятия. Такие мероприятия представляют собой сюжетные или ситуационные ролевые отыгровки в пределах RP-зоны и направлены на создание "живого" игрового процесса.</p>
-                        <p style="color: #818181">РП-мероприятие засчитывается как полноценный ивент и учитывается в норме Ивентера. Призы за участие в РП-Мероприятиях можно не выдавать.</p>
-                    </div>
-                    
-                    <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ca6019;">ЧТО ВЫ ОБЯЗАНЫ ДЕЛАТЬ?</p></b>
-                    <div class="metod_one">
-                        <b><p style="font-size: 19px;">После ивента/РП-Мероприятия</p></b>
-                        <p>Убрать всё, что было построено/создано. Написать отчёт в специальный канал.</p>
-                        <b><p style="font-size: 19px;">Лаги</p></b>
-                        <p>Если во время ивента появились лаги или высокий пинг — ивент нужно как можно быстрее прекратить и сообщить Главе/Зам. Главы.</p>
-                    </div>
-                    
-                    <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ca1919;">ЧТО НЕЛЬЗЯ ДЕЛАТЬ?</p></b>
-                    <div class="metod_one">
-                        <b><p style="font-size: 19px;">Правила RP-Мероприятий</p></b>
-                        <p>・Запрещается привлекать игроков к РП-мероприятию через /OOC, участие должно происходить естественным RP путем.</p>
-                        <p>・Нельзя принуждать игроков к участию в мероприятии.</p>
-                        <p>・Создавать мероприятия, мешающие обычному RP-процессу сервера.</p>
-                        
-                        <b><p style="font-size: 19px;">Завалы</p></b>
-                        <p>Запрещено начинать ивенты во время активных завалов.</p>
-                        
-                        <b><p style="font-size: 19px;">Несколько ивентов</p></b>
-                        <p>Запрещено проводить 2 и более ивентов одновременно. Если кто-то уже проводит ивент — ждём, пока закончат.</p>
-                        
-                        <b><p style="font-size: 19px;">Мешать другим</p></b>
-                        <p>Запрещено мешать подготовке или проведению ивентов (включая ивент-мастеров).</p>
-                        
-                        <b><p style="font-size: 19px;">RP Зона</p></b>
-                        <p>Категорически запрещено проводить ивенты в RP зоне. Исключение: РП-Мероприятия.</p>
-                        
-                        <b><p style="font-size: 19px;">Оскорбительный контент</p></b>
-                        <p>Запрещается проводить ивенты, которые нацелены на разжигание ненависти, дискриминацию, имеют деструктивный или политический контент. Помните: важно соблюдать нейтралитет.</p>
-                        
-                        <b><p style="font-size: 19px;">Привилегии</p></b>
-                        <p>Запрещено выпрашивать бонусы/привилегии за ивенты (будут наказания и возможно снятие).</p>
-                        
-                        <b><p style="font-size: 19px;">Донат-Администрация</p></b>
-                        <p>Донатной администрации (далее д.админ) категорически запрещено проводить ивенты. Даже под вашим присмотром и даже в качестве помощников. Вы можете взять идею, приз или дубликат у д.админа, а также попросить его поставить дубликат, если вам не хватает пропов.</p>
-                    </div>
-                    
-                    <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ffaa44;">⠀УТОЧНЕНИЯ⠀</p></b>
-                    <div class="metod_one">
-                        <b><p style="font-size: 19px;">RP-Мероприятия</p></b>
-                        <p>При проведении РП-мероприятий обязательно соблюдение всех действующих правил сервера. РП-мероприятие не освобождает участников от ответственности за нарушения. (Исключение: правило 8.1, правила для которых нужно разрешение от администратора).</p>
-                        
-                        <b><p style="font-size: 19px;">Ивент-Мастер</p></b>
-                        <p>Повышение до Ивент-Мастера не будет. Как вы бы не просили, умоляли, заслужили, его не будет. Однако попросить его помощь в вашем ивенте вы можете в канале ┣🍽️・запрос-вещей.</p>
-                        
-                        <b><p style="font-size: 19px;">Набор</p></b>
-                        <p>Набирать людей в Ивентологию могут только Глава и Зам. Главы отдела.</p>
-                        
-                        <b><p style="font-size: 19px;">Отдел</p></b>
-                        <p>Отдел Ивентологии является «совмещенным». Любой администратор из другого отдела может попасть к нам при наличии свободных слотов и соответствии установленным критериям. Для таких администраторов действует пониженная норма.</p>
-                    </div>
-                    
-                    <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #44aaff;">Максимальное количество мест в отделе - 9:</p></b>
-                    <div class="metod_one">
-                        <p>• 7 младших ивентеров</p>
-                        <p>• 1 Старший ивентер</p>
-                        <p>• 1 Заместитель главы отдела</p>
-                        <p>• 1 Глава отдела Ивентологии</p>
-                    </div>
-                    
-                    <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #44ffaa;">РАНГИ</p></b>
-                    <div class="metod_one">
-                        <b><p style="font-size: 19px;">Ивентер🤡</p></b>
-                        <p>Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.</p>
-                        
-                        <b><p style="font-size: 19px;">Ст. Ивентер🍉</p></b>
-                        <p>Имеет все полномочия Ивентера, а также имеет право корректировать работу Ивентеров и давать рекомендации по поводу ивентов, выдавать наказания за их ошибки, а также одобрять отчётности.</p>
-                        
-                        <b><p style="font-size: 19px;">Зам. Главы Ивентологии📿</p></b>
-                        <p>Имеет все полномочия нижестоящих рангов, а также имеет право набирать новых кадров в отдел, определять курс развития отдела и изменять норму и правила с разрешения/уведомления об этом Главы Ивентологии.</p>
-                        
-                        <b><p style="font-size: 19px;">Глава Ивентологии👑</p></b>
-                        <p>Имеет полное владение над отделом Ивентологии, может самостоятельно изменять состав отдела Ивентологии и их норму/правила.</p>
-                    </div>
-                    
-                    <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ff66cc;">НОРМА</p></b>
-                    <div class="metod_one">
-                        <p>• Ивентер из другого отдела - кол-во тикетов из вашего отдела | 2 ивента в неделю</p>
-                        <p>• Ивентер - 35 тикетов | 3 ивента в неделю</p>
-                        <p>• Ст. Ивентер - 25 тикетов</p>
-                        <p>• Зам. Главы Ивентологии - не имеет нормы</p>
-                        <p>• Глава Ивентологии - не имеет нормы</p>
-                    </div>
-                    
-                    <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ffaa66;">Норма после отпуска/заморозки/вступлении в отдел ивентов в течение недели:</p></b>
-                    <div class="metod_one">
-                        <p>• Понедельник — 35 тикетов | 3 ивента</p>
-                        <p>• Вторник — 35 тикетов | 3 ивента</p>
-                        <p>• Среда — 30 тикетов | 2 ивента</p>
-                        <p>• Четверг (промежуточная норма) — 25 тикетов | 1 ивент</p>
-                        <p>• Пятница — 20 тикетов | 1 ивент</p>
-                        <p>• Суббота — 10 тикетов | 1 ивент</p>
-                        <p>• Воскресенье — освобождены от нормы</p>
-                        <p>Если вы состоите в другом отделе и вышли с отпуска/мороза и т.п. С четверга вы обязуетесь провести 1 ивент. Если с понедельника и до среды – 2 ивента.</p>
-                    </div>
-                    
-                    <b><p style="text-align: center; font-size: 35px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #ff6666;">Наказания за невыполнение нормы:</p></b>
-                    <div class="metod_one">
-                        <p>• 25-35 тикетов и 2-3 ивента: В случае уважительной причины недобор прощается, в другом случае выдается предупреждение.</p>
-                        <p>• 15-24 тикета и 1-2 ивента: В случае уважительной причины выдается предупреждение, в другом случае выдается выговор.</p>
-                        <p>• 0-14 тикета и 0-1 ивент: В случае уважительной причины выдается выговор, в другом случае снятие или два выговора.</p>
-                        <p>• Для ивентеров, состоящих в другом отделе: если проведено менее двух ивентов, выдается предупреждение. При уважительной причине недобор прощается.</p>
-                    </div>
-                    
-                    <div class="metod_one">
-                        <b><p style="font-size: 19px;">Зарплата</p></b>
-                        <p>Зарплата выдаётся только за выполненные тикеты. Тех. Администрация не намеревается выдавать ЗП за ивенты, возможно когда-то в будущем у вас будет вознаграждение за ваши прекрасные ивенты.</p>
-                    </div>
-                </div>
-            `;
+            document.getElementById('eventDynamicContent').innerHTML = `<div class="page-header"><h2>📖 Методичка</h2></div><div style="background:var(--card-bg); border-radius:28px; padding:1.5rem; border:1px solid var(--card-border);"><b><p style="text-align: center; font-size: 39px;">Методичка Ивентологов</p></b><div class="metod_one"><b>Кто может проводить ивенты?</b><p>Проводить ивенты можно с ранга «Оператор»</p><b>Награды</b><p>Если победа честная — Ивентер обязан выдать приз</p></div></div>`;
         }
     });
 });
@@ -628,7 +461,7 @@ async function sendEventToDiscord() {
     const endTime = document.getElementById('eventEndTime')?.value.trim() || 'Не указано';
     const members = document.getElementById('eventMembers')?.value.trim() || 'Не указано';
     const prizes = document.getElementById('eventPrizes')?.value.trim() || 'Не было';
-    const organizer = document.getElementById('eventOrganizer')?.value.trim() || currentUser || 'Неизвестно';
+    let organizer = document.getElementById('eventOrganizer')?.value.trim() || currentUser || 'Неизвестно';
     const helpers = document.getElementById('eventHelpers')?.value.trim() || 'Нет';
     
     if (!name) {
@@ -639,6 +472,28 @@ async function sendEventToDiscord() {
         showNotif('❌ Введите описание ивента!', true);
         return;
     }
+    
+    // Добавляем ивент в eventsData для подсчёта статистики
+    const newId = eventsData.length + 1;
+    const newEvent = {
+        id: newId,
+        name: name,
+        platform: organizer,
+        organizer: helpers,
+        date: startTime + " - " + endTime,
+        status: "Проведен",
+        rating: (prizes !== 'Не было' ? prizes.replace(/[^0-9]/g, '') : '0') + '$',
+        members: parseInt(members) || 0,
+        callStatus: "🟡Скоро",
+        fullDetails: { description: description, tasks: "", feedback: "", rewards: "", extra: "" }
+    };
+    eventsData.push(newEvent);
+    saveAllData();
+    
+    // Обновляем таблицы
+    renderEventsTable();
+    renderTeamTable();
+    updateNormStats();
     
     const webhookURL = "https://discord.com/api/webhooks/1492180488733851771/aVB2IzG8pZ9aASEjEc7Wa1yjugZcIvHFwmKsRrgHWCZbF0G0ULoZ6tcnx01MlaLi286O";
     
@@ -675,14 +530,15 @@ async function sendEventToDiscord() {
         });
         
         if (response.ok) {
-            showNotif('✅ Ивент успешно отправлен в Discord!');
+            showNotif('✅ Ивент успешно добавлен в таблицу и отправлен в Discord!');
             renderEventsTable();
+            renderTeamTable();
         } else {
-            showNotif('❌ Ошибка отправки. Попробуйте позже.', true);
+            showNotif('❌ Ошибка отправки в Discord, но ивент добавлен в таблицу.', true);
         }
     } catch (error) {
         console.error(error);
-        showNotif('❌ Ошибка сети. Проверьте подключение.', true);
+        showNotif('❌ Ошибка сети, но ивент добавлен в таблицу.', true);
     }
 }
 
@@ -789,7 +645,6 @@ window.addEventListener('click', e => { if (e.target === modal) modal.style.disp
 loadAllData();
 checkAuth();
 
-
 // Супер-плавный движущийся фон за мышкой
 const bg = document.getElementById('moving-bg');
 if (bg) {
@@ -800,20 +655,15 @@ if (bg) {
     let rafId = null;
     
     function smoothAnimate() {
-        // Плавное приближение к цели (чем меньше число, тем плавнее)
         currentX += (targetX - currentX) * 0.05;
         currentY += (targetY - currentY) * 0.05;
-        
         bg.style.transform = `translate(${currentX.toFixed(2)}px, ${currentY.toFixed(2)}px)`;
-        
         rafId = requestAnimationFrame(smoothAnimate);
     }
     
     document.addEventListener('mousemove', (e) => {
         const mouseX = e.clientX / window.innerWidth;
         const mouseY = e.clientY / window.innerHeight;
-        
-        // Максимальное смещение фона (чем больше число, тем сильнее движение)
         targetX = (mouseX - 0.5) * 15;
         targetY = (mouseY - 0.5) * 15;
     });
