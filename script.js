@@ -702,29 +702,33 @@ loadAllData();
 checkAuth();
 
 
-// Плавный движущийся фон за мышкой
+// Супер-плавный движущийся фон за мышкой
 const bg = document.getElementById('moving-bg');
 if (bg) {
     let targetX = 0;
     let targetY = 0;
     let currentX = 0;
     let currentY = 0;
+    let rafId = null;
     
-    function animateBg() {
-        currentX += (targetX - currentX) * 0.1;
-        currentY += (targetY - currentY) * 0.1;
-        bg.style.transform = `translate(${currentX}px, ${currentY}px)`;
-        requestAnimationFrame(animateBg);
+    function smoothAnimate() {
+        // Плавное приближение к цели (чем меньше число, тем плавнее)
+        currentX += (targetX - currentX) * 0.05;
+        currentY += (targetY - currentY) * 0.05;
+        
+        bg.style.transform = `translate(${currentX.toFixed(2)}px, ${currentY.toFixed(2)}px)`;
+        
+        rafId = requestAnimationFrame(smoothAnimate);
     }
     
     document.addEventListener('mousemove', (e) => {
         const mouseX = e.clientX / window.innerWidth;
         const mouseY = e.clientY / window.innerHeight;
         
-        targetX = (mouseX - 0.5) * 30;
-        targetY = (mouseY - 0.5) * 30;
+        // Максимальное смещение фона (чем больше число, тем сильнее движение)
+        targetX = (mouseX - 0.5) * 15;
+        targetY = (mouseY - 0.5) * 15;
     });
     
-    animateBg();
+    smoothAnimate();
 }
-
