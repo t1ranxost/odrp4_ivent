@@ -1,33 +1,41 @@
-// Супер-плавный движущийся фон за мышкой
-const bg = document.getElementById('moving-bg');
-if (bg) {
-    let targetX = 0;
-    let targetY = 0;
-    let currentX = 0;
-    let currentY = 0;
-    let rafId = null;
-    
-    function smoothAnimate() {
-        // Плавное приближение к цели (чем меньше число, тем плавнее)
-        currentX += (targetX - currentX) * 0.05;
-        currentY += (targetY - currentY) * 0.05;
-        
-        bg.style.transform = `translate(${currentX.toFixed(2)}px, ${currentY.toFixed(2)}px)`;
-        
-        rafId = requestAnimationFrame(smoothAnimate);
-    }
-    
-    document.addEventListener('mousemove', (e) => {
-        const mouseX = e.clientX / window.innerWidth;
-        const mouseY = e.clientY / window.innerHeight;
-        
-        // Максимальное смещение фона (чем больше число, тем сильнее движение)
-        targetX = (mouseX - 0.5) * 15;
-        targetY = (mouseY - 0.5) * 15;
-    });
-    
-    smoothAnimate();
-    }
+/* Движущийся фон за мышкой */
+body {
+    position: relative;
+    overflow-x: hidden;
+}
+
+#moving-bg {
+    position: fixed;
+    top: -10%;
+    left: -10%;
+    width: 120%;
+    height: 120%;
+    background-image: url('https://i.ytimg.com/vi/k_bnSrMI-d4/maxresdefault.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -2;
+}
+
+.dashboard, .welcome-container, .modal-overlay {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+}
+
+.welcome-container {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.modal-overlay {
+    background: rgba(0, 0, 0, 0.85);
+}
+
+.dashboard {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+    border-radius: 32px;
+}
         * {
             margin: 0;
             padding: 0;
