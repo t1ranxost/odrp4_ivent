@@ -217,6 +217,11 @@ function renderTeamTable() {
             starsHtml = `<span class="rating-star">${m.rating}</span>`;
         }
         
+        // Статус (Онлайн/Оффлайн)
+        const statusHtml = m.status === "Онлайн" 
+            ? '<span class="team-status online">🟢 Онлайн</span>' 
+            : '<span class="team-status offline">🔴 ' + m.status + '</span>';
+        
         return `
             <div class="team-card ${cardClass} clickable-card" data-type="team" data-id="${m.id}">
                 <div class="team-card-header">
@@ -224,6 +229,7 @@ function renderTeamTable() {
                         <div class="team-name">${escapeHtml(m.name)}</div>
                         <div class="team-role">${escapeHtml(m.role)}</div>
                     </div>
+                    ${statusHtml}
                 </div>
                 <div class="team-card-body">
                     <div class="team-info-item">
