@@ -1498,3 +1498,20 @@ body.dark .addon-card {
         font-size: 0.7rem;
     }
 }
+
+.team-status {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 40px;
+    font-weight: 600;
+}
+
+.team-status.online {
+    background: #2b7e3a;
+    color: white;
+}
+
+.team-status.offline {
+    background: #6c6c8a;
+    color: white;
+}
