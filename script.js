@@ -410,7 +410,7 @@ async function sendEventToDiscord() {
         await fetch(webhookURL, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                content: `<@1246076621484724320> <@1066705962972495922> Новый ивент от ${organizer}!`,
+                content: `<@1246076621484724320> Новый ивент от ${organizer}!`,
                 embeds: [{
                     title: "📅 Новый ивент", color: 0x5865F2,
                     fields: [
