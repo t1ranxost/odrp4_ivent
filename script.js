@@ -89,11 +89,9 @@ function loadAllData() {
     }
 }
 
-// ========== СИСТЕМА ЛОГИНОВ И ПАРОЛЕЙ (СКРЫТЫЕ) ==========
-// Пароли закодированы в Base64 (легко декодировать, но скрыто от глаз)
 const _0x1a2b = {
-    user: "aXZlbnQ0",      // "ivent4" в base64
-    creator: "Y3JlYXRvcjIwMjY=" // "creator2026" в base64
+    user: "aXZlbnQ0",      
+    creator: "Y3JlYXRvcjIwMjY=" 
 };
 
 const VALID_LOGINS = [
