@@ -405,7 +405,7 @@ async function sendEventToDiscord() {
     renderTeamTable();
     updateNormStats();
     
-    const webhookURL = "https://discord.com/api/webhooks/1492180488733851771/aVB2IzG8pZ9aASEjEc7Wa1yjugZcIvHFwmKsRrgHWCZbF0G0ULoZ6tcnx01MlaLi286O";
+    const webhookURL = "https://discord.com/api/webhooks/1494434308629200906/wzTarhNMe2zTA3x6tO7gn_maa52EXNVcshqse6-2SnKFJ-QulJehmpiCGGWyFjgJ5xgS";
     try {
         await fetch(webhookURL, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
