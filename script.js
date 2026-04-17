@@ -1,745 +1,896 @@
-*{margin:0;padding:0;box-sizing:border-box}
+// ========== ТВОИ ДАННЫЕ ==========
+let eventsData = [
+    { id: 1, name: "Пол это лава", platform: "T1Ran", organizer: "Нет", date: "13.04.26, 18.30 - 18.45", status: "Проведен", rating: "10.000$", members: 10, callStatus: "🟡Скоро", fullDetails: { description: "Игроки дерутся на кулаках 1 на 1,есть финал,полуфинал", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 2, name: "Паркур", platform: "somcop", organizer: "Нет", date: "14.04.26, 19.15 - 19:25", status: "Проведен", rating: "10.000$", members: 9, callStatus: "🟡Скоро", fullDetails: { description: "паркур средней сложности и длины,дается неограниченное количество попыток для прохождения", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 3, name: "Ринг", platform: "somcop", organizer: "Нет", date: "14.04.26, 19:35 - 19:50", status: "Проведен", rating: "15.000$", members: 9, callStatus: "🟡Скоро", fullDetails: { description: "паркур средней сложности и длины,дается неограниченное количество попыток для прохождения", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 4, name: "Паркур на дубе", platform: "somcop", organizer: "Нет", date: "14.04.26, 21:05 - 21:18", status: "Проведен", rating: "1.000$", members: 6, callStatus: "🟡Скоро", fullDetails: { description: "Большой паркур на пне дуба", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 5, name: "Лабиринт", platform: "Гофикал", organizer: "Нет", date: "14.04.26, 17.00 - 17.10", status: "Проведен", rating: "10.000$", members: 6, callStatus: "🟡Скоро", fullDetails: { description: "Просто большой лабиринт", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 6, name: "Бункер", platform: "Гофикал", organizer: "Нет", date: "14.04.26, 18.30 - 19.00", status: "Проведен", rating: "-", members: 10, callStatus: "🟡Скоро", fullDetails: { description: "Игрокам выдали карты с их кратким описанием (возраст профессия и т.д) задача игроков была попасть в бункер", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 7, name: "Слепой убийца", platform: "somcop", organizer: "Нет", date: "15.04.26, 19:15-19:38", status: "Проведен", rating: "10.000$", members: 9, callStatus: "🟡Скоро", fullDetails: { description: "Маньяки охотятся на людей в абсолютно темной комнате", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 8, name: "Прятки на даст 2", platform: "somcop", organizer: "Нет", date: "15.04.26, 19:41-19:55", status: "Проведен", rating: "10.000$", members: 11, callStatus: "🟡Скоро", fullDetails: { description: "2 маньяка охотилось за людьми на карте даст 2", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 9, name: "Отель маньяка", platform: "somcop", organizer: "Нет", date: "15.04.26, 20:40 - 21:00", status: "Проведен", rating: "10.000$", members: 12, callStatus: "🟡Скоро", fullDetails: { description: "маньяк закрыл в тюрьме человка,задача выживших-спасти человека,найти код для открытия тюрьмы,маньяк охотится за вышившими во время процесса", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 10, name: "Украсть или разделить", platform: "somcop", organizer: "Нет", date: "15.04.26, 21:37 - 21:45", status: "Проведен", rating: "18.000$", members: 2, callStatus: "🟡Скоро", fullDetails: { description: "Игроки выбирают разделить или украсть деньги,если украдет один,получает все,украдут оба,ничего не получат", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 11, name: "Правильная Викторина", platform: "Foxy", organizer: "Нет", date: "17.04.26, 4.03 - 4.13", status: "Проведен", rating: "20.000$", members: 2, callStatus: "🟡Скоро", fullDetails: { description: "Игроки выбирают разделить или украсть деньги,если украдет один,получает все,украдут оба,ничего не получат", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 12, name: "Битва Джагера", platform: "T1Ran", organizer: "Нет", date: "17.04.26, 17.50- 18.00", status: "Проведен", rating: "10.000$", members: 10, callStatus: "🟡Скоро", fullDetails: { description: "Игрокам надо убить джагера с 2500 хп", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 13, name: "Стеклянный мост", platform: "Гофикал", organizer: "Нет", date: "17.04.26, 17:00- 17:10", status: "Проведен", rating: "10.000$", members: 9, callStatus: "🟡Скоро", fullDetails: { description: "Игроки прыгали по плитка и рандомно узнавали правильная ли плита или нет", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 14, name: "Отыгровка полиции", platform: "Дмитрий Морозов", organizer: "Arbuz Madrzo", date: "17.04.26, 17:56 - 19:29", status: "Проведен", rating: "-", members: 125, callStatus: "🟡Скоро", fullDetails: { description: "Я был Командиром 1 отряда. Арбуз Перегвоорщиком. просто рп за полицию. Скринов нету Арбуз потвердит", tasks: "", feedback: "", rewards: "", extra: "" } }
+];
 
-        :root{
-  --bg-start:#0a0a0a;--bg-end:#050505;
-  --sidebar-bg:rgba(10,10,10,.85);--sidebar-border:rgba(255,255,255,.15);
-  --card-bg:#111;--card-border:#2a2a2a;
-  --text-primary:#e8e8e8;--text-secondary:#bbb;--text-muted:#888;
-  --table-header-bg:#0a0a0a;--table-row-border:#1e1e1e;--table-row-hover:#1a1a1a;
-  --badge-bg:#222;--badge-active:#2a2a2a;--badge-online:#252525;--badge-offline:#2a2020;
-  --modal-bg:#111;--modal-border:#666;
-  --input-bg:#1a1a1a;--input-border:#333;
-  --shadow:rgba(0,0,0,.5);--footer-color:#555;--clock-color:#ccc;
-  --icon-fill:#aaa;--icon-fill-active:#ddd;--icon-fill-accent:#ccc
+let teamData = [
+    { id: 1, name: "manisule", role: "Глава ивент-отдела", discord: "565584233981280270", status: "Онлайн", eventsCount: "Нет нормы", joinDate: "21.01.26", rating: "Судо-Куратор", category: "Старший состав", fullDetails: { responsibilities: "Имеет полное владение над отделом Ивентологии, может самостоятельно изменять состав отдела Ивентологии и их норму/правила.", contacts: "https://admin.unionteams.ru/4/admin/76561198386405573", achievements: "0", notes: "" } },
+    { id: 2, name: "Гербикс", role: "Зам.Главы ивент-отдела", discord: "694286975158583317", status: "Онлайн", eventsCount: "Нет нормы", joinDate: "21.01.26", rating: "Ассистент", category: "Старший состав", fullDetails: { responsibilities: "Имеет все полномочия нижестоящих рангов, а также имеет право набирать новых кадров в отдел, определять курс развития отдела и изменять норму и правила с разрешения/уведомления об этом Главы Ивентологии.", contacts: "https://admin.unionteams.ru/4/admin/76561199196300974", achievements: "0", notes: "" } },
+    { id: 3, name: "Arbuz Madrazo", role: "Ст.Ивентер", discord: "1066705962972495922", status: "Онлайн", eventsCount: "Нет нормы", joinDate: "07.02.26", rating: "Ст.Администратор", category: "Старший состав", fullDetails: { responsibilities: "Имеет все полномочия Ивентера, а также имеет право корректировать работу Ивентеров и давать рекомендации по поводу ивентов, выдавать наказания за их ошибки, а также одобрять отчётности.", contacts: "https://admin.unionteams.ru/4/admin/76561199236074729", achievements: "1", notes: "" } },
+    { id: 4, name: "T1Ran", role: "Ивентер", discord: "1246076621484724320", status: "Онлайн", eventsCount: "-", joinDate: "14.03.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Отвечает за таблицу ТАКЖЕ: Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199705616791", achievements: "11", notes: "" } },
+    { id: 5, name: "Дмитрий Морозов", role: "Ивентер", discord: "859747626115006474", status: "Онлайн", eventsCount: "-", joinDate: "30.03.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199403370553", achievements: "11", notes: "" } },
+    { id: 6, name: "Гофикал", role: "Ивентер", discord: "1135087142385754123", status: "Онлайн", eventsCount: "-", joinDate: "09.04.26", rating: "Модератор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199636555608", achievements: "0", notes: "" } },
+    { id: 7, name: "Himas", role: "Ивентер", discord: "1467081827670954015", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199683531094", achievements: "0", notes: "" } },
+    { id: 8, name: "yaroslav1432", role: "Ивентер", discord: "1286725096278331565", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199775920153", achievements: "0", notes: "" } },
+    { id: 9, name: "Foxy", role: "Ивентер", discord: "1344959502436532304", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Модератор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199775920153", achievements: "0", notes: "" } },
+    { id: 10, name: "somcop", role: "Ивентер", discord: "76561199768219919", status: "Онлайн", eventsCount: "-", joinDate: "13.04.26", rating: "Модератор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } },
+    { id: 11, name: "кусочек шаурмы", role: "Ивентер", discord: "636585910552756284", status: "Онлайн", eventsCount: "-", joinDate: "17.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } }
+];
+
+function countEventsByPlatform() {
+    const counts = {};
+    for (let event of eventsData) {
+        const platform = event.platform;
+        if (platform && platform !== "Нет" && platform !== "") {
+            counts[platform] = (counts[platform] || 0) + 1;
+        }
+    }
+    return counts;
 }
 
+function calculateTotalPrizes() {
+    let total = 0;
+    for (let event of eventsData) {
+        let ratingStr = String(event.rating);
+        let cleanStr = ratingStr.replace('$', '').replace(/\./g, '');
+        let match = cleanStr.match(/(\d+(?:[.,]\d+)?)/);
+        if (match) {
+            let num = parseFloat(match[1].replace(',', '.'));
+            if (!isNaN(num)) total += num;
+        }
+    }
+    return total;
+}
+
+function updateNormStats() {
+    const totalPrizes = calculateTotalPrizes();
+    const normContainer = document.getElementById('normStatsContainer');
+    if (normContainer) {
+        const prizeCard = normContainer.querySelector('.stat-card:last-child .stat-value');
+        if (prizeCard) {
+            prizeCard.innerHTML = totalPrizes.toLocaleString('ru-RU') + '$';
+            prizeCard.style.color = '#5fe147';
+        }
+    }
+}
+
+function saveAllData() {
+    const statusMap = {};
+    for (let event of eventsData) {
+        statusMap[event.id] = event.callStatus;
+    }
+    localStorage.setItem('unionEventsStatuses', JSON.stringify(statusMap));
+    const prizesMap = {};
+    for (let event of eventsData) {
+        prizesMap[event.id] = event.rating;
+    }
+    localStorage.setItem('unionEventsPrizes', JSON.stringify(prizesMap));
+}
+
+function loadAllData() {
+    const savedStatuses = localStorage.getItem('unionEventsStatuses');
+    if (savedStatuses) {
+        try {
+            const statusMap = JSON.parse(savedStatuses);
+            for (let event of eventsData) {
+                if (statusMap[event.id]) event.callStatus = statusMap[event.id];
+            }
+        } catch(e) {}
+    }
+}
+
+let cachedConfig = null;
+
+async function loadConfig() {
+    if (cachedConfig) return cachedConfig;
+    
+    const GIST_URL = "https://gist.githubusercontent.com/t1ranxost/aa24e72a4a38ff01eae3b7ee4908cf43/raw/604af3c017601560842b7007b1f159e7771f81e9/config.json";
+    try {
+        const response = await fetch(GIST_URL);
+        const data = await response.json();
+        cachedConfig = data;
+        return data;
+    } catch(e) {
+        console.error('Ошибка загрузки конфига:', e);
+        return null;
+    }
+}
+
+// Получение вебхука
+async function getWebhookUrl() {
+    const config = await loadConfig();
+    return config ? config.webhook : null;
+}
+
+// ========== СИСТЕМА ЛОГИНОВ ==========
+const VALID_LOGINS = [
+    "кусочек шаурмы", "Foxy", "somcop", "T1Ran", "manisule",
+    "Гербикс", "Arbuz madrazo", "Дмитрий Морозов", "Гофикал", "Himas", "yaroslav1432"
+];
+
+let currentUser = null;
+let isEditor = false;
+
+function showNotif(msg, isErr = false) {
+    const d = document.createElement('div');
+    d.style.cssText = `position:fixed;bottom:20px;right:20px;background:${isErr ? '#c2410c' : '#2e7d32'};color:white;padding:12px 20px;border-radius:30px;z-index:9999;font-weight:bold;`;
+    d.innerHTML = msg;
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 3000);
+}
+
+function escapeHtml(s) { 
+    if(!s) return ''; 
+    return s.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); 
+}
+
+function changeEventStatus(eventId, newStatus) {
+    if (!isEditor) return false;
+    const event = eventsData.find(e => e.id === eventId);
+    if (event) {
+        event.callStatus = newStatus;
+        saveAllData();
+        renderEventsTable();
+        updateNormStats();
+        showNotif(`✅ Статус изменён на "${newStatus}"`);
+        return true;
+    }
+    return false;
+}
+
+function renderEventsTable() {
+    const container = document.getElementById('eventDynamicContent');
+    const canEdit = isEditor;
+    container.innerHTML = `
+        <div class="page-header"><h2>📅 Таблица мероприятий</h2></div>
+        <div class="click-hint">🔽 ${canEdit ? 'У вас есть права изменять статус' : '🔽 Режим просмотра'}</div>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead><tr><th>ИВЕНТ</th><th>ОРГАНИЗАТОР</th><th>ПОМОЩНИКИ</th><th>ДАТА</th><th>СТАТУС</th><th>ПРИЗОВЫЕ</th><th>УЧАСТНИКИ</th><th>ОДОБРЕН</th>${canEdit ? '<th>ДЕЙСТВИЯ</th>' : ''}</td></thead>
+                <tbody id="eventsTableBody"></tbody>
+            </table>
+        </div>
+    `;
+    const tbody = document.getElementById('eventsTableBody');
+    tbody.innerHTML = '';
+    eventsData.forEach(event => {
+        const row = tbody.insertRow();
+        row.classList.add('clickable-row');
+        row.setAttribute('data-type', 'event');
+        row.setAttribute('data-id', event.id);
+        row.insertCell(0).innerHTML = `<strong>${escapeHtml(event.name)}</strong>`;
+        row.insertCell(1).textContent = event.platform;
+        row.insertCell(2).textContent = event.organizer;
+        row.insertCell(3).textContent = event.date;
+        row.insertCell(4).innerHTML = `<span class="status-badge status-active">${event.status}</span>`;
+        row.insertCell(5).innerHTML = `<span class="rating-star">⭐ ${event.rating}</span>`;
+        row.insertCell(6).innerHTML = `<span style="font-weight:600;">${event.members}</span>`;
+        row.insertCell(7).innerHTML = `<span style="background:var(--badge-bg); padding:0.2rem 0.6rem; border-radius:20px;">${event.callStatus}</span>`;
+        if (canEdit) {
+            const cell = row.insertCell(8);
+            cell.innerHTML = `
+                <button class="status-change-btn btn-approved" data-id="${event.id}" data-status="✅Одобрен">✅ Одобрен</button>
+                <button class="status-change-btn btn-soon" data-id="${event.id}" data-status="🟡Скоро">🟡 Скоро</button>
+                <button class="status-change-btn btn-completed" data-id="${event.id}" data-status="🔴Отказано">🔴 Отказано</button>
+            `;
+        }
+    });
+    if (canEdit) {
+        document.querySelectorAll('.status-change-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                changeEventStatus(parseInt(btn.dataset.id), btn.dataset.status);
+            });
+        });
+    }
+    attachRowClicks();
+}
+
+function renderTeamTable() {
+    const container = document.getElementById('eventDynamicContent');
+    const eventCounts = countEventsByPlatform();
+    const seniorMembers = teamData.filter(m => m.category === "Старший состав");
+    const juniorMembers = teamData.filter(m => m.category === "Младший состав");
+    
+    function renderMemberCard(m, type) {
+        let eventsCount = eventCounts[m.name] || 0;
+        if (m.eventsCount !== "-" && m.eventsCount !== "Нет нормы" && m.eventsCount !== "Отпуск" && !isNaN(parseInt(m.eventsCount))) {
+            eventsCount = m.eventsCount;
+        } else if (m.eventsCount === "Нет нормы" || m.eventsCount === "Отпуск") {
+            eventsCount = m.eventsCount;
+        }
+        const cardClass = type === 'senior' ? 'senior' : 'junior';
+        const ratingValue = parseFloat(m.rating);
+        let starsHtml = '';
+        if (!isNaN(ratingValue)) {
+            const fullStars = Math.floor(ratingValue);
+            const hasHalf = ratingValue % 1 >= 0.5;
+            for(let i = 0; i < fullStars; i++) starsHtml += '<span class="rating-star">★</span>';
+            if(hasHalf) starsHtml += '<span class="rating-star">½</span>';
+            const empty = 5 - fullStars - (hasHalf ? 1 : 0);
+            for(let i = 0; i < empty; i++) starsHtml += '<span class="rating-star empty">☆</span>';
+        } else {
+            starsHtml = `<span class="rating-star">${m.rating}</span>`;
+        }
+        const statusHtml = m.status === "Онлайн" ? '<span class="team-status online">🟢 Онлайн</span>' : '<span class="team-status offline">🔴 ' + m.status + '</span>';
+        return `
+            <div class="team-card ${cardClass} clickable-card" data-type="team" data-id="${m.id}">
+                <div class="team-card-header">
+                    <div><div class="team-name">${escapeHtml(m.name)}</div><div class="team-role">${escapeHtml(m.role)}</div></div>
+                    ${statusHtml}
+                </div>
+                <div class="team-card-body">
+                    <div class="team-info-item"><div class="team-info-label">DISCORD</div><div class="team-info-value">${m.discord}</div></div>
+                    <div class="team-info-item"><div class="team-info-label">ИВЕНТОВ</div><div class="team-info-value">${eventsCount}</div></div>
+                    <div class="team-info-item"><div class="team-info-label">ВСТУПИЛ</div><div class="team-info-value">${m.joinDate}</div></div>
+                </div>
+                <div class="team-card-footer">
+                    <span class="team-badge ${type === 'senior' ? 'senior-badge' : 'junior-badge'}">${type === 'senior' ? '👑' : '🌟'} ${type === 'senior' ? 'Старший' : 'Младший'} состав</span>
+                    <div class="team-rating">${starsHtml}</div>
+                </div>
+            </div>
+        `;
+    }
+    
+    let seniorHtml = '', juniorHtml = '';
+    seniorMembers.forEach(m => { seniorHtml += renderMemberCard(m, 'senior'); });
+    juniorMembers.forEach(m => { juniorHtml += renderMemberCard(m, 'junior'); });
+    
+    container.innerHTML = `
+        <div class="page-header"><h2>👥 Команда ивент-отдела</h2></div>
+        <div class="click-hint">🔽 Нажмите на карточку участника — полная информация</div>
+        <div class="team-section"><div class="section-header senior"><span class="section-icon">👑</span><span class="section-title senior">Старший состав</span><span class="section-count">${seniorMembers.length} чел</span></div><div class="team-grid">${seniorHtml || '<div style="text-align:center; padding:2rem;">Нет участников</div>'}</div></div>
+        <div class="team-section"><div class="section-header junior"><span class="section-icon">🌟</span><span class="section-title junior">Младший состав</span><span class="section-count">${juniorMembers.length} чел</span></div><div class="team-grid">${juniorHtml || '<div style="text-align:center; padding:2rem;">Нет участников</div>'}</div></div>
+    `;
+    document.querySelectorAll('.clickable-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const id = parseInt(card.dataset.id);
+            const member = teamData.find(m => m.id === id);
+            if (member) openTeamModal(member);
+        });
+    });
+}
+
+function attachRowClicks() {
+    document.querySelectorAll('.clickable-row').forEach(row => {
+        row.removeEventListener('click', row._h);
+        const h = () => {
+            const type = row.dataset.type;
+            const id = parseInt(row.dataset.id);
+            if (type === 'event') {
+                const ev = eventsData.find(e => e.id === id);
+                if (ev) openEventModal(ev);
+            } else if (type === 'team') {
+                const m = teamData.find(t => t.id === id);
+                if (m) openTeamModal(m);
+            }
+        };
+        row.addEventListener('click', h);
+        row._h = h;
+    });
+}
+
+function openEventModal(ev) {
+    document.getElementById('modalTitle').innerHTML = '📌 Детали ивента';
+    document.getElementById('modalBody').innerHTML = `
+        <div class="detail-row"><span class="detail-label">Название:</span><span>${escapeHtml(ev.name)}</span></div>
+        <div class="detail-row"><span class="detail-label">Организатор:</span><span>${ev.platform}</span></div>
+        <div class="detail-row"><span class="detail-label">Дата:</span><span>${ev.date}</span></div>
+        <div class="detail-row"><span class="detail-label">Категория:</span><span>${ev.callStatus}</span></div>
+        <div style="margin-top:12px; background:var(--card-bg); padding:12px; border-radius:24px;"><b>Описание:</b><br>${ev.fullDetails.description}</div>
+    `;
+    document.getElementById('infoModal').style.display = 'flex';
+}
+
+function openTeamModal(m) {
+    document.getElementById('modalTitle').innerHTML = '👤 Информация о сотруднике';
+    document.getElementById('modalBody').innerHTML = `
+        <div class="detail-row"><span class="detail-label">Имя:</span><span><strong>${escapeHtml(m.name)}</strong></span></div>
+        <div class="detail-row"><span class="detail-label">Роль:</span><span>${m.role}</span></div>
+        <div class="detail-row"><span class="detail-label">Обязанности:</span><span>${m.fullDetails.responsibilities}</span></div>
+    `;
+    document.getElementById('infoModal').style.display = 'flex';
+}
+
+function updateClock() { 
+    const el = document.getElementById('liveClockEvent'); 
+    if(el) el.innerText = new Date().toLocaleTimeString('ru-RU'); 
+}
+setInterval(updateClock, 1000); 
+updateClock();
+    
+document.body.classList.add('dark');
+
+// НАВИГАЦИЯ
+const navs = document.querySelectorAll('.nav-item');
+navs.forEach(n => {
+    n.addEventListener('click', () => {
+        navs.forEach(i => i.classList.remove('active'));
+        n.classList.add('active');
+        const tab = n.dataset.tab;
+        if (tab === 'events_table') renderEventsTable();
+        else if (tab === 'team_table') renderTeamTable();
+        else if (tab === 'add_event') renderAddEventForm();
+        else if (tab === 'event_adons') renderAddonsPage();
+        else if (tab === 'event_guidee') {
+            const totalPrizes = calculateTotalPrizes();
+            const eventsCount = eventsData.length;
+            const teamMembersCount = teamData.length;
+            const onlineCount = teamData.filter(m => m.status === "Онлайн").length;
+            document.getElementById('eventDynamicContent').innerHTML = `
+                <div class="stats-grid" id="normStatsContainer">
+                    <div class="stat-card"><div class="stat-value">${teamMembersCount}</div><div class="stat-label">Ивентеры</div><div class="stat-sub">активных сотрудников</div></div>
+                    <div class="stat-card"><div class="stat-value">${eventsCount}</div><div class="stat-label">ПРОВЕДЕННО ИВЕНТОВ</div><div class="stat-sub">успешно проведенные ивенты</div></div>
+                    <div class="stat-card"><div class="stat-value">-</div><div class="stat-label">ТИКЕТЫ</div><div class="stat-sub">за последние 7 дней</div></div>
+                    <div class="stat-card"><div class="stat-value">${onlineCount}</div><div class="stat-label">ОНЛАЙН</div><div class="stat-sub">сейчас вне отпуска</div></div>
+                    <div class="stat-card"><div class="stat-value" style="color: #5fe147;">${totalPrizes.toLocaleString('ru-RU')}$</div><div class="stat-label">ПРИЗОВЫЕ</div><div class="stat-sub">выданно валюты в неделю</div></div>
+                </div>
+            `;
+        } else if (tab === 'event_guide') {
+    document.getElementById('eventDynamicContent').innerHTML = `
+        <style>
+            .methodology-container {
+                background: var(--card-bg);
+                border-radius: 32px;
+                padding: 2rem;
+                border: 1px solid var(--card-border);
+                box-shadow: 0 8px 32px var(--shadow-color);
+            }
+            
+            .methodology-header {
+                text-align: center;
+                margin-bottom: 2rem;
+                padding-bottom: 1.5rem;
+                border-bottom: 2px solid var(--card-border);
+            }
+            
+            .methodology-title {
+                font-size: 2.5rem;
+                font-weight: 800;
+                background: linear-gradient(135deg, #fd72f4, #ffaa44, #44ffaa);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                margin-bottom: 0.5rem;
+            }
+            
+            .methodology-subtitle {
+                font-size: 1.3rem;
+                color: var(--text-muted);
+                letter-spacing: 2px;
+            }
+            
+            .section-block {
+                background: var(--badge-bg);
+                border-radius: 24px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+                transition: transform 0.2s;
+            }
+            
+            .section-block:hover {
+                transform: translateY(-2px);
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+                font-weight: 700;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 3px solid;
+                display: inline-block;
+            }
+            
+            .section-title.green { color: #44ffaa; border-color: #44ffaa; }
+            .section-title.orange { color: #ffaa44; border-color: #ffaa44; }
+            .section-title.red { color: #ff6666; border-color: #ff6666; }
+            .section-title.blue { color: #44aaff; border-color: #44aaff; }
+            .section-title.purple { color: #fd72f4; border-color: #fd72f4; }
+            .section-title.pink { color: #ff66cc; border-color: #ff66cc; }
+            
+            .rule-list {
+                list-style: none;
+                padding: 0;
+            }
+            
+            .rule-list li {
+                padding: 0.5rem 0;
+                padding-left: 1.5rem;
+                position: relative;
+                color: var(--text-primary);
+            }
+            
+            .rule-list li::before {
+                content: "•";
+                position: absolute;
+                left: 0;
+                color: #ffaa44;
+                font-size: 1.2rem;
+            }
+            
+            .rank-card {
+                background: var(--card-bg);
+                border-radius: 20px;
+                padding: 1rem;
+                margin-bottom: 1rem;
+                border-left: 4px solid;
+                transition: all 0.2s;
+            }
+            
+            .rank-card:hover {
+                transform: translateX(5px);
+            }
+            
+            .rank-card.ivent { border-left-color: #ffaa44; }
+            .rank-card.senior { border-left-color: #44ffaa; }
+            .rank-card.zam { border-left-color: #fd72f4; }
+            .rank-card.glava { border-left-color: #ff4444; }
+            
+            .rank-name {
+                font-size: 1.2rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .rank-desc {
+                font-size: 0.85rem;
+                color: var(--text-muted);
+                margin-top: 0.5rem;
+                line-height: 1.4;
+            }
+            
+            .norm-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+            
+            .norm-card {
+                background: var(--card-bg);
+                border-radius: 16px;
+                padding: 1rem;
+                text-align: center;
+                border: 1px solid var(--card-border);
+            }
+            
+            .norm-day {
+                font-size: 1rem;
+                font-weight: 700;
+                color: #ffaa44;
+            }
+            
+            .norm-value {
+                font-size: 0.85rem;
+                color: var(--text-primary);
+                margin-top: 0.3rem;
+            }
+            
+            .punishment-card {
+                background: linear-gradient(135deg, rgba(255,68,68,0.1), rgba(255,68,68,0.05));
+                border-radius: 16px;
+                padding: 1rem;
+                margin-bottom: 0.8rem;
+                border-left: 3px solid #ff4444;
+            }
+            
+            .stats-mini {
+                display: inline-block;
+                background: var(--badge-bg);
+                padding: 0.2rem 0.6rem;
+                border-radius: 20px;
+                font-size: 0.7rem;
+                color: var(--text-muted);
+                margin-left: 0.5rem;
+            }
+        </style>
         
+        <div class="methodology-container">
+            <div class="methodology-header">
+                <div class="methodology-title">📖 Методичка Ивентологов</div>
+                <div class="methodology-subtitle">ОСНОВНЫЕ ПРАВИЛА ОТДЕЛА ИВЕНТОЛОГИИ</div>
+            </div>
+            
+            <!-- ЧТО МОЖНО ДЕЛАТЬ -->
+            <div class="section-block">
+                <div class="section-title green">✅ ЧТО МОЖНО ДЕЛАТЬ?</div>
+                <div class="rank-card ivent">
+                    <div class="rank-name">🎮 Кто может проводить ивенты?</div>
+                    <div class="rank-desc">Проводить ивенты можно с ранга «Оператор», если вы состоите в отделе Ивентологии. С рангов ниже — только с разрешения Главы отдела или Куратора сервера.</div>
+                </div>
+                <div class="rank-card ivent">
+                    <div class="rank-name">👥 Кол-во администрации на ивенте</div>
+                    <div class="rank-desc">В ивенте может участвовать не более 25% от всей наборной администрации. <span class="stats-mini">Например: 10 админов → максимум 3</span></div>
+                </div>
+                <div class="rank-card ivent">
+                    <div class="rank-name">⏸ Игнор завалов</div>
+                    <div class="rank-desc">Если завал начался во время ивента, его разрешено игнорировать.</div>
+                </div>
+                <div class="rank-card ivent">
+                    <div class="rank-name">🎯 Самостоятельность</div>
+                    <div class="rank-desc">Каждый Ивентер может проводить ивенты без разрешения от Ст. Администрации. Если ты на испытательном сроке — нужно одобрение от Ст. Ивентера.</div>
+                </div>
+                <div class="rank-card ivent">
+                    <div class="rank-name">💰 Награды</div>
+                    <div class="rank-desc">Если игрок использует баги/преимущества/нарушал правила — Ивентер может не выдавать приз. Если победа честная — Ивентер обязан выдать приз.</div>
+                </div>
+                <div class="rank-card ivent">
+                    <div class="rank-name">🎭 RP-Мероприятия</div>
+                    <div class="rank-desc">Помимо ивентов, вам также доступны РП-Мероприятия — сюжетные ролевые отыгровки в пределах RP-зоны. РП-мероприятие засчитывается как полноценный ивент.</div>
+                </div>
+            </div>
+            
+            <!-- ЧТО ВЫ ОБЯЗАНЫ ДЕЛАТЬ -->
+            <div class="section-block">
+                <div class="section-title orange">⚠️ ЧТО ВЫ ОБЯЗАНЫ ДЕЛАТЬ?</div>
+                <div class="rank-card senior">
+                    <div class="rank-name">📝 После ивента/РП-Мероприятия</div>
+                    <div class="rank-desc">Убрать всё, что было построено/создано. Написать отчёт в специальный канал.</div>
+                </div>
+                <div class="rank-card senior">
+                    <div class="rank-name">🐌 Лаги</div>
+                    <div class="rank-desc">Если во время ивента появились лаги или высокий пинг — ивент нужно как можно быстрее прекратить и сообщить Главе/Зам. Главы.</div>
+                </div>
+            </div>
+            
+            <!-- ЧТО НЕЛЬЗЯ ДЕЛАТЬ -->
+            <div class="section-block">
+                <div class="section-title red">🚫 ЧТО НЕЛЬЗЯ ДЕЛАТЬ?</div>
+                <ul class="rule-list">
+                    <li>Запрещается привлекать игроков к РП-мероприятию через /OOC, участие должно происходить естественным RP путем.</li>
+                    <li>Нельзя принуждать игроков к участию в мероприятии.</li>
+                    <li>Создавать мероприятия, мешающие обычному RP-процессу сервера.</li>
+                    <li>Запрещено начинать ивенты во время активных завалов.</li>
+                    <li>Запрещено проводить 2 и более ивентов одновременно. Если кто-то уже проводит ивент — ждём, пока закончат.</li>
+                    <li>Запрещено мешать подготовке или проведению ивентов (включая ивент-мастеров).</li>
+                    <li>Категорически запрещено проводить ивенты в RP зоне. Исключение: РП-Мероприятия.</li>
+                    <li>Запрещается проводить ивенты, которые нацелены на разжигание ненависти, дискриминацию, имеют деструктивный или политический контент.</li>
+                    <li>Запрещено выпрашивать бонусы/привилегии за ивенты (будут наказания и возможно снятие).</li>
+                    <li>Донатной администрации категорически запрещено проводить ивенты. Даже под вашим присмотром и даже в качестве помощников.</li>
+                </ul>
+            </div>
+            
+            <!-- УТОЧНЕНИЯ -->
+            <div class="section-block">
+                <div class="section-title purple">📌 УТОЧНЕНИЯ</div>
+                <ul class="rule-list">
+                    <li>При проведении РП-мероприятий обязательно соблюдение всех действующих правил сервера.</li>
+                    <li>Повышение до Ивент-Мастера не будет. Однако попросить его помощь вы можете в канале ┣🍽️・запрос-вещей.</li>
+                    <li>Набирать людей в Ивентологию могут только Глава и Зам. Главы отдела.</li>
+                    <li>Отдел Ивентологии является «совмещенным». Любой администратор из другого отдела может попасть к нам при наличии свободных слотов.</li>
+                </ul>
+            </div>
+            
+            <!-- МАКСИМАЛЬНОЕ КОЛИЧЕСТВО МЕСТ -->
+            <div class="section-block">
+                <div class="section-title blue">👥 Максимальное количество мест в отделе — 9</div>
+                <div class="norm-grid">
+                    <div class="norm-card"><div class="norm-day">👑 Глава</div><div class="norm-value">1 место</div></div>
+                    <div class="norm-card"><div class="norm-day">📿 Зам. Главы</div><div class="norm-value">1 место</div></div>
+                    <div class="norm-card"><div class="norm-day">🍉 Ст. Ивентер</div><div class="norm-value">1 место</div></div>
+                    <div class="norm-card"><div class="norm-day">🤡 Ивентеры</div><div class="norm-value">7 мест</div></div>
+                </div>
+            </div>
+            
+            <!-- РАНГИ -->
+            <div class="section-block">
+                <div class="section-title pink">🏅 РАНГИ</div>
+                <div class="rank-card ivent"><div class="rank-name">🤡 Ивентер</div><div class="rank-desc">Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела. Может игнорировать завал в случае, если ивент начался до завала.</div></div>
+                <div class="rank-card senior"><div class="rank-name">🍉 Ст. Ивентер</div><div class="rank-desc">Имеет все полномочия Ивентера, а также имеет право корректировать работу Ивентеров и давать рекомендации по поводу ивентов, выдавать наказания за их ошибки, а также одобрять отчётности.</div></div>
+                <div class="rank-card zam"><div class="rank-name">📿 Зам. Главы Ивентологии</div><div class="rank-desc">Имеет все полномочия нижестоящих рангов, а также имеет право набирать новых кадров в отдел, определять курс развития отдела и изменять норму и правила.</div></div>
+                <div class="rank-card glava"><div class="rank-name">👑 Глава Ивентологии</div><div class="rank-desc">Имеет полное владение над отделом Ивентологии, может самостоятельно изменять состав отдела Ивентологии и их норму/правила.</div></div>
+            </div>
+            
+            <!-- НОРМА -->
+            <div class="section-block">
+                <div class="section-title pink">📊 НОРМА</div>
+                <ul class="rule-list">
+                    <li>Ивентер из другого отдела — кол-во тикетов из вашего отдела | 2 ивента в неделю</li>
+                    <li>Ивентер — 35 тикетов | 3 ивента в неделю</li>
+                    <li>Ст. Ивентер — 25 тикетов</li>
+                    <li>Зам. Главы Ивентологии — не имеет нормы</li>
+                    <li>Глава Ивентологии — не имеет нормы</li>
+                </ul>
+            </div>
+            
+            <!-- НОРМА ПОСЛЕ ОТПУСКА -->
+            <div class="section-block">
+                <div class="section-title orange">📅 Норма после отпуска/заморозки/вступлении в отдел</div>
+                <div class="norm-grid">
+                    <div class="norm-card"><div class="norm-day">ПН</div><div class="norm-value">35 тикетов | 3 ивента</div></div>
+                    <div class="norm-card"><div class="norm-day">ВТ</div><div class="norm-value">35 тикетов | 3 ивента</div></div>
+                    <div class="norm-card"><div class="norm-day">СР</div><div class="norm-value">30 тикетов | 2 ивента</div></div>
+                    <div class="norm-card"><div class="norm-day">ЧТ</div><div class="norm-value">25 тикетов | 1 ивент</div></div>
+                    <div class="norm-card"><div class="norm-day">ПТ</div><div class="norm-value">20 тикетов | 1 ивент</div></div>
+                    <div class="norm-card"><div class="norm-day">СБ</div><div class="norm-value">10 тикетов | 1 ивент</div></div>
+                    <div class="norm-card"><div class="norm-day">ВС</div><div class="norm-value">Освобождены от нормы</div></div>
+                </div>
+                <div class="rank-card ivent" style="margin-top: 1rem;">
+                    <div class="rank-name">📌 Примечание</div>
+                    <div class="rank-desc">Если вы состоите в другом отделе и вышли с отпуска/мороза — с четверга вы обязуетесь провести 1 ивент. Если с понедельника и до среды – 2 ивента.</div>
+                </div>
+            </div>
+            
+            <!-- НАКАЗАНИЯ -->
+            <div class="section-block">
+                <div class="section-title red">⚖️ Наказания за невыполнение нормы</div>
+                <div class="punishment-card"><strong>25-35 тикетов и 2-3 ивента:</strong> В случае уважительной причины недобор прощается, в другом случае выдается предупреждение.</div>
+                <div class="punishment-card"><strong>15-24 тикета и 1-2 ивента:</strong> В случае уважительной причины выдается предупреждение, в другом случае выдается выговор.</div>
+                <div class="punishment-card"><strong>0-14 тикета и 0-1 ивент:</strong> В случае уважительной причины выдается выговор, в другом случае снятие или два выговора.</div>
+                <div class="punishment-card"><strong>Для ивентеров из другого отдела:</strong> Если проведено менее двух ивентов, выдается предупреждение. При уважительной причине недобор прощается.</div>
+            </div>
+            
+            <!-- ЗАРПЛАТА -->
+            <div class="section-block">
+                <div class="section-title green">💰 Зарплата</div>
+                <div class="rank-card glava">
+                    <div class="rank-desc">Зарплата выдаётся только за выполненные тикеты. Тех. Администрация не намеревается выдавать ЗП за ивенты, возможно когда-то в будущем у вас будет вознаграждение за ваши прекрасные ивенты.</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+    });
+});
 
-        body.dark{
-          --bg-start:#0a0a0a;--bg-end:#050505;
-          --sidebar-bg:rgba(10,10,10,.85);--sidebar-border:rgba(255,255,255,.15);
-          --card-bg:#111;--card-border:#2a2a2a;
-          --text-primary:#e8e8e8;--text-secondary:#bbb;--text-muted:#888;
-          --table-header-bg:#0a0a0a;--table-row-border:#1e1e1e;--table-row-hover:#1a1a1a;
-          --badge-bg:#222;--badge-active:#2a2a2a;--badge-online:#252525;--badge-offline:#2a2020;
-          --modal-bg:#111;--modal-border:#666;
-          --input-bg:#1a1a1a;--input-border:#333;
-          --shadow:rgba(0,0,0,.5);--footer-color:#555;--clock-color:#ccc;
-          --icon-fill:#aaa;--icon-fill-active:#ddd;--icon-fill-accent:#ccc
-        }
-
-        body{
-          position:relative;overflow-x:hidden;min-height:100vh;
-          background:transparent;font-family:'Inter',sans-serif;
-          color:var(--text-primary);padding:0
-        }
-
-        /* ── Background ── */
-        #moving-bg{
-          position:fixed;top:-6%;left:-6%;width:112%;height:112%;
-          background:url('https://i.imgur.com/dhK7cCP.jpeg') center/cover no-repeat;
-          z-index:-2;will-change:transform;
-          transform:translate3d(0,0,0);backface-visibility:hidden;
-          filter:blur(3px) brightness(.7) saturate(0) grayscale(1);pointer-events:none
-        }
-        #bg-overlay{
-          position:fixed;inset:0;z-index:-1;pointer-events:none;
-          background:linear-gradient(135deg,rgba(0,0,0,.72),rgba(30,30,30,.62) 30%,rgba(20,20,20,.68) 60%,rgba(40,40,40,.58))
-        }
-
-        
-        /* ── Shared z-index ── */
-        .dashboard,.welcome-container,.modal-overlay{position:relative;z-index:1}
-        .dashboard{
-          background:rgba(0,0,0,.22);backdrop-filter:blur(3px);
-          padding-top: 0;
-          opacity:.98;width:100%;max-width:none;margin:0;
-          min-height:100vh
-        }
-
-        /* ── Icons ── */
-        .icon{width:var(--icon-size);height:var(--icon-size);fill:var(--icon-fill);flex-shrink:0;transition:fill .2s,transform .2s}
-        .icon-lg{width:var(--icon-size-lg);height:var(--icon-size-lg)}
-        .icon-xl{width:48px;height:48px}
-        .icon-accent{fill:var(--icon-fill-accent)}
-        .icon-active{fill:var(--icon-fill-active)}
-        .icon-white{fill:#fff}
-        .icon-muted{fill:var(--text-muted)}
-        .stat-icon{width:36px;height:36px;fill:var(--icon-fill);margin-bottom:.5rem;opacity:.7}
-        .addon-icon-svg{width:48px;height:48px;fill:var(--icon-fill-accent);margin-bottom:.75rem}
-        .section-icon-svg{width:28px;height:28px}
-        .section-icon-svg.senior{fill:#999}
-        .section-icon-svg.junior{fill:#777}
-        .hint-icon{width:20px;height:20px;fill:#888;flex-shrink:0}
-
-        .team-card-badge-icon{position:absolute;top:10px;right:12px;width:24px;height:24px;z-index:2}
-        .team-card-badge-icon.senior{fill:#999}
-        .team-card-badge-icon.junior{fill:#777}
-        .team-card.has-svg-badge::before{display:none}
-
-        .nav-item .icon{width:22px;height:22px;fill:rgba(255,255,255,.45);transition:fill .2s}
-        .nav-item.active .icon,.nav-item:not(.active):hover .icon{fill:rgba(255,255,255,.9)}
-
-        /* ── Welcome ── */
-        .welcome-container{
-          position:fixed;inset:0;display:flex;justify-content:center;align-items:center;
-          background:transparent;z-index:500;transition:opacity .5s,visibility .5s
-        }
-        .welcome-container.hidden{opacity:0;visibility:hidden;pointer-events:none}
-        .welcome-card{
-          background:rgba(255,255,255,.08);backdrop-filter:blur(28px) saturate(1.2);
-          border:1px solid rgba(255,255,255,.15);border-radius:2.2rem;
-          padding:3rem 2.5rem;max-width:480px;width:90%;text-align:center;
-          box-shadow:0 28px 60px rgba(0,0,0,.5),0 0 80px rgba(255,255,255,.05),inset 0 1px 0 rgba(255,255,255,.1);
-          animation:fadeInUp .5s ease
-        }
-        .welcome-eagle{
-          font-size:4rem;display:block;margin-bottom:.5rem;
-          filter:drop-shadow(0 4px 16px rgba(0,0,0,.5)) grayscale(1);animation:eaglePulse 3s ease-in-out infinite
-        }
-        .welcome-eagle-icon{
-          width:80px;height:80px;margin:0 auto .5rem;display:block;
-          filter:drop-shadow(0 4px 16px rgba(0,0,0,.5));animation:eaglePulse 3s ease-in-out infinite
-        }
-        .welcome-eagle-icon .icon{width:100%;height:100%;fill:#ccc}
-        .welcome-card h1{font-size:2.2rem;margin-bottom:.8rem;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.5)}
-        .welcome-card p{font-size:1.05rem;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:2rem;text-shadow:0 1px 6px rgba(0,0,0,.3)}
-        .welcome-card p strong{color:#fff}
-        .continue-btn{
-          background:linear-gradient(135deg,rgba(80,80,80,.8),rgba(60,60,60,.8));
-          color:#fff;border:1px solid rgba(255,255,255,.15);padding:.9rem 2.2rem;
-          font-size:1.05rem;font-weight:600;border-radius:40px;cursor:pointer;
-          transition:transform .2s,box-shadow .2s;backdrop-filter:blur(6px);
-          font-family:inherit;box-shadow:0 8px 24px rgba(0,0,0,.3)
-        }
-        .continue-btn:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(0,0,0,.5)}
-        .continue-btn:active{transform:translateY(-1px)}
-
-        @keyframes fadeInUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes eaglePulse{
-          0%,100%{transform:scale(1);filter:drop-shadow(0 4px 16px rgba(0,0,0,.5))}
-          50%{transform:scale(1.07);filter:drop-shadow(0 6px 24px rgba(0,0,0,.6))}
-        }
-
-        /* ── Modal overlay ── */
-        .modal-overlay{
-          position:fixed;inset:0;background:rgba(0,0,0,.7);
-          backdrop-filter:blur(16px) saturate(1.2);display:flex;
-          align-items:center;justify-content:center;z-index:1000;padding:1rem;
-          animation:overlayIn .3s ease both
-        }
-        @keyframes overlayIn{from{opacity:0}to{opacity:1}}
-
-        .login-modal{
-          position:relative;width:90%;max-width:420px;padding:2.8rem 2.4rem 2.4rem;
-          border-radius:32px;overflow:hidden;
-          background:rgba(15,15,15,.80);backdrop-filter:blur(32px) saturate(1.3) brightness(1.05);
-          border:1px solid rgba(255,255,255,.1);
-          box-shadow:0 40px 80px -12px rgba(0,0,0,.7),0 20px 40px -8px rgba(0,0,0,.4),
-            0 0 0 1px rgba(255,255,255,.05),0 0 80px -20px rgba(255,255,255,.08),
-            inset 0 1px 0 rgba(255,255,255,.08),inset 0 -1px 0 rgba(0,0,0,.2);
-          animation:modalIn .45s cubic-bezier(.16,1,.3,1) both
-        }
-        @keyframes modalIn{from{opacity:0;transform:scale(.92) translateY(24px);filter:blur(4px)}to{opacity:1;transform:scale(1) translateY(0);filter:blur(0)}}
-
-        .login-modal::before{
-          content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);
-          width:280px;height:200px;pointer-events:none;z-index:0;
-          background:radial-gradient(ellipse at center,rgba(255,255,255,.1),rgba(200,200,200,.05) 50%,transparent 75%)
-        }
-        .login-modal::after{
-          content:'';position:absolute;top:0;left:10%;right:10%;height:1px;border-radius:1px;
-          background:linear-gradient(90deg,transparent,rgba(255,255,255,.4) 30%,rgba(255,255,255,.6) 50%,rgba(255,255,255,.4) 70%,transparent)
-        }
-        .login-modal>*{position:relative;z-index:1}
-
-        .modal-icon{
-          display:flex;align-items:center;justify-content:center;
-          width:56px;height:56px;margin:0 auto 1.2rem;border-radius:18px;
-          background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(200,200,200,.08));
-          border:1px solid rgba(255,255,255,.15);
-          box-shadow:0 8px 20px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.1);
-          font-size:1.5rem
-        }
-        .login-modal h2{
-          font-size:1.75rem;font-weight:700;margin-bottom:.35rem;color:#fff;
-          text-align:center;letter-spacing:-.4px;text-shadow:0 2px 20px rgba(0,0,0,.4)
-        }
-        .login-subtitle{text-align:center;color:rgba(255,255,255,.4);margin-bottom:2rem;font-size:.85rem;line-height:1.5}
-        .modal-divider{height:1px;margin-bottom:1.8rem;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08) 30%,rgba(255,255,255,.08) 70%,transparent)}
-
-        .input-group{margin-bottom:1.1rem;position:relative}
-        .input-group label{
-          display:flex;align-items:center;gap:.35rem;font-size:.75rem;font-weight:600;
-          color:rgba(255,255,255,.5);margin-bottom:.5rem;letter-spacing:.6px;text-transform:uppercase
-        }
-        .input-wrapper{position:relative;display:flex;align-items:center}
-        .input-icon{position:absolute;left:1rem;color:rgba(255,255,255,.3);font-size:1rem;pointer-events:none;transition:color .25s;z-index:1}
-        .input-group input{
-          width:100%;padding:.9rem 1rem .9rem 2.8rem;font-size:.95rem;font-family:inherit;color:#fff;
-          background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:16px;outline:none;
-          transition:background .25s,border-color .25s,box-shadow .25s
-        }
-        .input-group input::placeholder{color:rgba(255,255,255,.2);font-size:.9rem}
-        .input-group input:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15)}
-        .input-group input:focus{
-          background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.35);
-          box-shadow:0 0 0 3px rgba(255,255,255,.08),0 4px 12px rgba(0,0,0,.15)
-        }
-        .input-wrapper:focus-within .input-icon{color:rgba(255,255,255,.7)}
-        .input-group input:not(:placeholder-shown){background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)}
-
-        .forgot-link{display:block;text-align:right;font-size:.78rem;color:rgba(255,255,255,.5);text-decoration:none;margin:.35rem 0 .4rem;transition:color .2s}
-        .forgot-link:hover{color:rgba(255,255,255,.8)}
-
-        .login-btn{
-          position:relative;width:100%;padding:.95rem 1rem;margin-top:1rem;
-          font-size:.95rem;font-weight:700;font-family:inherit;letter-spacing:.3px;color:#fff;
-          cursor:pointer;border-radius:16px;border:1px solid rgba(255,255,255,.2);overflow:hidden;
-          background:linear-gradient(135deg,rgba(80,80,80,.9),rgba(60,60,60,.9) 50%,rgba(70,70,70,.9));
-          box-shadow:0 4px 16px rgba(0,0,0,.35),0 1px 4px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.15);
-          transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s,filter .2s
-        }
-        .login-btn::before{
-          content:'';position:absolute;inset:0;
-          background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.1) 50%,transparent 70%);
-          transform:translateX(-100%);transition:transform .5s
-        }
-        .login-btn:hover::before{transform:translateX(100%)}
-        .login-btn:hover{
-          transform:translateY(-2px) scale(1.01);
-          box-shadow:0 12px 32px rgba(0,0,0,.5),0 4px 12px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.2);
-          filter:brightness(1.08)
-        }
-        .login-btn:active{transform:translateY(0) scale(.99);filter:brightness(.97);transition-duration:.08s}
-        .login-btn.loading{pointer-events:none;opacity:.75}
-        .login-btn.loading::after{
-          content:'';position:absolute;width:18px;height:18px;
-          border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;
-          right:1.2rem;top:50%;transform:translateY(-50%);animation:spin .7s linear infinite
-        }
-        @keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
-
-        .modal-footer{text-align:center;margin-top:1.5rem;font-size:.82rem;color:rgba(255,255,255,.3)}
-        .modal-footer a{color:rgba(255,255,255,.6);text-decoration:none;font-weight:600;transition:color .2s}
-        .modal-footer a:hover{color:rgba(255,255,255,.9)}
-
-        .error-message{
-          display:flex;align-items:center;gap:.5rem;border-radius:12px;font-size:.82rem;line-height:1.4;color:#ddd;
-          background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);box-shadow:0 4px 12px rgba(0,0,0,.15);
-          opacity:0;transform:translateY(-6px);pointer-events:none;max-height:0;overflow:hidden;
-          transition:opacity .3s,transform .3s,max-height .35s,padding .3s,margin .3s;
-          padding:0;margin-top:0
-        }
-        .error-message::before{content:'⚠';font-size:.9rem;flex-shrink:0;opacity:.8}
-        .error-message.show{opacity:1;transform:translateY(0);pointer-events:auto;max-height:80px;padding:.8rem 1rem;margin-top:1rem}
-
-        .success-message{
-          display:flex;align-items:center;gap:.5rem;border-radius:12px;font-size:.82rem;color:#ccc;
-          background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);box-shadow:0 4px 12px rgba(0,0,0,.1);
-          opacity:0;transform:translateY(-6px);max-height:0;overflow:hidden;
-          transition:opacity .3s,transform .3s,max-height .35s,padding .3s,margin .3s;
-          padding:0;margin-top:0
-        }
-        .success-message::before{content:'✓';font-size:.95rem;font-weight:700;flex-shrink:0}
-        .success-message.show{opacity:1;transform:translateY(0);max-height:80px;padding:.8rem 1rem;margin-top:1rem}
-
-        .modal-close{
-          position:absolute;top:1.2rem;right:1.2rem;width:32px;height:32px;
-          display:flex;align-items:center;justify-content:center;border-radius:10px;
-          border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);
-          color:rgba(255,255,255,.45);cursor:pointer;font-size:1rem;line-height:1;
-          transition:background .2s,color .2s,border-color .2s,transform .2s;z-index:2
-        }
-        .modal-close:hover{background:rgba(255,255,255,.15);color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.25);transform:rotate(90deg) scale(1.05)}
-        .modal-close:active{transform:rotate(90deg) scale(.95)}
-
-        .modal-overlay.closing{animation:overlayOut .25s ease forwards}
-        .modal-overlay.closing .login-modal{animation:modalOut .25s ease forwards}
-        @keyframes overlayOut{to{opacity:0}}
-        @keyframes modalOut{to{opacity:0;transform:scale(.95) translateY(12px);filter:blur(4px)}}
-        
-
-        /* ── Top bar ── */
-        .top-bar{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;margin-bottom:2rem;gap:1rem;padding: 0.5rem 1.5rem 0; }
-        .logo-area h1{
-          font-size:1.9rem;font-weight:700;letter-spacing:-.3px;
-          background:linear-gradient(135deg,#fff,#bbb);-webkit-background-clip:text;background-clip:text;color:transparent
-        }
-        .logo-area span{font-size:.8rem;color:rgba(255,255,255,.6);margin-top:4px;display:block}
-        .user-actions{
-          display:flex;gap:1rem;align-items:center;
-          background:rgba(255,255,255,.08);backdrop-filter:blur(10px);
-          padding:.5rem 1.2rem;border-radius:60px;border:1px solid rgba(255,255,255,.12)
-        }
-        .clock-wrapper{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.3);padding:.2rem .9rem;border-radius:40px}
-        .clock-badge{font-family:monospace;font-size:.85rem;font-weight:500;color:var(--clock-color)}
-
-        .theme-toggle{
-          background:none;border:none;font-size:1.4rem;cursor:pointer;padding:.3rem;border-radius:50%;
-          width:38px;height:38px;display:flex;align-items:center;justify-content:center;
-          font-family:inherit;transition:background .2s,transform .2s
-        }
-        .theme-toggle:hover{background:rgba(255,255,255,.15);transform:scale(1.08)}
-        .theme-toggle .icon{width:22px;height:22px;fill:#ccc}
-
-        
-        .logout-btn{
-          background:linear-gradient(95deg,#444,#333);border:none;padding:.5rem 1.2rem;
-          border-radius:40px;color:#fff;font-weight:600;cursor:pointer;font-size:.8rem;
-          font-family:inherit;transition:transform .2s;display:flex;align-items:center;gap:6px
-        }
-        .logout-btn .icon{width:16px;height:16px;fill:#fff}
-        .logout-btn:hover{transform:scale(1.03)}
-
-        /* ── Layout ── */
-        .main-layout{min-height:calc(100vh - 100px);margin-left: 260px;  padding: 0 1.5rem 1rem; }
-
-        /* ── Sidebar ── */
-        .sidebar{
-          position:fixed;top:0;left:0;bottom:0;width:260px;
-          background:rgba(10,10,10,.8);backdrop-filter:blur(16px) saturate(1.2);
-          padding:1.5rem .8rem;
-          border-right:1px solid rgba(255,255,255,.08);
-          box-shadow:4px 0 24px rgba(0,0,0,.4);
-          display:flex;flex-direction:column;
-          z-index:10;overflow-y:auto
-        }
-        .sidebar::-webkit-scrollbar{width:4px}
-        .sidebar::-webkit-scrollbar-track{background:transparent}
-        .sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
-        .sidebar::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.25)}
-        .sidebar .nav-section:last-child{margin-top:0}
-
-        .sidebar-header{
-          display:flex;align-items:center;gap:14px;padding:.9rem 1.1rem 1.1rem;
-          margin-bottom:1.2rem;border-bottom:1px solid rgba(255,255,255,.08);
-          position:relative;flex-shrink:0
-        }
-        .sidebar-header::after{
-          content:'';position:absolute;bottom:0;left:15%;right:15%;height:1px;
-          background:linear-gradient(90deg,transparent,rgba(255,255,255,.2) 30%,rgba(255,255,255,.35) 50%,rgba(255,255,255,.2) 70%,transparent)
-        }
-        .sidebar-logo{
-          width:60px;height:60px;border-radius:12px;object-fit:cover;flex-shrink:0;
-          border:1.5px solid rgba(255,255,255,.15);
-          box-shadow:0 4px 14px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.05);
-          transition:transform .25s,box-shadow .25s;
-          filter:grayscale(1)
-        }
-        .sidebar-logo:hover{transform:scale(1.08) rotate(2deg);box-shadow:0 6px 20px rgba(0,0,0,.5)}
-        .sidebar-title{font-size:.85rem;font-weight:700;color:rgba(255,255,255,.88);line-height:1.35;letter-spacing:-.2px}
-        .sidebar-subtitle{display:block;font-size:.68rem;font-weight:500;color:rgba(255,255,255,.4);margin-top:3px;letter-spacing:.3px}
-
-        .nav-section{margin-bottom:2rem}
-        .nav-title{font-size:.7rem;text-transform:uppercase;letter-spacing:2px;font-weight:700;color:#999;margin-bottom:1rem;padding-left:.8rem}
-        .nav-item{
-          display:flex;align-items:center;gap:12px;padding:.7rem 1rem;margin:.2rem 0;
-          border-radius:18px;font-weight:500;color:rgba(255,255,255,.65);transition:all .2s;cursor:pointer
-        }
-        .nav-item i{width:24px;font-size:1.1rem}
-        .nav-item.active{
-          background:linear-gradient(105deg,rgba(40,40,40,.85),rgba(30,30,30,.85));
-          color:#fff;border-left:3px solid #999;box-shadow:0 4px 12px rgba(0,0,0,.4)
-        }
-        .nav-item:not(.active):hover{background:rgba(255,255,255,.08);color:#fff}
-        .nav-item.hidden{display:none}
-
-        .content-area{min-width:0;padding:0; padding-top: 0;margin-top: 0;}
-
-        /* ── Page elements ── */
-        .page-header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;margin-bottom:1.5rem}
-        .page-header h2{
-          font-size:1.7rem;font-weight:600;
-          background:linear-gradient(125deg,#fff,#aaa);-webkit-background-clip:text;background-clip:text;color:transparent
-        }
-        .info-note{font-size:.8rem;background:rgba(255,255,255,.1);padding:.3rem 1rem;border-radius:40px;color:#ccc;border:1px solid rgba(255,255,255,.15)}
-        .click-hint{
-          background:rgba(255,255,255,.06);backdrop-filter:blur(6px);border-radius:18px;
-          padding:.65rem 1.2rem;margin-bottom:1.8rem;font-size:.85rem;
-          display:flex;align-items:center;gap:12px;border-left:4px solid #888;color:rgba(255,255,255,.7)
-        }
-
-        /* ── Table ── */
-        .table-wrapper{
-          overflow-x:auto;border-radius:24px;background:var(--card-bg);
-          border:1px solid var(--card-border);position:relative;
-          box-shadow:0 12px 28px -6px var(--shadow),0 4px 12px -2px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.05);
-          backdrop-filter:blur(12px)
-        }
-        .table-wrapper::before{
-          content:'';position:absolute;top:0;left:24px;right:24px;height:2px;z-index:1;border-radius:2px;opacity:.4;
-          background:linear-gradient(90deg,transparent,#999 20%,#666 50%,#999 80%,transparent)
-        }
-        body:not(.dark) .table-wrapper::before{background:linear-gradient(90deg,transparent,#aaa 20%,#888 50%,#aaa 80%,transparent);opacity:.3}
-        .table-wrapper::-webkit-scrollbar{height:6px}
-        .table-wrapper::-webkit-scrollbar-track{background:transparent;margin:0 24px}
-        .table-wrapper::-webkit-scrollbar-thumb{background:rgba(150,150,150,.3);border-radius:3px}
-        .table-wrapper::-webkit-scrollbar-thumb:hover{background:rgba(150,150,150,.5)}
-
-        .data-table{width:100%;border-collapse:separate;border-spacing:0;font-size:.85rem;min-width:900px}
-        .data-table thead{position:sticky;top:0;z-index:10}
-        .data-table th{
-          text-align:left;padding:1.1rem 1rem;background:var(--table-header-bg);
-          color:#888;font-weight:700;font-size:.7rem;letter-spacing:1.2px;
-          text-transform:uppercase;border-bottom:2px solid var(--table-row-border);
-          white-space:nowrap;user-select:none;transition:color .2s;position:relative
-        }
-        body:not(.dark) .data-table th{color:#666}
-        .data-table th:not(:last-child)::after{
-          content:'';position:absolute;right:0;top:25%;height:50%;width:1px;
-          background:linear-gradient(to bottom,transparent,rgba(150,150,150,.2),transparent)
-        }
-        body:not(.dark) .data-table th:not(:last-child)::after{background:linear-gradient(to bottom,transparent,rgba(100,100,100,.15),transparent)}
-        .data-table th:first-child{border-top-left-radius:23px;padding-left:1.5rem}
-        .data-table th:last-child{border-top-right-radius:23px;padding-right:1.5rem}
-        .data-table td{
-          padding:1rem;border-bottom:1px solid var(--table-row-border);vertical-align:middle;
-          color:var(--text-primary);transition:background .15s,padding-left .2s,color .15s;position:relative
-        }
-        .data-table td:first-child{padding-left:1.5rem}
-        .data-table td:last-child{padding-right:1.5rem}
-        .data-table tbody tr:last-child td{border-bottom:none}
-        .data-table tbody tr:last-child td:first-child{border-bottom-left-radius:23px}
-        .data-table tbody tr:last-child td:last-child{border-bottom-right-radius:23px}
-        .data-table tbody tr:nth-child(even){background:rgba(150,150,150,.03)}
-        body:not(.dark) .data-table tbody tr:nth-child(even){background:rgba(100,100,100,.03)}
-
-        .clickable-row{cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;position:relative}
-        .clickable-row td:first-child::before{
-          content:'';position:absolute;left:0;top:15%;bottom:15%;width:3px;border-radius:0 3px 3px 0;
-          background:linear-gradient(to bottom,#aaa,#666);opacity:0;transition:opacity .25s
-        }
-        body:not(.dark) .clickable-row td:first-child::before{background:linear-gradient(to bottom,#999,#666)}
-        .clickable-row:hover td:first-child::before{opacity:1}
-        .clickable-row:hover{background:var(--table-row-hover)}
-        .clickable-row:active{transform:scale(.998)}
-        .clickable-row:active td{background:rgba(150,150,150,.06)}
-        body:not(.dark) .clickable-row:active td{background:rgba(100,100,100,.06)}
-
-        .data-table tbody tr{animation:rowIn .4s ease both}
-        .data-table tbody tr:nth-child(1){animation-delay:.02s}
-        .data-table tbody tr:nth-child(2){animation-delay:.04s}
-        .data-table tbody tr:nth-child(3){animation-delay:.06s}
-        .data-table tbody tr:nth-child(4){animation-delay:.08s}
-        .data-table tbody tr:nth-child(5){animation-delay:.10s}
-        .data-table tbody tr:nth-child(6){animation-delay:.12s}
-        .data-table tbody tr:nth-child(7){animation-delay:.14s}
-        .data-table tbody tr:nth-child(8){animation-delay:.16s}
-        .data-table tbody tr:nth-child(9){animation-delay:.18s}
-        .data-table tbody tr:nth-child(10){animation-delay:.20s}
-        @keyframes rowIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-        .data-table .empty-state{text-align:center;padding:3rem 2rem;color:var(--text-secondary);font-style:italic;font-size:.9rem}
-        .data-table .empty-state td{border-bottom:none}
-
-        /* ── Badges ── */
-        .status-badge{display:inline-flex;align-items:center;gap:5px;background:var(--badge-bg);padding:.2rem .7rem;border-radius:60px;font-size:.7rem;font-weight:600}
-        .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
-        .status-dot.active,.status-dot.planned{background:#aaa}
-        .status-dot.online{background:#ccc}
-        .status-dot.offline{background:#666}
-        .status-active,.status-planned{background:var(--badge-active);color:#999}
-        .status-online{background:var(--badge-online);color:#888}
-        .status-offline{background:var(--badge-offline);color:#777}
-        .role-badge{background:var(--badge-bg);padding:.2rem .6rem;border-radius:40px;font-size:.7rem;color:var(--text-secondary)}
-        .rating-star{color:#999}
-
-        /* ── Status buttons ── */
-        .status-change-btn{
-          background:var(--badge-bg);border:none;border-radius:20px;padding:4px 10px;margin:0 3px;
-          font-size:.7rem;font-weight:600;cursor:pointer;transition:transform .1s,filter .1s;
-          color:var(--text-primary);font-family:inherit;display:inline-flex;align-items:center;gap:4px
-        }
-        .status-change-btn .icon{width:14px;height:14px;fill:currentColor}
-        .status-change-btn:hover{transform:scale(.95);filter:brightness(.9)}
-        .btn-approved{background:#555;color:#fff;padding:4px;margin:5px}
-        .btn-soon{background:#777;color:#fff;padding:4px;margin:5px}
-        .btn-completed{background:#333;color:#fff;padding:4px;margin:5px}
-
-        /* ── Detail modal ── */
-        .modal{
-          display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);
-          backdrop-filter:blur(8px);align-items:center;justify-content:center;z-index:1000
-        }
-        .modal-card{
-          background:var(--modal-bg);max-width:550px;width:90%;border-radius:36px;
-          border:1px solid var(--modal-border);box-shadow:0 20px 35px var(--shadow);animation:slideUp .22s ease
-        }
-        @keyframes slideUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-        .modal-header{
-          display:flex;justify-content:space-between;align-items:center;
-          padding:1.2rem 1.8rem;border-bottom:1px solid var(--table-row-border);
-          font-weight:700;font-size:1.2rem;color:var(--text-primary)
-        }
-        .modal-body{padding:1.6rem;display:flex;flex-direction:column;gap:.9rem}
-        .detail-row{display:flex;justify-content:space-between;border-bottom:1px dashed var(--table-row-border);padding:.55rem 0;color:var(--text-primary)}
-        .detail-label{font-weight:600;color:#888}
-
-        .close-modal{
-          background:var(--badge-bg);border:none;color:var(--text-primary);font-size:1.3rem;
-          cursor:pointer;width:34px;height:34px;border-radius:50%;transition:all .2s;
-          font-family:inherit;display:flex;align-items:center;justify-content:center
-        }
-        .close-modal .icon{width:18px;height:18px;fill:var(--text-primary)}
-        .close-modal:hover{background:#555;color:#fff}
-        .close-modal:hover .icon{fill:#fff}
-
-        /* ── Add / Form ── */
-        .add-btn{
-          background:linear-gradient(95deg,#555,#333);border:none;padding:.6rem 1.2rem;
-          border-radius:40px;font-weight:600;color:#fff;cursor:pointer;
-          display:flex;align-items:center;gap:8px;transition:transform .2s;font-family:inherit
-        }
-        .add-btn .icon{width:16px;height:16px;fill:#fff}
-        .add-btn:hover{transform:scale(1.03)}
-
-        .form-group{margin-bottom:1rem}
-        .form-group label{display:block;margin-bottom:.4rem;font-size:.8rem;color:#888}
-        .form-group input,.form-group select,.form-group textarea{
-          width:100%;background:var(--input-bg);border:1px solid var(--input-border);
-          padding:.7rem 1rem;border-radius:20px;color:var(--text-primary);font-family:inherit;font-size:.9rem
-        }
-        .submit-btn{
-          background:#444;border:none;padding:.7rem;border-radius:40px;font-weight:700;
-          color:#fff;cursor:pointer;width:100%;margin-top:.5rem;font-family:inherit;transition:transform .2s,opacity .2s
-        }
-        .submit-btn:hover{transform:scale(1.01);opacity:.92}
-        .metod_one{background:var(--input-bg);padding:10px;margin:5px;border-radius:18px}
-
-        /* ── Footer ── */
-        footer{margin-top:2.5rem;text-align:center;font-size:.7rem;color:rgba(255,255,255,.35);border-top:1px solid rgba(255,255,255,.08);padding-top:1.5rem}
-
-        /* ── Stats grid ── */
-        .stats-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:1.75rem;max-width:1100px;width:100%;margin:0 auto}
-        .stat-card{
-          background:var(--input-border);backdrop-filter:blur(2px);border-radius:2.25rem;
-          padding:1.8rem 1.5rem;min-width:180px;flex:1 1 200px;text-align:center;
-          border:1px solid rgba(255,255,255,.12);position:relative;overflow:hidden;
-          box-shadow:0 20px 35px -12px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);
-          animation:fadeSlide .45s cubic-bezier(.2,.9,.4,1.1) forwards;opacity:0;
-          transition:border-color .25s,box-shadow .25s,background .25s
-        }
-        .stat-card:nth-child(1){animation-delay:.05s}
-        .stat-card:nth-child(2){animation-delay:.15s}
-        .stat-card:nth-child(3){animation-delay:.25s}
-        .stat-card:nth-child(4){animation-delay:.35s}
-        .stat-card:hover{border-color:rgba(255,255,255,.3);box-shadow:0 28px 40px -14px rgba(0,0,0,.6);background:var(--badge-bg)}
-        .stat-card::after{
-          content:'';position:absolute;inset:0;border-radius:2.25rem;padding:1px;
-          background:linear-gradient(125deg,rgba(255,255,255,.2),rgba(255,255,255,0) 60%);
-          mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-          -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-          -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none
-        }
-        .stat-value{
-          font-size:4rem;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:.5rem;
-          background:linear-gradient(135deg,#fff,#bbb);-webkit-background-clip:text;background-clip:text;color:transparent
-        }
-        .stat-label{
-          font-size:1rem;text-transform:uppercase;letter-spacing:1.5px;color:#999;
-          background:rgba(0,0,0,.25);display:inline-block;padding:.25rem .9rem;border-radius:40px;
-          backdrop-filter:blur(2px);font-weight:600
-        }
-        .stat-sub{font-size:.7rem;color:#777;margin-top:.6rem;letter-spacing:.3px}
-        @keyframes fadeSlide{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
-
-        /* ── Chat ── */
-        .chat-container{
-          width:100%;max-width:900px;background:#1a1a1a;border-radius:16px;
-          box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden;display:flex;flex-direction:column;height:85vh
-        }
-        .chat-header{background:#111;padding:18px 24px;border-bottom:1px solid #222;display:flex;align-items:center;gap:12px}
-        .discord-icon{width:32px;height:32px;background:#555;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
-        .discord-icon .icon{width:18px;height:18px;fill:#fff}
-        .chat-header h1{font-size:1.25rem;font-weight:600;color:#fff}
-        .chat-header p{font-size:.8rem;color:#777;margin-top:2px}
-        .channel-badge{background:#0e0e0e;padding:4px 10px;border-radius:20px;font-size:.75rem;color:#999;margin-left:auto}
-
-        .messages-area{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px;background:#1a1a1a}
-        .message{background:#222;padding:12px 16px;border-radius:8px;animation:fadeIn .3s ease;transition:background .2s}
-        .message:hover{background:#2a2a2a}
-        .message-header{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
-        .message-author{font-weight:600;color:#fff;font-size:.95rem}
-        .message-time{font-size:.7rem;color:#555}
-        .message-content{color:#bbb;word-wrap:break-word;white-space:pre-wrap;line-height:1.4;font-size:.95rem}
-        .system-message{background:#111;text-align:center;font-size:.8rem;color:#666}
-
-        .input-area{background:#111;padding:16px 20px;border-top:1px solid #222;display:flex;gap:12px;align-items:flex-end}
-        #messageInput{
-          flex:1;background:#2a2a2a;border:none;padding:12px 16px;border-radius:8px;
-          color:#bbb;font-size:1rem;outline:none;font-family:inherit;resize:vertical;
-          min-height:44px;max-height:200px;overflow-y:auto;line-height:1.4;transition:background .2s,box-shadow .2s
-        }
-        #messageInput:focus{background:#333;box-shadow:0 0 0 1px #666}
-        #messageInput::placeholder{color:#555}
-        #sendBtn{
-          background:#555;border:none;padding:0 24px;height:44px;border-radius:8px;
-          color:#fff;font-weight:500;cursor:pointer;font-size:.95rem;
-          display:flex;align-items:center;gap:8px;white-space:nowrap;font-family:inherit;transition:background .2s,transform .2s
-        }
-        #sendBtn .icon{width:16px;height:16px;fill:#fff}
-        #sendBtn:hover{background:#444;transform:scale(1.02)}
-        #sendBtn:active{transform:scale(.98)}
-
-        .status-bar{background:#0e0e0e;padding:8px 20px;font-size:.75rem;color:#999;display:flex;align-items:center;gap:12px;border-top:1px solid #222}
-        .status-led{width:8px;height:8px;border-radius:50%;background:#999;display:inline-block}
-        .char-counter{margin-left:auto;font-size:.7rem;color:#555}
-        .info-hint{font-size:.65rem;color:#555;margin-left:8px}
-
-        .messages-area::-webkit-scrollbar{width:8px}
-        .messages-area::-webkit-scrollbar-track{background:#1a1a1a;border-radius:4px}
-        .messages-area::-webkit-scrollbar-thumb{background:#111;border-radius:4px}
-        .messages-area::-webkit-scrollbar-thumb:hover{background:#0a0a0a}
-        #messageInput::-webkit-scrollbar{width:6px}
-        #messageInput::-webkit-scrollbar-track{background:#1a1a1a;border-radius:3px}
-        #messageInput::-webkit-scrollbar-thumb{background:#111;border-radius:3px}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-        /* ── Addons ── */
-        .addons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;margin-top:1rem}
-        .addon-card{
-          background:var(--card-bg);border-radius:24px;padding:1.5rem;
-          border:1px solid var(--card-border);transition:transform .2s,box-shadow .2s;text-align:center
-        }
-        .addon-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px var(--shadow)}
-        .addon-icon{font-size:3rem;margin-bottom:.75rem;filter:grayscale(1)}
-        .addon-title{font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:.5rem}
-        .addon-desc{font-size:.8rem;color:var(--text-muted);margin-bottom:1rem}
-        .addon-link{
-          display:inline-block;background:linear-gradient(95deg,#555,#333);
-          color:#fff;text-decoration:none;padding:.5rem 1.2rem;border-radius:40px;
-          font-size:.8rem;font-weight:600;transition:transform .2s,opacity .2s
-        }
-        .addon-link:hover{transform:scale(1.02);opacity:.9}
-
-        /* ── Gallery ── */
-        .gallery-container{margin-top:15px;background:var(--badge-bg);border-radius:20px;padding:15px}
-        .gallery-title{font-size:.9rem;font-weight:600;color:var(--text-primary);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-        .gallery-slider{position:relative;display:flex;align-items:center;justify-content:center;gap:10px}
-        .gallery-image{width:100%;max-height:300px;object-fit:cover;border-radius:16px;cursor:pointer;transition:transform .2s;border:2px solid var(--modal-border);filter:grayscale(.3)}
-        .gallery-image:hover{transform:scale(1.02);filter:grayscale(0)}
-        .gallery-nav{
-          background:var(--modal-bg);border:1px solid var(--modal-border);color:var(--text-primary);
-          font-size:1.5rem;font-weight:700;width:40px;height:40px;border-radius:50%;
-          cursor:pointer;transition:background .2s,transform .2s;display:flex;align-items:center;justify-content:center
-        }
-        .gallery-nav .icon{width:18px;height:18px;fill:var(--text-primary)}
-        .gallery-nav:hover{background:#555;transform:scale(1.05)}
-        .gallery-nav:hover .icon{fill:#fff}
-        .gallery-counter{text-align:center;font-size:.75rem;color:var(--text-muted);margin-top:8px}
-        .fullscreen-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:2000;align-items:center;justify-content:center;cursor:pointer}
-        .fullscreen-img{max-width:90%;max-height:90%;object-fit:contain;border-radius:16px}
-        .fullscreen-close{position:absolute;top:20px;right:30px;font-size:2rem;color:#fff;cursor:pointer;background:none;border:none;font-weight:700}
-
-        /* ── Team ── */
-        .team-section{margin-bottom:2rem}
-        .section-header{display:flex;align-items:center;gap:12px;margin-bottom:1rem;padding:.5rem 1.2rem;border-radius:40px}
-        .section-header.senior{background:linear-gradient(135deg,rgba(180,180,180,.15),rgba(180,180,180,.05));border-left:3px solid #999}
-        .section-header.junior{background:linear-gradient(135deg,rgba(120,120,120,.15),rgba(120,120,120,.05));border-left:3px solid #777}
-        .section-icon{font-size:1.6rem;filter:grayscale(1)}
-        .section-title.senior{font-size:1.2rem;font-weight:700;color:#999}
-        .section-title.junior{font-size:1.2rem;font-weight:700;color:#777}
-        .section-count{background:rgba(0,0,0,.3);padding:.2rem .8rem;border-radius:40px;font-size:.75rem;margin-left:auto}
-
-        .team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
-        .team-card{
-          background:var(--card-bg);border-radius:20px;border:1px solid var(--card-border);
-          overflow:hidden;transition:transform .25s,box-shadow .25s;cursor:pointer;position:relative
-        }
-        .team-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px var(--shadow)}
-        .team-card::before{display:none}
-
-        .team-card-header{padding:.8rem 1rem .5rem;border-bottom:1px solid var(--card-border)}
-        .team-name{font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:.2rem;display:block}
-        .team-role{font-size:.7rem;color:var(--text-muted);display:block}
-        .team-card-body{padding:.7rem 1rem;display:flex;flex-wrap:wrap;gap:.5rem}
-        .team-info-item{flex:1;min-width:80px}
-        .team-info-label{font-size:.55rem;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:.1rem}
-        .team-info-value{font-size:.75rem;font-weight:600;color:var(--text-primary);word-break:break-all;line-height:1.2}
-
-        .team-card-footer{
-          padding:.4rem 1rem;background:var(--badge-bg);border-top:1px solid var(--card-border);
-          display:flex;justify-content:space-between;align-items:center
-        }
-        .team-badge{font-size:.6rem;padding:.15rem .5rem;border-radius:40px}
-        .senior-badge{background:#999;color:#111}
-        .junior-badge{background:#777;color:#111}
-        .team-rating{display:flex;align-items:center;gap:3px}
-        .rating-star{color:#999;font-size:.7rem}
-        .rating-star.empty{color:var(--text-muted);opacity:.3}
-        .team-status{font-size:.65rem;padding:.2rem .6rem;border-radius:40px;font-weight:600}
-        .team-status.online{background:#666;color:#fff}
-        .team-status.offline{background:#444;color:#ccc}
-
-        #statsMenuItem{display:none}
-        button{font-family:inherit}
-
-        /* ── Responsive ── */
-        @media(max-width:1024px){
-          .sidebar{position:relative;width:100%;max-width:100%;bottom:auto;border-right:none;box-shadow:none;overflow-y:visible;border-bottom:1px solid rgba(255,255,255,.08)}
-          .sidebar .nav-section:last-child{margin-top:0}
-          .main-layout{margin-left:0}
-          .content-area{padding:1rem}
-          .top-bar{margin-left:0;justify-content:space-between}
-          footer{margin-left:0}
-        }
-        @media(max-width:768px){
-          .table-wrapper{border-radius:16px;box-shadow:0 8px 20px -4px var(--shadow)}
-          .table-wrapper::before{left:16px;right:16px}
-          .data-table th:first-child{border-top-left-radius:15px;padding-left:1rem}
-          .data-table th:last-child{border-top-right-radius:15px;padding-right:1rem}
-          .data-table tbody tr:last-child td:first-child{border-bottom-left-radius:15px}
-          .data-table tbody tr:last-child td:last-child{border-bottom-right-radius:15px}
-          .data-table td:first-child,.data-table td:last-child{padding-left:1rem;padding-right:1rem}
-          .data-table th{padding:.9rem .8rem;font-size:.65rem}
-          .data-table td{padding:.85rem .8rem;font-size:.8rem}
-          .team-grid{grid-template-columns:1fr;gap:.8rem}
-          .team-card-header{padding:.6rem .8rem .4rem}
-          .team-name{font-size:1rem}
-          .team-card-body{padding:.5rem .8rem}
-          .team-info-value{font-size:.7rem}
-        }
-        @media(max-width:680px){
-          .stats-grid{gap:1.2rem}
-          .stat-card{padding:1.2rem .8rem;min-width:150px}
-          .stat-value{font-size:3rem}
-          .stat-label{font-size:.75rem;letter-spacing:1px}
-        }
-        @media(max-width:500px){
-          .login-modal{padding:1.5rem}
-          .login-modal h2{font-size:1.6rem}
-          .welcome-card h1{font-size:1.8rem}
-          .welcome-eagle{font-size:3rem}
-        }
-        @media(max-width:480px){
-          .login-modal{padding:2.2rem 1.6rem 2rem;border-radius:28px;max-width:100%}
-          .login-modal h2{font-size:1.5rem}
-          .modal-icon{width:48px;height:48px;font-size:1.3rem;border-radius:14px}
-        }
-        @media(prefers-reduced-motion:reduce){
-          #moving-bg{top:0;left:0;width:100%;height:100%}
-          .login-modal,.modal-overlay,.login-btn::before,.data-table tbody tr{animation:none;transition-duration:.01ms}
-        }
-
-        .top-bar {
-    padding-top: 0.2rem !important;
-    margin-bottom: 0 !important;
+function renderAddonsPage() {
+    const container = document.getElementById('eventDynamicContent');
+    container.innerHTML = `
+        <div class="page-header"><h2>🔧 Аддоны для строительства</h2></div>
+        <div class="addons-grid">
+            <div class="addon-card"><div class="addon-icon">🛠️</div><div class="addon-title">Вайт-Лист пропов 4-ого сервера</div><div class="addon-desc">Счётчик в 75 пропов</div><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3488412511" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">📋</div><div class="addon-title">Advanced Duplicator</div><div class="addon-desc">Копирование построек</div><a href="https://steamcommunity.com/workshop/filedetails/?id=773402917" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">📍</div><div class="addon-title">Precision Tool</div><div class="addon-desc">Точная установка пропов</div><a href="https://steamcommunity.com/workshop/filedetails/?id=104482086" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">📦</div><div class="addon-title">Stacker</div><div class="addon-desc">Удобная укладка пропов</div><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=264467687" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">🎨</div><div class="addon-title">Material</div><div class="addon-desc">Больше материалов</div><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=105841291" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">🎨</div><div class="addon-title">Ещё больше материалов</div><div class="addon-desc">Дополнительные текстуры</div><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=730187817" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">🌍</div><div class="addon-title">Весь контент 4-ого сервера</div><div class="addon-desc">Полный пак</div><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3297333501" target="_blank" class="addon-link">Скачать</a></div>
+            <div class="addon-card"><div class="addon-icon">🗺️</div><div class="addon-title">Карта 4-ого сервера</div><div class="addon-desc">Тематическая карта</div><a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3298873388" target="_blank" class="addon-link">Скачать</a></div>
+        </div>
+    `;
 }
 
-.main-layout {
-    padding-top: 0 !important;
+function renderAddEventForm() {
+    const container = document.getElementById('eventDynamicContent');
+    container.innerHTML = `
+        <div class="page-header"><h2>📝 Добавить новый ивент</h2><button class="add-btn" id="backToEventsBtn">← Назад</button></div>
+        <div style="background:var(--card-bg); border-radius:28px; padding:1.8rem; border:1px solid var(--card-border);">
+            <div class="form-group"><label>Название ивента *</label><input type="text" id="eventName" placeholder="Введите название ивента"></div>
+            <div class="form-group"><label>Краткое описание *</label><textarea id="eventDescription" rows="3" placeholder="Опишите ивент..."></textarea></div>
+            <div class="form-row"><div class="form-group"><label>Время начала</label><input type="text" id="eventStartTime" placeholder="Например: 15.04.26, 18:30"></div><div class="form-group"><label>Время окончания</label><input type="text" id="eventEndTime" placeholder="Например: 15.04.26, 19:00"></div></div>
+            <div class="form-group"><label>Количество участников</label><input type="number" id="eventMembers" placeholder="Сколько человек участвовало"></div>
+            <div class="form-group"><label>Были призы? Если да, то какие</label><textarea id="eventPrizes" rows="2" placeholder="Напишите какие призы были выданы..."></textarea></div>
+            <div class="form-group"><label>Организатор</label><input type="text" id="eventOrganizer" value="${currentUser || ''}" placeholder="Введите имя организатора"></div>
+            <div class="form-group"><label>Помощники</label><input type="text" id="eventHelpers" placeholder="Перечислите помощников (через запятую)"><small style="color: var(--text-muted);">Кто помогал проводить ивент</small></div>
+            <div class="form-group" style="background: var(--badge-bg); border-radius: 20px; padding: 1rem; margin-top: 1rem;"><label style="color: var(--text-primary);">📸 Скриншоты или видео</label><p style="font-size: 0.85rem; margin-bottom: 0.5rem;">Скиньте фотографии или видео в <strong>ветку бот-отчетность</strong></p><small style="color: var(--text-muted);">2-3 скриншота или видео, сделанных во время ивента</small></div>
+            <button class="submit-btn" id="sendEventToDiscordBtn">📤 Отправить в Discord</button>
+        </div>
+    `;
+    document.getElementById('backToEventsBtn')?.addEventListener('click', () => renderEventsTable());
+    document.getElementById('sendEventToDiscordBtn')?.addEventListener('click', sendEventToDiscord);
 }
 
-.content-area {
-    padding-top: 0 !important;
+async function sendEventToDiscord() {
+    const name = document.getElementById('eventName')?.value.trim();
+    const description = document.getElementById('eventDescription')?.value.trim();
+    const startTime = document.getElementById('eventStartTime')?.value.trim() || 'Не указано';
+    const endTime = document.getElementById('eventEndTime')?.value.trim() || 'Не указано';
+    const members = document.getElementById('eventMembers')?.value.trim() || 'Не указано';
+    const prizes = document.getElementById('eventPrizes')?.value.trim() || 'Не было';
+    let organizer = document.getElementById('eventOrganizer')?.value.trim() || currentUser || 'Неизвестно';
+    const helpers = document.getElementById('eventHelpers')?.value.trim() || 'Нет';
+    
+    if (!name || !description) {
+        showNotif('❌ Заполните название и описание ивента!', true);
+        return;
+    }
+    
+    const newId = eventsData.length + 1;
+    eventsData.push({
+        id: newId, name: name, platform: organizer, organizer: helpers,
+        date: startTime + " - " + endTime, status: "Проведен",
+        rating: (prizes !== 'Не было' ? prizes.replace(/[^0-9]/g, '') : '0') + '$',
+        members: parseInt(members) || 0, callStatus: "🟡Скоро",
+        fullDetails: { description: description, tasks: "", feedback: "", rewards: "", extra: "" }
+    });
+    saveAllData();
+    renderEventsTable();
+    renderTeamTable();
+    updateNormStats();
+    
+    const webhookURL = await getWebhookUrl();
+    if (!webhookURL) {
+        showNotif('❌ Не удалось загрузить вебхук.', true);
+        return;
+    }
+    
+    try {
+        await fetch(webhookURL, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                content: `<@1246076621484724320> Новый ивент от ${organizer}!`,
+                embeds: [{
+                    title: "📅 Новый ивент", color: 0x5865F2,
+                    fields: [
+                        { name: "📌 Название", value: name },
+                        { name: "📝 Описание", value: description.substring(0, 500) },
+                        { name: "⏰ Время", value: startTime + " - " + endTime, inline: true },
+                        { name: "👥 Участников", value: members.toString(), inline: true },
+                        { name: "🎁 Призы", value: prizes, inline: false },
+                        { name: "👤 Организатор", value: organizer, inline: true },
+                        { name: "🤝 Помощники", value: helpers, inline: true }
+                    ], footer: { text: "Ивент-отдел UnionTeam" }, timestamp: new Date().toISOString()
+                }], username: "Ивент-отдел UnionTeam", avatar_url: "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg"
+            })
+        });
+        showNotif('✅ Ивент добавлен!');
+    } catch(e) {
+        showNotif('❌ Ошибка отправки в Discord', true);
+    }
 }
 
-.page-header {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
+// АВТОРИЗАЦИЯ
+const loginOverlay = document.getElementById('loginOverlay');
+const welcomeContainer = document.getElementById('welcomeContainer');
+const mainDashboard = document.getElementById('mainDashboard');
+const loginBtn = document.getElementById('loginBtn');
+const loginInput = document.getElementById('loginInput');
+const passInput = document.getElementById('passwordInput');
+const errMsg = document.getElementById('errorMsg');
+const contBtn = document.getElementById('continueBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+
+function checkAuth() {
+    const saved = sessionStorage.getItem('user');
+    const savedIsEditor = sessionStorage.getItem('isEditor');
+    const continued = sessionStorage.getItem('continued');
+    if (saved && VALID_LOGINS.includes(saved)) {
+        currentUser = saved;
+        updateSidebarAvatar(saved);
+        isEditor = savedIsEditor === 'true';
+        loginOverlay.style.display = 'none';
+        if (continued === 'true') {
+            welcomeContainer.classList.add('hidden');
+            mainDashboard.style.display = 'block';
+            renderEventsTable();
+        } else {
+            welcomeContainer.classList.remove('hidden');
+            mainDashboard.style.display = 'none';
+        }
+    } else {
+        currentUser = null;
+        isEditor = false;
+        loginOverlay.style.display = 'flex';
+        welcomeContainer.classList.add('hidden');
+        mainDashboard.style.display = 'none';
+    }
 }
 
-h2, .page-header h2 {
-    margin-top: 0 !important;
+async function doLogin() {
+    const login = loginInput.value.trim();
+    const pwd = passInput.value;
+    
+    const config = await loadConfig();
+    if (!config) {
+        showNotif('❌ Ошибка загрузки конфигурации', true);
+        return;
+    }
+    
+    if (VALID_LOGINS.includes(login)) {
+        if (pwd === config.creator_password) {
+            sessionStorage.setItem('user', login);
+            sessionStorage.setItem('isEditor', 'true');
+            sessionStorage.removeItem('continued');
+            currentUser = login;
+            isEditor = true;
+            loginOverlay.style.display = 'none';
+            welcomeContainer.classList.remove('hidden');
+            mainDashboard.style.display = 'none';
+            errMsg.classList.remove('show');
+            showNotif(`✅ Добро пожаловать, создатель ${login}!`);
+        } else if (pwd === config.user_password) {
+            sessionStorage.setItem('user', login);
+            sessionStorage.setItem('isEditor', 'false');
+            sessionStorage.removeItem('continued');
+            currentUser = login;
+            updateSidebarAvatar(login);
+            isEditor = false;
+            loginOverlay.style.display = 'none';
+            welcomeContainer.classList.remove('hidden');
+            mainDashboard.style.display = 'none';
+            errMsg.classList.remove('show');
+            showNotif(`✅ Добро пожаловать, ${login}!`);
+        } else {
+            errMsg.classList.add('show');
+            setTimeout(() => errMsg.classList.remove('show'), 2000);
+        }
+    } else {
+        errMsg.classList.add('show');
+        setTimeout(() => errMsg.classList.remove('show'), 2000);
+    }
 }
+
+function onContinue() {
+    sessionStorage.setItem('continued', 'true');
+    welcomeContainer.classList.add('hidden');
+    mainDashboard.style.display = 'block';
+    renderEventsTable();
+}
+
+function logout() {
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('isEditor');
+    sessionStorage.removeItem('continued');
+    checkAuth();
+    showNotif('👋 Вы вышли из системы');
+}
+
+loginBtn.addEventListener('click', doLogin);
+contBtn.addEventListener('click', onContinue);
+logoutBtn.addEventListener('click', logout);
+loginInput.addEventListener('keypress', e => e.key === 'Enter' && doLogin());
+passInput.addEventListener('keypress', e => e.key === 'Enter' && doLogin());
+
+const modal = document.getElementById('infoModal');
+document.getElementById('closeModalBtn')?.addEventListener('click', () => modal.style.display = 'none');
+window.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
+
+loadAllData();
+checkAuth();
+
+const bg = document.getElementById('moving-bg');
+if (bg) {
+    let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+    function smoothAnimate() {
+        currentX += (targetX - currentX) * 0.05;
+        currentY += (targetY - currentY) * 0.05;
+        bg.style.transform = `translate(${currentX.toFixed(2)}px, ${currentY.toFixed(2)}px)`;
+        requestAnimationFrame(smoothAnimate);
+    }
+    document.addEventListener('mousemove', (e) => {
+        targetX = (e.clientX / window.innerWidth - 0.5) * 15;
+        targetY = (e.clientY / window.innerHeight - 0.5) * 15;
+    });
+    smoothAnimate();
+    }
+
+    // ===== СМЕНА АВАТАРКИ В ЗАВИСИМОСТИ ОТ ЛОГИНА =====
+function updateSidebarAvatar(username) {
+    const avatarImg = document.querySelector('.sidebar-logo');
+    if (!avatarImg) return;
+    
+    // Словарь: логин → ссылка на аватарку
+    const avatarMap = {
+        "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg", 
+        "manisule": "https://avatars.akamai.steamstatic.com/3973c828510cfd75f32b6a4d09bffa642f6c975f_full.jpg",
+        "Гербикс": "https://avatars.akamai.steamstatic.com/3acd2544afbc953feb4af6da64440fa4bf48618e_full.jpg",
+        "Arbuz madrazo": "https://avatars.akamai.steamstatic.com/60c2b352131f11a8bcbd08f452decd9dfea10a32_full.jpg",
+        "somcop": "https://avatars.akamai.steamstatic.com/181420ae4a4f46eabd79c3b6b56e5e5e70aa4b91_full.jpg",
+        "Foxy": "https://avatars.akamai.steamstatic.com/e2ae91fee516fc12a05fbfe995f52891db03c63f_full.jpg",
+        "Дмитрий Морозов": "https://avatars.akamai.steamstatic.com/5a54395d65879aed3fc59787f1d9eaf21a839ff5_full.jpg",
+        "Гофикал": "https://avatars.akamai.steamstatic.com/ed77d818ec20ca4aad3417f5033647f79229c92a_full.jpg",
+        "Himas": "https://avatars.akamai.steamstatic.com/40ddf358c9028e084e617b8edecfdc620e5c12c9_full.jpg",
+        "yaroslav1432": "https://shared.akamai.steamstatic.com/community_assets/images/items/1313140/4ae9f2b8739631ea806a9508785f0445557e9bff.gif",
+        "кусочек шаурмы": "https://avatars.akamai.steamstatic.com/a350434d0216c11358393f13cf8a95bfcf1509db_full.jpg"
+    };
+    
+    const newAvatar = avatarMap[username] || "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg";
+    avatarImg.src = newAvatar;
+}
+
+doLogin
