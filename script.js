@@ -889,16 +889,16 @@ function updateSidebarAvatar(username) {
     // Словарь: логин → ссылка на аватарку
     const avatarMap = {
         "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg", 
-        "manisule": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
-        "Гербикс": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
-        "Arbuz Madrazo": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
-        "somcop": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
-        "Foxy": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
-        "Дмитрий Морозов": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
-        "Гофикал": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
-        "Himas": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
-        "yaroslav1432": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
-        "кусочек шаурмы": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg"
+        "manisule": "https://avatars.akamai.steamstatic.com/3973c828510cfd75f32b6a4d09bffa642f6c975f_full.jpg",
+        "Гербикс": "https://avatars.akamai.steamstatic.com/3acd2544afbc953feb4af6da64440fa4bf48618e_full.jpg",
+        "Arbuz madrazo": "https://avatars.akamai.steamstatic.com/60c2b352131f11a8bcbd08f452decd9dfea10a32_full.jpg",
+        "somcop": "https://avatars.akamai.steamstatic.com/181420ae4a4f46eabd79c3b6b56e5e5e70aa4b91_full.jpg",
+        "Foxy": "https://avatars.akamai.steamstatic.com/e2ae91fee516fc12a05fbfe995f52891db03c63f_full.jpg",
+        "Дмитрий Морозов": "https://avatars.akamai.steamstatic.com/5a54395d65879aed3fc59787f1d9eaf21a839ff5_full.jpg",
+        "Гофикал": "https://avatars.akamai.steamstatic.com/ed77d818ec20ca4aad3417f5033647f79229c92a_full.jpg",
+        "Himas": "https://avatars.akamai.steamstatic.com/40ddf358c9028e084e617b8edecfdc620e5c12c9_full.jpg",
+        "yaroslav1432": "https://shared.akamai.steamstatic.com/community_assets/images/items/1313140/4ae9f2b8739631ea806a9508785f0445557e9bff.gif",
+        "кусочек шаурмы": "https://avatars.akamai.steamstatic.com/a350434d0216c11358393f13cf8a95bfcf1509db_full.jpg"
     };
     
     const newAvatar = avatarMap[username] || "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg";
