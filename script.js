@@ -11,7 +11,8 @@ let eventsData = [
     { id: 9, name: "Отель маньяка", platform: "somcop", organizer: "Нет", date: "15.04.26, 20:40 - 21:00", status: "Проведен", rating: "10.000$", members: 12, callStatus: "🟡Скоро", fullDetails: { description: "маньяк закрыл в тюрьме человка,задача выживших-спасти человека,найти код для открытия тюрьмы,маньяк охотится за вышившими во время процесса", tasks: "", feedback: "", rewards: "", extra: "" } },
     { id: 10, name: "Украсть или разделить", platform: "somcop", organizer: "Нет", date: "15.04.26, 21:37 - 21:45", status: "Проведен", rating: "18.000$", members: 2, callStatus: "🟡Скоро", fullDetails: { description: "Игроки выбирают разделить или украсть деньги,если украдет один,получает все,украдут оба,ничего не получат", tasks: "", feedback: "", rewards: "", extra: "" } },
     { id: 11, name: "Правильная Викторина", platform: "Foxy", organizer: "Нет", date: "17.04.26, 4.03 - 4.13", status: "Проведен", rating: "20.000$", members: 2, callStatus: "🟡Скоро", fullDetails: { description: "Игроки выбирают разделить или украсть деньги,если украдет один,получает все,украдут оба,ничего не получат", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 12, name: "Битва Джагера", platform: "T1Ran", organizer: "Нет", date: "17.04.26, 17.50- 18.00", status: "Проведен", rating: "10.000$", members: 10, callStatus: "🟡Скоро", fullDetails: { description: "Игрокам надо убить джагера с 2500 хп", tasks: "", feedback: "", rewards: "", extra: "" } }
+    { id: 12, name: "Битва Джагера", platform: "T1Ran", organizer: "Нет", date: "17.04.26, 17.50- 18.00", status: "Проведен", rating: "10.000$", members: 10, callStatus: "🟡Скоро", fullDetails: { description: "Игрокам надо убить джагера с 2500 хп", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 13, name: "Стеклянный мост", platform: "Гофикал", organizer: "Нет", date: "17.04.26, 17:00- 17:10", status: "Проведен", rating: "10.000$", members: 9, callStatus: "🟡Скоро", fullDetails: { description: "Игроки прыгали по плитка и рандомно узнавали правильная ли плита или нет", tasks: "", feedback: "", rewards: "", extra: "" } }
 ];
 
 let teamData = [
@@ -772,6 +773,7 @@ function checkAuth() {
     const continued = sessionStorage.getItem('continued');
     if (saved && VALID_LOGINS.includes(saved)) {
         currentUser = saved;
+        updateSidebarAvatar(saved);
         isEditor = savedIsEditor === 'true';
         loginOverlay.style.display = 'none';
         if (continued === 'true') {
@@ -818,6 +820,7 @@ async function doLogin() {
             sessionStorage.setItem('isEditor', 'false');
             sessionStorage.removeItem('continued');
             currentUser = login;
+            updateSidebarAvatar(login);
             isEditor = false;
             loginOverlay.style.display = 'none';
             welcomeContainer.classList.remove('hidden');
@@ -877,3 +880,29 @@ if (bg) {
     });
     smoothAnimate();
     }
+
+    // ===== СМЕНА АВАТАРКИ В ЗАВИСИМОСТИ ОТ ЛОГИНА =====
+function updateSidebarAvatar(username) {
+    const avatarImg = document.querySelector('.sidebar-logo');
+    if (!avatarImg) return;
+    
+    // Словарь: логин → ссылка на аватарку
+    const avatarMap = {
+        "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg", 
+        "manisule": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
+        "Гербикс": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
+        "Arbuz Madrazo": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
+        "somcop": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
+        "Foxy": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
+        "Дмитрий Морозов": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
+        "Гофикал": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
+        "Himas": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
+        "yaroslav1432": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg",
+        "кусочек шаурмы": "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg"
+    };
+    
+    const newAvatar = avatarMap[username] || "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg";
+    avatarImg.src = newAvatar;
+}
+
+doLogin
