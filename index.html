@@ -16,8 +16,8 @@
 <!-- ===== МОДАЛЬНОЕ ОКНО ВХОДА ===== -->
 <div id="loginOverlay" class="modal-overlay">
     <div class="login-modal">
-        <div style="text-align:center; margin-bottom:0.6rem;">
-            <svg class="icon icon-xl" style="fill:#c9a0ff; filter:drop-shadow(0 4px 14px rgba(139,92,246,0.55));">
+        <div style="text-align:center; margin-bottom:0.4rem;">
+            <svg class="icon icon-xl" style="fill:#c9a0ff; filter:drop-shadow(0 4px 14px rgba(139,92,246,0.55)); width:40px; height:40px;">
                 <use href="#ic-eagle"/>
             </svg>
         </div>
@@ -33,7 +33,7 @@
         </div>
         <button class="login-btn" id="loginBtn">Войти</button>
         <div id="errorMsg" class="error-message">
-            <svg class="icon" style="fill:#fca5a5; vertical-align:middle; margin-right:4px;">
+            <svg class="icon" style="fill:#fca5a5; vertical-align:middle; margin-right:4px; width:12px; height:12px;">
                 <use href="#ic-warn"/>
             </svg>
             Неверный логин или пароль
@@ -45,12 +45,12 @@
 <div id="welcomeContainer" class="welcome-container">
     <div class="welcome-card">
         <div class="welcome-eagle">
-            <svg class="icon icon-xl welcome-eagle-icon" style="fill:#d8b4fe;">
+            <svg class="icon welcome-eagle-icon" style="fill:#d8b4fe;">
                 <use href="#ic-eagle"/>
             </svg>
         </div>
         <h1>
-            <svg class="icon" style="fill:#ffd6aa; vertical-align:middle; margin-right:6px; width:28px; height:28px;">
+            <svg class="icon" style="fill:#ffd6aa; vertical-align:middle; margin-right:6px; width:24px; height:24px;">
                 <use href="#ic-wave"/>
             </svg>
             Добро пожаловать!
@@ -58,7 +58,7 @@
         <p>Рады видеть вас снова в<br><strong>UnionTeam · Ивент-отдел</strong></p>
         <button class="continue-btn" id="continueBtn">
             Продолжить
-            <svg class="icon" style="fill:white; vertical-align:middle; margin-left:6px;">
+            <svg class="icon" style="fill:white; vertical-align:middle; margin-left:6px; width:14px; height:14px;">
                 <use href="#ic-arrow-right"/>
             </svg>
         </button>
@@ -68,7 +68,7 @@
 <!-- ===== ОСНОВНОЙ ДАШБОРД ===== -->
 <div class="dashboard" id="mainDashboard" style="display: none;">
 
-    <!-- SIDEBAR (position:fixed) -->
+    <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg" alt="UnionTeam" class="sidebar-logo">
@@ -116,12 +116,11 @@
         <div class="logo-area"></div>
         <div class="user-actions">
             <div class="clock-wrapper">
-                <svg class="icon" style="fill:#ffd6aa; width:16px; height:16px;">
+                <svg class="icon" style="fill:#ffd6aa; width:14px; height:14px;">
                     <use href="#ic-clock"/>
                 </svg>
                 <span class="clock-badge" id="liveClockEvent">--:--:--</span>
             </div>
-            
             <button class="logout-btn" id="logoutBtn">
                 <svg class="icon" style="fill:white;">
                     <use href="#ic-logout"/>
@@ -131,7 +130,7 @@
         </div>
     </div>
 
-    <!-- MAIN LAYOUT (только контент) -->
+    <!-- MAIN LAYOUT -->
     <div class="main-layout">
         <div class="content-area" id="eventDynamicContent"></div>
     </div>
