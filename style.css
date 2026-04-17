@@ -32,7 +32,7 @@ body {
 }
 
 .dashboard {
-    opacity: 0.95;
+    opacity: 0.94;
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(2px);
     border-radius: 32px;
