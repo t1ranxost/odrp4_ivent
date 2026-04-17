@@ -755,7 +755,7 @@ function renderAddEventForm() {
             </div>
             <div class="form-group" style="background: var(--badge-bg); border-radius: 20px; padding: 1rem; margin-top: 1rem;">
                 <label style="color: var(--text-primary);">📸 Скриншоты или видео</label>
-                <p style="font-size: 0.85rem; margin-bottom: 0.5rem;">Скиньте фотографии и видео в <strong>ветку бот-отчетность</strong></p>
+                <p style="font-size: 0.85rem; margin-bottom: 0.5rem;">Скиньте фотографии или видео в <strong>ветку бот-отчетность</strong></p>
                 <small style="color: var(--text-muted);">2-3 скриншота или видео, сделанных во время ивента</small>
             </div>
             <button class="submit-btn" id="sendEventToDiscordBtn">📤 Отправить в Discord</button>
