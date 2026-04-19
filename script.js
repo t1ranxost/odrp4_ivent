@@ -119,7 +119,7 @@ async function getWebhookUrl() {
 // ========== СИСТЕМА ЛОГИНОВ ==========
 const VALID_LOGINS = [
     "кусочек шаурмы", "Foxy", "somcop", "T1Ran", "manisule",
-    "Гербикс", "Arbuz madrazo", "Дмитрий Морозов", "Гофикал", "Himas", "yaroslav1432"
+    "Гербикс", "Arbuz madrazo", "Дмитрий Морозов", "Гофикал", "Himas", "yaroslav1432", "gans7824"
 ];
 
 let currentUser = null;
