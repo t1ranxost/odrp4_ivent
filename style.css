@@ -312,7 +312,7 @@ body{
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.2) 30%,rgba(255,255,255,.35) 50%,rgba(255,255,255,.2) 70%,transparent)
 }
 .sidebar-logo{
-  width:40px;height:40px;border-radius:12px;object-fit:cover;flex-shrink:0;
+  width:60px;height:60px;border-radius:12px;object-fit:cover;flex-shrink:0;
   border:1.5px solid rgba(255,255,255,.15);
   box-shadow:0 4px 14px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.05);
   transition:transform .25s,box-shadow .25s;
