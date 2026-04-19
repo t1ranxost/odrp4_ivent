@@ -1545,3 +1545,44 @@ async function initStatuses() {
 
 // Вызови эту функцию после загрузки данных
 initStatuses();
+
+// ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ СТАТУСОВ ИЗ ТАБЛИЦЫ
+async function refreshStatusesFromSheet() {
+    try {
+        const response = await fetch(GOOGLE_SHEETS_URL);
+        const data = await response.json();
+        
+        console.log('Получены данные из таблицы:', data);
+        
+        // Обновляем статусы в eventsData
+        let updated = false;
+        for (const item of data) {
+            const eventId = parseInt(item.ID);
+            const newStatus = item.Статус;
+            
+            // Убираем эмодзи если есть
+            let cleanStatus = newStatus;
+            if (newStatus.includes('✅')) cleanStatus = '✅Одобрен';
+            else if (newStatus.includes('❌')) cleanStatus = '🔴Отказано';
+            else if (newStatus.includes('🟡')) cleanStatus = '🟡Скоро';
+            
+            const event = eventsData.find(e => e.id === eventId);
+            if (event && event.callStatus !== cleanStatus) {
+                event.callStatus = cleanStatus;
+                updated = true;
+                console.log(`Обновлён статус ивента ${eventId}: ${cleanStatus}`);
+            }
+        }
+        
+        if (updated) {
+            saveAllData();
+            renderEventsTable();
+            showNotif('📊 Статусы обновлены из Google Sheets');
+        }
+        
+        return data;
+    } catch(e) {
+        console.error('Ошибка обновления:', e);
+        return [];
+    }
+}
