@@ -1491,3 +1491,121 @@ if (salaryModal) {
             if (e.key === 'Escape' && sweetEarnIsOpen) closeSweetEarn();
         });
     }
+
+    // ========== ЧАСТИЦЫ НА ЗАДНЕМ ФОНЕ ==========
+(function() {
+    const canvas = document.getElementById('particlesCanvas');
+    if (!canvas) return;
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Настройки частиц
+    const PARTICLE_COUNT = 80;
+    const PARTICLE_COLORS = ['#c9a0ff', '#d4b8ff', '#b088ff', '#e0b0ff', '#ffccff'];
+    
+    let particles = [];
+    let animationId = null;
+    
+    // Класс частицы
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 3 + 1.5;
+            this.speedX = (Math.random() - 0.5) * 0.5;
+            this.speedY = (Math.random() - 0.5) * 0.3 + 0.2;
+            this.color = PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)];
+            this.opacity = Math.random() * 0.5 + 0.2;
+            this.alpha = this.opacity;
+            this.pulseSpeed = Math.random() * 0.02 + 0.01;
+            this.pulseDir = 1;
+        }
+        
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            
+            // Пульсация прозрачности
+            this.alpha += this.pulseSpeed * this.pulseDir;
+            if (this.alpha >= this.opacity + 0.2) this.pulseDir = -1;
+            if (this.alpha <= this.opacity - 0.15) this.pulseDir = 1;
+            
+            // Зацикливание
+            if (this.x < -50) this.x = canvas.width + 50;
+            if (this.x > canvas.width + 50) this.x = -50;
+            if (this.y < -50) this.y = canvas.height + 50;
+            if (this.y > canvas.height + 50) this.y = -50;
+        }
+        
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = this.alpha;
+            ctx.fill();
+            
+            // Свечение
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size * 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = this.alpha * 0.3;
+            ctx.fill();
+        }
+    }
+    
+    // Создание частиц
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push(new Particle());
+        }
+    }
+    
+    // Анимация
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        for (let particle of particles) {
+            particle.update();
+            particle.draw();
+        }
+        
+        // Рисуем соединительные линии между близкими частицами
+        ctx.globalAlpha = 0.15;
+        ctx.beginPath();
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = particles[i].color;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            }
+        }
+        ctx.globalAlpha = 1;
+        
+        animationId = requestAnimationFrame(animateParticles);
+    }
+    
+    // Обновление размера при изменении окна
+    function handleResize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        initParticles();
+    }
+    
+    // Запуск
+    initParticles();
+    animateParticles();
+    window.addEventListener('resize', handleResize);
+})();
