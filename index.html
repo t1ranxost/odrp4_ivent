@@ -259,6 +259,10 @@
                 <svg class="icon"><use href="#ic-box"/></svg>
                 <span>Адонны</span>
             </div>
+            <div class="nav-item" id="salaryBtn">
+                <svg class="icon"><use href="#ic-crown"/></svg>
+                <span>АВТОМАТИЧЕСКОЕ ПОВЫШЕНИЕ ДО КУРАТОРА</span>
+            </div>
         </div>
     </div>
 
@@ -312,44 +316,97 @@
     </div>
 </div>
 
-<!-- ===== JAVASCRIPT ===== -->
-<script>
-// ============================================================
-//  ПАРАЛЛАКС — реагирует на движение мыши
-// ============================================================
-document.addEventListener('mousemove', function(e) {
-    const bg = document.getElementById('moving-bg');
-    if (!bg) return;
-    const moveX = (e.clientX / window.innerWidth  - 0.5) * 22;
-    const moveY = (e.clientY / window.innerHeight - 0.5) * 22;
-    bg.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.1)`;
-});
+<!-- Модальное окно с видео и музыкой -->
+<div id="salaryModal" class="salary-modal-overlay">
+    <div class="salary-modal">
+        <div class="salary-modal-header">
+            <h3>💸 ИДЕТ ПОВЫШЕНИЕ 💸</h3>
+            <button class="salary-close-btn" id="closeSalaryBtn">✕</button>
+        </div>
+        <img id="salaryImage" class="salary-image" src="https://imgfy.ru/ib/UVjzwxmKZt8q3tV_1776608399.webp" alt="Зарплата">
+        <div class="salary-audio-hint">
+            🔊 ЖЁСТКИЙ ФОНК ИГРАЕТ 🔊
+        </div>
+    </div>
+</div>
 
-// ============================================================
-//  ТЕМА — переключение иконки солнце/луна
-// ============================================================
-(function() {
-    const btn  = document.getElementById('themeToggleBtn');
-    const use  = document.getElementById('themeIconUse');
-    if (!btn || !use) return;
+<audio id="salaryAudio" loop preload="auto" style="display:none;">
+    <source src="https://videotourl.com/audio/1776607833524-d7d0d19c-bf31-4ae4-ae0a-a94bfc44dc6b.mp3" type="audio/mpeg">
+</audio>
 
-    function applyTheme(dark) {
-        document.body.classList.toggle('dark', dark);
-        use.setAttribute('href', dark ? '#ic-moon' : '#ic-sun');
-    }
 
-    // Восстановить тему из localStorage
-    const saved = localStorage.getItem('theme');
-    applyTheme(saved === 'dark');
-
-    btn.addEventListener('click', function() {
-        const isDark = document.body.classList.contains('dark');
-        applyTheme(!isDark);
-        localStorage.setItem('theme', !isDark ? 'dark' : 'light');
-    });
-})();
-</script>
-
+<!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
+<div id="settingsModal" class="settings-modal">
+    <div class="settings-card">
+        <div class="settings-header">
+            <h3>⚙️ НАСТРОЙКИ ПРОФИЛЯ</h3>
+            <button class="settings-close" id="closeSettingsBtn">✕</button>
+        </div>
+        
+        <div class="settings-body">
+            <!-- СТАТИСТИКА ИВЕНТОВ -->
+            <div class="settings-section">
+                <div class="settings-section-title">📊 МОЯ СТАТИСТИКА</div>
+                <div class="stats-block" id="userStatsBlock">
+                    <div class="stat-row">
+                        <span class="stat-label">Всего ивентов проведено:</span>
+                        <span class="stat-value" id="userEventsCount">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Всего призовых:</span>
+                        <span class="stat-value" id="userPrizesCount">0$</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">В отделе с:</span>
+                        <span class="stat-value" id="userJoinDate">--</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- НАСТРОЙКА ЯРКОСТИ -->
+            <div class="settings-section">
+                <div class="settings-section-title">☀️ ЯРКОСТЬ ЭКРАНА</div>
+                <div class="brightness-control">
+                    <span>🌑</span>
+                    <input type="range" id="brightnessSlider" min="30" max="150" value="100" step="5">
+                    <span>☀️</span>
+                    <span id="brightnessValue" class="brightness-percent">100%</span>
+                </div>
+            </div>
+            
+            <!-- ВЫБОР ФОНА -->
+            <div class="settings-section">
+                <div class="settings-section-title">🖼️ ВЫБОР ФОНА</div>
+                <div class="background-grid" id="backgroundGrid">
+                    <div class="bg-option" data-bg="1">
+                        <img src="https://imgfy.ru/ib/XGApUH780EjwsYN_1776609369.webp" alt="Фон 1">
+                        <span>Лифт Umbrella</span>
+                    </div>
+                    <div class="bg-option" data-bg="2">
+                        <img src="https://imgfy.ru/ib/qv3BW9jCym57tnU_1776609369.webp" alt="Фон 2">
+                        <span>Тонель Umbrella</span>
+                    </div>
+                    <div class="bg-option" data-bg="3">
+                        <img src="https://imgfy.ru/ib/lEqijyGxCjX8z3l_1776609368.webp" alt="Фон 3">
+                        <span>Дворец Umbrella</span>
+                    </div>
+                    <div class="bg-option" data-bg="4">
+                        <img src="https://imgfy.ru/ib/msGNDVjfXFM4ffS_1776609635.webp" alt="Фон 4">
+                        <span>Подвал Umbrella</span>
+                    </div>
+                    <div class="bg-option" data-bg="5">
+                        <img src="https://imgfy.ru/ib/yTWGwkqDzLAjhoc_1776609368.webp" alt="Фон 5">
+                        <span>Мерия</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-footer">
+            <button class="settings-save" id="saveSettingsBtn">💾 СОХРАНИТЬ</button>
+        </div>
+    </div>
+</div>
 <script src="script.js"></script>
 </body>
 </html>
