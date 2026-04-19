@@ -1577,3 +1577,166 @@ setInterval(() => {
     refreshStatusesFromSheet();
 }, 5000);
 
+// ========== ПРИКОЛЬНЫЕ ЧАСТИЦЫ ==========
+(function() {
+    const canvas = document.getElementById('particleCanvas');
+    if (!canvas) return;
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const ctx = canvas.getContext('2d');
+    
+    // НАСТРОЙКИ (меняй на свои)
+    const PARTICLE_COUNT = 120;        // Количество частиц
+    const COLORS = ['#ff66cc', '#c9a0ff', '#ff99ff', '#ff66aa', '#d4b8ff', '#ff88dd'];
+    const MOUSE_RADIUS = 100;          // Радиус отталкивания от мыши
+    
+    let particles = [];
+    let mouseX = null, mouseY = null;
+    
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 4 + 2;
+            this.speedX = (Math.random() - 0.5) * 1.5;
+            this.speedY = (Math.random() - 0.5) * 1.5;
+            this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+            this.alpha = Math.random() * 0.6 + 0.3;
+            this.angle = Math.random() * Math.PI * 2;
+            this.angleSpeed = (Math.random() - 0.5) * 0.05;
+            this.sizePulse = Math.random() * 0.05 + 0.02;
+            this.pulseDir = 1;
+        }
+        
+        update() {
+            // Движение
+            this.x += this.speedX;
+            this.y += this.speedY;
+            
+            // Пульсация размера
+            this.size += this.sizePulse * this.pulseDir;
+            if (this.size > 6) this.pulseDir = -1;
+            if (this.size < 2) this.pulseDir = 1;
+            
+            // Вращение
+            this.angle += this.angleSpeed;
+            
+            // Отталкивание от мыши
+            if (mouseX !== null && mouseY !== null) {
+                const dx = this.x - mouseX;
+                const dy = this.y - mouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < MOUSE_RADIUS) {
+                    const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+                    const angle = Math.atan2(dy, dx);
+                    this.x += Math.cos(angle) * force * 3;
+                    this.y += Math.sin(angle) * force * 3;
+                }
+            }
+            
+            // Границы с отражением
+            if (this.x < -20) this.x = canvas.width + 20;
+            if (this.x > canvas.width + 20) this.x = -20;
+            if (this.y < -20) this.y = canvas.height + 20;
+            if (this.y > canvas.height + 20) this.y = -20;
+        }
+        
+        draw() {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.angle);
+            
+            // Рисуем звездочку/цветочек
+            ctx.beginPath();
+            for (let i = 0; i < 5; i++) {
+                const radius = this.size * (i % 2 === 0 ? 1 : 0.5);
+                const x = Math.cos(i * 72 * Math.PI / 180) * radius;
+                const y = Math.sin(i * 72 * Math.PI / 180) * radius;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = this.alpha;
+            ctx.fill();
+            
+            // Внутреннее свечение
+            ctx.beginPath();
+            ctx.arc(0, 0, this.size * 0.6, 0, Math.PI * 2);
+            ctx.fillStyle = 'white';
+            ctx.globalAlpha = this.alpha * 0.5;
+            ctx.fill();
+            
+            ctx.restore();
+        }
+    }
+    
+    // СОЗДАНИЕ ЧАСТИЦ
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push(new Particle());
+        }
+    }
+    
+    // ОТРИСОВКА
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Фоновое свечение
+        ctx.fillStyle = 'rgba(0,0,0,0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        for (let p of particles) {
+            p.update();
+            p.draw();
+        }
+        
+        // Рисуем линии между близкими частицами
+        ctx.globalAlpha = 0.15;
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 80) {
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = particles[i].color;
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                }
+            }
+        }
+        ctx.globalAlpha = 1;
+        
+        requestAnimationFrame(animateParticles);
+    }
+    
+    // ОБРАБОТКА ДВИЖЕНИЯ МЫШИ
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+    
+    document.addEventListener('mouseleave', () => {
+        mouseX = null;
+        mouseY = null;
+    });
+    
+    // ОБНОВЛЕНИЕ ПРИ ИЗМЕНЕНИИ РАЗМЕРА ОКНА
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        initParticles();
+    });
+    
+    // ЗАПУСК
+    initParticles();
+    animateParticles();
+})();
