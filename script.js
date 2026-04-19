@@ -1,21 +1,6 @@
 // ========== ТВОИ ДАННЫЕ ==========
 let eventsData = [
     { id: 1, name: "Пол это лава", platform: "T1Ran", organizer: "Нет", date: "13.04.26, 18.30 - 18.45", status: "Проведен", rating: "10.000$", members: 10, callStatus: "🟡Скоро", fullDetails: { description: "Игроки дерутся на кулаках 1 на 1,есть финал,полуфинал", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 2, name: "Паркур", platform: "somcop", organizer: "Нет", date: "14.04.26, 19.15 - 19:25", status: "Проведен", rating: "10.000$", members: 9, callStatus: "🟡Скоро", fullDetails: { description: "паркур средней сложности и длины,дается неограниченное количество попыток для прохождения", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 3, name: "Ринг", platform: "somcop", organizer: "Нет", date: "14.04.26, 19:35 - 19:50", status: "Проведен", rating: "15.000$", members: 9, callStatus: "🟡Скоро", fullDetails: { description: "паркур средней сложности и длины,дается неограниченное количество попыток для прохождения", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 4, name: "Паркур на дубе", platform: "somcop", organizer: "Нет", date: "14.04.26, 21:05 - 21:18", status: "Проведен", rating: "1.000$", members: 6, callStatus: "🟡Скоро", fullDetails: { description: "Большой паркур на пне дуба", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 5, name: "Лабиринт", platform: "Гофикал", organizer: "Нет", date: "14.04.26, 17.00 - 17.10", status: "Проведен", rating: "10.000$", members: 6, callStatus: "🟡Скоро", fullDetails: { description: "Просто большой лабиринт", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 6, name: "Бункер", platform: "Гофикал", organizer: "Нет", date: "14.04.26, 18.30 - 19.00", status: "Проведен", rating: "-", members: 10, callStatus: "🟡Скоро", fullDetails: { description: "Игрокам выдали карты с их кратким описанием (возраст профессия и т.д) задача игроков была попасть в бункер", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 7, name: "Слепой убийца", platform: "somcop", organizer: "Нет", date: "15.04.26, 19:15-19:38", status: "Проведен", rating: "10.000$", members: 9, callStatus: "🟡Скоро", fullDetails: { description: "Маньяки охотятся на людей в абсолютно темной комнате", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 8, name: "Прятки на даст 2", platform: "somcop", organizer: "Нет", date: "15.04.26, 19:41-19:55", status: "Проведен", rating: "10.000$", members: 11, callStatus: "🟡Скоро", fullDetails: { description: "2 маньяка охотилось за людьми на карте даст 2", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 9, name: "Отель маньяка", platform: "somcop", organizer: "Нет", date: "15.04.26, 20:40 - 21:00", status: "Проведен", rating: "10.000$", members: 12, callStatus: "🟡Скоро", fullDetails: { description: "маньяк закрыл в тюрьме человка,задача выживших-спасти человека,найти код для открытия тюрьмы,маньяк охотится за вышившими во время процесса", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 10, name: "Украсть или разделить", platform: "somcop", organizer: "Нет", date: "15.04.26, 21:37 - 21:45", status: "Проведен", rating: "18.000$", members: 2, callStatus: "🟡Скоро", fullDetails: { description: "Игроки выбирают разделить или украсть деньги,если украдет один,получает все,украдут оба,ничего не получат", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 11, name: "Правильная Викторина", platform: "Foxy", organizer: "Нет", date: "17.04.26, 4.03 - 4.13", status: "Проведен", rating: "20.000$", members: 2, callStatus: "🟡Скоро", fullDetails: { description: "Игроки выбирают разделить или украсть деньги,если украдет один,получает все,украдут оба,ничего не получат", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 12, name: "Битва Джагера", platform: "T1Ran", organizer: "Нет", date: "17.04.26, 17.50- 18.00", status: "Проведен", rating: "10.000$", members: 10, callStatus: "🟡Скоро", fullDetails: { description: "Игрокам надо убить джагера с 2500 хп", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 13, name: "Стеклянный мост", platform: "Гофикал", organizer: "Нет", date: "17.04.26, 17:00- 17:10", status: "Проведен", rating: "10.000$", members: 9, callStatus: "🟡Скоро", fullDetails: { description: "Игроки прыгали по плитка и рандомно узнавали правильная ли плита или нет", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 14, name: "Отыгровка полиции", platform: "Дмитрий Морозов", organizer: "Arbuz Madrzo", date: "17.04.26, 17:56 - 19:29", status: "Проведен", rating: "-", members: 125, callStatus: "🟡Скоро", fullDetails: { description: "Я был Командиром 1 отряда. Арбуз Перегвоорщиком. просто рп за полицию. Скринов нету Арбуз потвердит", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 15, name: "Битва на платформе", platform: "Foxy", organizer: "Arbuz Madrzo", date: "19.04.26, 15:25 - 19.04.26, 15:35", status: "Проведен", rating: "30.000$", members: 6, callStatus: "🟡Скоро", fullDetails: { description: "Люди появляются на платформе и начинаю битву на ножах", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 16, name: "Отыгровка министра культуры", platform: "Дмитрий Морозов", organizer: "Бредик", date: "19.04.26, 15:25 - 11:00 - 13:35", status: "Проведен", rating: "-", members: 125, callStatus: "🟡Скоро", fullDetails: { description: "Провели парад потом был концерт", tasks: "", feedback: "", rewards: "", extra: "" } }
 ];
 
 let teamData = [
@@ -1586,3 +1571,9 @@ async function refreshStatusesFromSheet() {
         return [];
     }
 }
+
+// АВТООБНОВЛЕНИЕ КАЖДЫЕ 10 СЕКУНД
+setInterval(() => {
+    refreshStatusesFromSheet();
+}, 5000);
+
