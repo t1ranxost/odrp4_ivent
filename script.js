@@ -208,44 +208,69 @@ function renderTeamTable() {
     const juniorMembers = teamData.filter(m => m.category === "Младший состав");
     
     function renderMemberCard(m, type) {
-        let eventsCount = eventCounts[m.name] || 0;
-        if (m.eventsCount !== "-" && m.eventsCount !== "Нет нормы" && m.eventsCount !== "Отпуск" && !isNaN(parseInt(m.eventsCount))) {
-            eventsCount = m.eventsCount;
-        } else if (m.eventsCount === "Нет нормы" || m.eventsCount === "Отпуск") {
-            eventsCount = m.eventsCount;
-        }
-        const cardClass = type === 'senior' ? 'senior' : 'junior';
-        const ratingValue = parseFloat(m.rating);
-        let starsHtml = '';
-        if (!isNaN(ratingValue)) {
-            const fullStars = Math.floor(ratingValue);
-            const hasHalf = ratingValue % 1 >= 0.5;
-            for(let i = 0; i < fullStars; i++) starsHtml += '<span class="rating-star">★</span>';
-            if(hasHalf) starsHtml += '<span class="rating-star">½</span>';
-            const empty = 5 - fullStars - (hasHalf ? 1 : 0);
-            for(let i = 0; i < empty; i++) starsHtml += '<span class="rating-star empty">☆</span>';
-        } else {
-            starsHtml = `<span class="rating-star">${m.rating}</span>`;
-        }
-        const statusHtml = m.status === "Онлайн" ? '<span class="team-status online">🟢 Онлайн</span>' : '<span class="team-status offline">🔴 ' + m.status + '</span>';
-        return `
-            <div class="team-card ${cardClass} clickable-card" data-type="team" data-id="${m.id}">
-                <div class="team-card-header">
-                    <div><div class="team-name">${escapeHtml(m.name)}</div><div class="team-role">${escapeHtml(m.role)}</div></div>
-                    ${statusHtml}
-                </div>
-                <div class="team-card-body">
-                    <div class="team-info-item"><div class="team-info-label">DISCORD</div><div class="team-info-value">${m.discord}</div></div>
-                    <div class="team-info-item"><div class="team-info-label">ИВЕНТОВ</div><div class="team-info-value">${eventsCount}</div></div>
-                    <div class="team-info-item"><div class="team-info-label">ВСТУПИЛ</div><div class="team-info-value">${m.joinDate}</div></div>
-                </div>
-                <div class="team-card-footer">
-                    <span class="team-badge ${type === 'senior' ? 'senior-badge' : 'junior-badge'}">${type === 'senior' ? '👑' : '🌟'} ${type === 'senior' ? 'Старший' : 'Младший'} состав</span>
-                    <div class="team-rating">${starsHtml}</div>
-                </div>
-            </div>
-        `;
+    let eventsCount = eventCounts[m.name] || 0;
+    if (m.eventsCount !== "-" && m.eventsCount !== "Нет нормы" && m.eventsCount !== "Отпуск" && !isNaN(parseInt(m.eventsCount))) {
+        eventsCount = m.eventsCount;
+    } else if (m.eventsCount === "Нет нормы" || m.eventsCount === "Отпуск") {
+        eventsCount = m.eventsCount;
     }
+    const cardClass = type === 'senior' ? 'senior' : 'junior';
+    const ratingValue = parseFloat(m.rating);
+    let starsHtml = '';
+    if (!isNaN(ratingValue)) {
+        const fullStars = Math.floor(ratingValue);
+        const hasHalf = ratingValue % 1 >= 0.5;
+        for(let i = 0; i < fullStars; i++) starsHtml += '<span class="rating-star">★</span>';
+        if(hasHalf) starsHtml += '<span class="rating-star">½</span>';
+        const empty = 5 - fullStars - (hasHalf ? 1 : 0);
+        for(let i = 0; i < empty; i++) starsHtml += '<span class="rating-star empty">☆</span>';
+    } else {
+        starsHtml = `<span class="rating-star">${m.rating}</span>`;
+    }
+    const statusHtml = m.status === "Онлайн" ? '<span class="team-status online">🟢 Онлайн</span>' : '<span class="team-status offline">🔴 ' + m.status + '</span>';
+    
+    // ПОЛУЧАЕМ АВАТАРКУ ПО ИМЕНИ
+    const avatarMap = {
+        "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
+        "manisule": "https://avatars.akamai.steamstatic.com/3973c828510cfd75f32b6a4d09bffa642f6c975f_full.jpg",
+        "Гербикс": "https://avatars.akamai.steamstatic.com/3acd2544afbc953feb4af6da64440fa4bf48618e_full.jpg",
+        "Arbuz Madrazo": "https://avatars.akamai.steamstatic.com/60c2b352131f11a8bcbd08f452decd9dfea10a32_full.jpg",
+        "somcop": "https://avatars.akamai.steamstatic.com/181420ae4a4f46eabd79c3b6b56e5e5e70aa4b91_full.jpg",
+        "Foxy": "https://avatars.akamai.steamstatic.com/e2ae91fee516fc12a05fbfe995f52891db03c63f_full.jpg",
+        "Дмитрий Морозов": "https://avatars.akamai.steamstatic.com/5a54395d65879aed3fc59787f1d9eaf21a839ff5_full.jpg",
+        "Гофикал": "https://avatars.akamai.steamstatic.com/ed77d818ec20ca4aad3417f5033647f79229c92a_full.jpg",
+        "Himas": "https://avatars.akamai.steamstatic.com/40ddf358c9028e084e617b8edecfdc620e5c12c9_full.jpg",
+        "yaroslav1432": "https://shared.akamai.steamstatic.com/community_assets/images/items/1313140/4ae9f2b8739631ea806a9508785f0445557e9bff.gif",
+        "кусочек шаурмы": "https://avatars.akamai.steamstatic.com/a350434d0216c11358393f13cf8a95bfcf1509db_full.jpg",
+        "gans7824": "https://avatars.akamai.steamstatic.com/7ccb0ac2e182c765a7ddf35bb64dde75e26ddfc2_full.jpg"
+    };
+    
+    const avatarUrl = avatarMap[m.name] || "https://i.imgur.com/IAIJe65.png";
+    
+    return `
+        <div class="team-card ${cardClass} clickable-card" data-type="team" data-id="${m.id}">
+            <div class="team-card-header">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <img src="${avatarUrl}" class="team-avatar" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,215,0,0.5);">
+                    <div>
+                        <div class="team-name">${escapeHtml(m.name)}</div>
+                        <div class="team-role">${escapeHtml(m.role)}</div>
+                    </div>
+                </div>
+                ${statusHtml}
+            </div>
+            <div class="team-card-body">
+                <div class="team-info-item"><div class="team-info-label">DISCORD</div><div class="team-info-value">${m.discord}</div></div>
+                <div class="team-info-item"><div class="team-info-label">ИВЕНТОВ</div><div class="team-info-value">${eventsCount}</div></div>
+                <div class="team-info-item"><div class="team-info-label">ВСТУПИЛ</div><div class="team-info-value">${m.joinDate}</div></div>
+            </div>
+            <div class="team-card-footer">
+                <span class="team-badge ${type === 'senior' ? 'senior-badge' : 'junior-badge'}">${type === 'senior' ? '👑' : '🌟'} ${type === 'senior' ? 'Старший' : 'Младший'} состав</span>
+                <div class="team-rating">${starsHtml}</div>
+            </div>
+        </div>
+    `;
+}
     
     let seniorHtml = '', juniorHtml = '';
     seniorMembers.forEach(m => { seniorHtml += renderMemberCard(m, 'senior'); });
