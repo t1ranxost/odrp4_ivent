@@ -353,19 +353,253 @@ navs.forEach(n => {
         else if (tab === 'add_event') renderAddEventForm();
         else if (tab === 'event_adons') renderAddonsPage();
         else if (tab === 'event_guidee') {
-            const totalPrizes = calculateTotalPrizes();
-            const eventsCount = eventsData.length;
-            const teamMembersCount = teamData.length;
-            const onlineCount = teamData.filter(m => m.status === "Онлайн").length;
-            document.getElementById('eventDynamicContent').innerHTML = `
-                <div class="stats-grid" id="normStatsContainer">
-                    <div class="stat-card"><div class="stat-value">${teamMembersCount}</div><div class="stat-label">Ивентеры</div><div class="stat-sub">активных сотрудников</div></div>
-                    <div class="stat-card"><div class="stat-value">${eventsCount}</div><div class="stat-label">ПРОВЕДЕННО ИВЕНТОВ</div><div class="stat-sub">успешно проведенные ивенты</div></div>
-                    <div class="stat-card"><div class="stat-value">-</div><div class="stat-label">ТИКЕТЫ</div><div class="stat-sub">за последние 7 дней</div></div>
-                    <div class="stat-card"><div class="stat-value">${onlineCount}</div><div class="stat-label">ОНЛАЙН</div><div class="stat-sub">сейчас вне отпуска</div></div>
-                    <div class="stat-card"><div class="stat-value" style="color: #5fe147;">${totalPrizes.toLocaleString('ru-RU')}$</div><div class="stat-label">ПРИЗОВЫЕ</div><div class="stat-sub">выданно валюты в неделю</div></div>
+    const totalPrizes = calculateTotalPrizes();
+    const eventsCount = eventsData.length;
+    const teamMembersCount = teamData.length;
+    const onlineCount = teamData.filter(m => m.status === "Онлайн").length;
+    
+    // Считаем ивенты по каждому сотруднику
+    const eventCounts = countEventsByPlatform();
+    
+    // Сортируем сотрудников по количеству ивентов
+    const sortedByEvents = [...teamData].sort((a, b) => {
+        const countA = eventCounts[a.name] || 0;
+        const countB = eventCounts[b.name] || 0;
+        return countB - countA;
+    });
+    
+    document.getElementById('eventDynamicContent').innerHTML = `
+        <style>
+            .norm-container {
+                background: var(--card-bg);
+                border-radius: 32px;
+                padding: 1.5rem;
+                border: 1px solid var(--card-border);
+                backdrop-filter: blur(20px);
+            }
+            
+            .norm-header {
+                text-align: center;
+                margin-bottom: 2rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid var(--table-row-border);
+            }
+            
+            .norm-header h2 {
+                font-size: 1.8rem;
+                font-weight: 700;
+                background: linear-gradient(135deg, #fff, #aaa);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                margin-bottom: 0.5rem;
+            }
+            
+            .norm-header p {
+                color: var(--text-muted);
+                font-size: 0.85rem;
+            }
+            
+            /* СТАТИСТИКА */
+            .norm-stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .norm-stat-card {
+                background: rgba(0,0,0,0.2);
+                border-radius: 24px;
+                padding: 1.2rem;
+                text-align: center;
+                border: 1px solid var(--card-border);
+                backdrop-filter: blur(12px);
+                transition: transform 0.2s;
+            }
+            
+            .norm-stat-card:hover {
+                transform: translateY(-3px);
+                border-color: rgba(255,215,0,0.3);
+            }
+            
+            .norm-stat-value {
+                font-size: 2.5rem;
+                font-weight: 800;
+                background: linear-gradient(135deg, #fff, #aaa);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+            
+            .norm-stat-label {
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                color: var(--text-muted);
+                margin-top: 0.3rem;
+            }
+            
+            /* ТАБЛИЦА НОРМЫ */
+            .norm-table-wrapper {
+                overflow-x: auto;
+                border-radius: 24px;
+                background: rgba(0,0,0,0.25);
+                border: 1px solid var(--card-border);
+                backdrop-filter: blur(28px);
+                margin-bottom: 1.5rem;
+            }
+            
+            .norm-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.85rem;
+            }
+            
+            .norm-table th {
+                text-align: left;
+                padding: 1rem;
+                background: var(--table-header-bg);
+                color: #888;
+                font-weight: 700;
+                font-size: 0.7rem;
+                letter-spacing: 1.2px;
+                text-transform: uppercase;
+                border-bottom: 2px solid var(--table-row-border);
+            }
+            
+            .norm-table td {
+                padding: 0.9rem 1rem;
+                border-bottom: 1px solid var(--table-row-border);
+                color: var(--text-primary);
+            }
+            
+            .norm-table tr:last-child td {
+                border-bottom: none;
+            }
+            
+            .norm-table tr:hover td {
+                background: var(--table-row-hover);
+            }
+            
+            .norm-badge {
+                display: inline-block;
+                padding: 0.2rem 0.7rem;
+                border-radius: 40px;
+                font-size: 0.7rem;
+                font-weight: 600;
+                background: var(--badge-bg);
+                backdrop-filter: blur(12px);
+            }
+            
+            .norm-badge.good {
+                background: rgba(76, 175, 80, 0.2);
+                color: #4caf50;
+            }
+            
+            .norm-badge.bad {
+                background: rgba(244, 67, 54, 0.2);
+                color: #f44336;
+            }
+            
+            .norm-badge.warning {
+                background: rgba(255, 152, 0, 0.2);
+                color: #ff9800;
+            }
+            
+            .norm-badge.none {
+                background: var(--badge-bg);
+                color: var(--text-muted);
+            }
+            
+            .norm-week {
+                margin-top: 1.5rem;
+                background: rgba(0,0,0,0.2);
+                border-radius: 24px;
+                padding: 1.2rem;
+                border: 1px solid var(--card-border);
+            }
+            
+            .norm-week-title {
+                font-size: 0.85rem;
+                font-weight: 700;
+                margin-bottom: 1rem;
+                color: #ffaa44;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .norm-week-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 0.8rem;
+            }
+            
+            .norm-day-card {
+                background: rgba(0,0,0,0.15);
+                border-radius: 16px;
+                padding: 0.8rem;
+                text-align: center;
+                border: 1px solid var(--card-border);
+            }
+            
+            .norm-day-name {
+                font-size: 0.7rem;
+                font-weight: 700;
+                color: #ffaa44;
+                margin-bottom: 0.3rem;
+            }
+            
+            .norm-day-value {
+                font-size: 0.7rem;
+                color: var(--text-secondary);
+            }
+        </style>
+        
+        <div class="norm-container">
+            <div class="norm-header">
+                <h2>📊 НОРМА ОТДЕЛА</h2>
+                <p>Статистика и выполнение норм сотрудниками</p>
+            </div>
+            
+            <!-- ОБЩАЯ СТАТИСТИКА -->
+            <div class="norm-stats-grid">
+                <div class="norm-stat-card">
+                    <div class="norm-stat-value">${teamMembersCount}</div>
+                    <div class="norm-stat-label">Ивентеров</div>
                 </div>
-            `;
+                <div class="norm-stat-card">
+                    <div class="norm-stat-value">${eventsCount}</div>
+                    <div class="norm-stat-label">Проведено ивентов</div>
+                </div>
+                <div class="norm-stat-card">
+                    <div class="norm-stat-value">${onlineCount}</div>
+                    <div class="norm-stat-label">Сейчас онлайн</div>
+                </div>
+                <div class="norm-stat-card">
+                    <div class="norm-stat-value" style="color: #5fe147;">${totalPrizes.toLocaleString('ru-RU')}$</div>
+                    <div class="norm-stat-label">Всего призовых</div>
+                </div>
+            </div>
+            
+            
+            
+            <!-- НОРМА ПО ДНЯМ -->
+            <div class="norm-week">
+                <div class="norm-week-title">📅 Норма после отпуска/вступления</div>
+                <div class="norm-week-grid">
+                    <div class="norm-day-card"><div class="norm-day-name">ПН</div><div class="norm-day-value">35 тикетов | 3 ивента</div></div>
+                    <div class="norm-day-card"><div class="norm-day-name">ВТ</div><div class="norm-day-value">35 тикетов | 3 ивента</div></div>
+                    <div class="norm-day-card"><div class="norm-day-name">СР</div><div class="norm-day-value">30 тикетов | 2 ивента</div></div>
+                    <div class="norm-day-card"><div class="norm-day-name">ЧТ</div><div class="norm-day-value">25 тикетов | 1 ивент</div></div>
+                    <div class="norm-day-card"><div class="norm-day-name">ПТ</div><div class="norm-day-value">20 тикетов | 1 ивент</div></div>
+                    <div class="norm-day-card"><div class="norm-day-name">СБ</div><div class="norm-day-value">10 тикетов | 1 ивент</div></div>
+                    <div class="norm-day-card"><div class="norm-day-name">ВС</div><div class="norm-day-value">Освобождены</div></div>
+                </div>
+            </div>
+        </div>
+    `;
         } else if (tab === 'event_guide') {
     document.getElementById('eventDynamicContent').innerHTML = `
         <style>
@@ -1134,3 +1368,126 @@ if (salaryModal) {
     });
 }
 
+   const BanConfig = {
+        containerId:     'banContainer',
+        texts: [
+            { text: 'БАН',            weight: 4 },
+            { text: 'ВЫГОВОР',        weight: 3 },
+            { text: 'ПРЕДУПРЕЖДЕНИЕ', weight: 2 },
+            { text: 'ЧСП',            weight: 2 }
+        ],
+        spawnRateMs:     250,
+        initialBurst:    40,
+        burstIntervalMs: 120,
+        minSize: 8,
+        maxSize: 20,
+        animations: ['flyRight', 'flyLeft', 'flyUp', 'flyDiagonal']
+    };
+
+    function getRandomText() {
+        const totalWeight = BanConfig.texts.reduce((sum, item) => sum + item.weight, 0);
+        let random = Math.random() * totalWeight;
+        for (const item of BanConfig.texts) { random -= item.weight; if (random <= 0) return item.text; }
+        return BanConfig.texts[0].text;
+    }
+
+    function createBanText() {
+        if (document.hidden) return;
+        const container = document.getElementById(BanConfig.containerId);
+        if (!container) return;
+        const el           = document.createElement('span');
+        el.className       = 'ban-text';
+        el.setAttribute('aria-hidden', 'true');
+        const selectedText = getRandomText();
+        el.textContent     = selectedText;
+        el.dataset.type    = selectedText.toLowerCase();
+        if (Math.random() > 0.75) el.classList.add('glow');
+        let size = BanConfig.minSize + Math.random() * (BanConfig.maxSize - BanConfig.minSize);
+        if (selectedText.length > 6) size *= 0.7;
+        el.style.fontSize = `${size}px`;
+        el.style.setProperty('--max-opacity', (0.10 + Math.random() * 0.18).toFixed(2));
+        el.style.setProperty('--rot', `${-25 + Math.random() * 50}deg`);
+        el.style.top  = `${Math.random() * 100}%`;
+        el.style.left = `${Math.random() * 100}%`;
+        const anim     = BanConfig.animations[Math.floor(Math.random() * BanConfig.animations.length)];
+        const duration = 6 + Math.random() * 8;
+        el.style.animation = `${anim} ${duration}s linear forwards, gradientPulse ${2 + Math.random() * 2}s ease-in-out infinite`;
+        container.appendChild(el);
+        setTimeout(() => { if (el.parentNode) el.remove(); }, duration * 1000 + 300);
+    }
+
+    function startBanAnimation() {
+        for (let i = 0; i < BanConfig.initialBurst; i++) setTimeout(createBanText, i * BanConfig.burstIntervalMs);
+        setInterval(createBanText, BanConfig.spawnRateMs);
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startBanAnimation);
+    else startBanAnimation();
+
+    /* ========================================
+       SWEET EARN
+    ======================================== */
+    let sweetEarnIsOpen       = false;
+    let sweetEarnCloseTimer   = null;
+    let sweetEarnCleanupTimer = null;
+
+    function initSweetEarnFeature() {
+        if (window.__sweetEarnFeatureInit) return;
+        window.__sweetEarnFeatureInit = true;
+
+        function getSweetEarnEls() {
+            return {
+                overlay:   document.getElementById('sweetEarnOverlay'),
+                text:      document.getElementById('sweetEarnText'),
+                imageWrap: document.getElementById('sweetEarnImageWrap')
+            };
+        }
+
+        function clearSweetEarnTimers() {
+            if (sweetEarnCloseTimer)   { clearTimeout(sweetEarnCloseTimer);   sweetEarnCloseTimer   = null; }
+            if (sweetEarnCleanupTimer) { clearTimeout(sweetEarnCleanupTimer); sweetEarnCleanupTimer = null; }
+        }
+
+        function openSweetEarn() {
+            const { overlay, text, imageWrap } = getSweetEarnEls();
+            if (!overlay || !text || !imageWrap) { console.error('SweetEarn: элементы не найдены'); return; }
+            clearSweetEarnTimers();
+            sweetEarnIsOpen = true;
+            overlay.classList.remove('sweet-earn-hide', 'is-closing', 'is-active', 'is-flashing');
+            text.classList.remove('animate');
+            imageWrap.classList.remove('animate');
+            void overlay.offsetWidth; void text.offsetWidth; void imageWrap.offsetWidth;
+            overlay.classList.add('is-active', 'is-flashing');
+            overlay.setAttribute('aria-hidden', 'false');
+            text.classList.add('animate');
+            setTimeout(() => imageWrap.classList.add('animate'), 180);
+            sweetEarnCloseTimer = setTimeout(closeSweetEarn, 7000);
+        }
+
+        function closeSweetEarn() {
+            const { overlay, text, imageWrap } = getSweetEarnEls();
+            if (!overlay) return;
+            clearSweetEarnTimers();
+            sweetEarnIsOpen = false;
+            overlay.classList.remove('is-active', 'is-flashing');
+            overlay.classList.add('is-closing');
+            overlay.setAttribute('aria-hidden', 'true');
+            sweetEarnCleanupTimer = setTimeout(() => {
+                overlay.classList.add('sweet-earn-hide');
+                overlay.classList.remove('is-closing');
+                if (text)      text.classList.remove('animate');
+                if (imageWrap) imageWrap.classList.remove('animate');
+            }, 450);
+        }
+
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('#sweetEarnBtn');
+            if (btn) { e.preventDefault(); openSweetEarn(); return; }
+            const overlay = document.getElementById('sweetEarnOverlay');
+            if (overlay && e.target === overlay && sweetEarnIsOpen) closeSweetEarn();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sweetEarnIsOpen) closeSweetEarn();
+        });
+    }
