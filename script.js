@@ -897,3 +897,214 @@ function updateSidebarAvatar(username) {
 }
 
 doLogin
+
+// ========== НАСТРОЙКИ ПО НАЖАТИЮ НА АВАТАРКУ ==========
+const avatarImg = document.querySelector('.sidebar-logo');
+const settingsModal = document.getElementById('settingsModal');
+const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+const brightnessSlider = document.getElementById('brightnessSlider');
+const brightnessValue = document.getElementById('brightnessValue');
+const bgOptions = document.querySelectorAll('.bg-option');
+const userEventsCountSpan = document.getElementById('userEventsCount');
+const userPrizesCountSpan = document.getElementById('userPrizesCount');
+const userJoinDateSpan = document.getElementById('userJoinDate');
+
+// ПОЛУЧИТЬ СТАТИСТИКУ ПОЛЬЗОВАТЕЛЯ
+function getUserStats() {
+    const username = currentUser || sessionStorage.getItem('user') || 'Гость';
+    let userEvents = eventsData.filter(e => e.platform === username).length;
+    let totalPrizes = 0;
+    eventsData.forEach(e => {
+        if (e.platform === username) {
+            let clean = String(e.rating).replace(/[^0-9]/g, '');
+            let num = parseInt(clean);
+            if (!isNaN(num)) totalPrizes += num;
+        }
+    });
+    let firstEvent = eventsData.filter(e => e.platform === username).sort((a,b) => new Date(a.date) - new Date(b.date))[0];
+    let joinDate = firstEvent ? firstEvent.date.split(',')[0] : "15.03.2026";
+    return { events: userEvents, prizes: totalPrizes, joinDate: joinDate };
+}
+
+// ОБНОВИТЬ СТАТИСТИКУ
+function updateStatsDisplay() {
+    const stats = getUserStats();
+    if (userEventsCountSpan) userEventsCountSpan.textContent = stats.events;
+    if (userPrizesCountSpan) userPrizesCountSpan.textContent = stats.prizes.toLocaleString() + '$';
+    if (userJoinDateSpan) userJoinDateSpan.textContent = stats.joinDate;
+}
+
+// РЕАЛЬНОЕ ИЗМЕНЕНИЕ ЯРКОСТИ
+function applyBrightness(value) {
+    const percent = value / 100;
+    const bg = document.getElementById('moving-bg');
+    if (bg) {
+        bg.style.filter = `brightness(${percent}) blur(8px) saturate(0) grayscale(1)`;
+    }
+    let overlay = document.getElementById('brightnessOverlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'brightnessOverlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.pointerEvents = 'none';
+        overlay.style.zIndex = '9998';
+        overlay.style.transition = 'background-color 0.2s ease';
+        document.body.appendChild(overlay);
+    }
+    if (value < 100) {
+        const darkAmount = (100 - value) / 100;
+        overlay.style.backgroundColor = `rgba(0, 0, 0, ${darkAmount * 0.5})`;
+    } else if (value > 100) {
+        const lightAmount = (value - 100) / 100;
+        overlay.style.backgroundColor = `rgba(255, 255, 255, ${lightAmount * 0.3})`;
+    } else {
+        overlay.style.backgroundColor = 'transparent';
+    }
+    if (brightnessValue) brightnessValue.textContent = value + '%';
+}
+
+// ПРИМЕНИТЬ ВЫБРАННЫЙ ФОН
+function applyBackground(bgId) {
+    const bgUrls = {
+        1: 'https://imgfy.ru/ib/XGApUH780EjwsYN_1776609369.webp',
+        2: 'https://imgfy.ru/ib/qv3BW9jCym57tnU_1776609369.webp',
+        3: 'https://imgfy.ru/ib/lEqijyGxCjX8z3l_1776609368.webp',
+        4: 'https://imgfy.ru/ib/msGNDVjfXFM4ffS_1776609635.webp',
+        5: 'https://imgfy.ru/ib/yTWGwkqDzLAjhoc_1776609368.webp'
+    };
+    const bgElement = document.getElementById('moving-bg');
+    if (bgElement && bgUrls[bgId]) {
+        bgElement.style.backgroundImage = `url('${bgUrls[bgId]}')`;
+    }
+}
+
+// ОТКРЫТЬ НАСТРОЙКИ
+function openSettings() {
+    updateStatsDisplay();
+    settingsModal.classList.add('show');
+}
+
+// ЗАКРЫТЬ НАСТРОЙКИ
+function closeSettings() {
+    settingsModal.classList.remove('show');
+}
+
+// ЗАГРУЗИТЬ СОХРАНЁННЫЕ НАСТРОЙКИ
+function loadSavedSettings() {
+    const savedBrightness = localStorage.getItem('brightness');
+    if (savedBrightness && brightnessSlider) {
+        brightnessSlider.value = savedBrightness;
+        applyBrightness(savedBrightness);
+    }
+    const savedBg = localStorage.getItem('selectedBg');
+    if (savedBg) {
+        applyBackground(savedBg);
+        bgOptions.forEach(opt => {
+            if (opt.dataset.bg === savedBg) {
+                opt.classList.add('selected');
+            } else {
+                opt.classList.remove('selected');
+            }
+        });
+    }
+}
+
+// СОХРАНИТЬ НАСТРОЙКИ
+function saveAllSettings() {
+    const brightness = brightnessSlider.value;
+    localStorage.setItem('brightness', brightness);
+    applyBrightness(brightness);
+    const selectedBg = document.querySelector('.bg-option.selected');
+    if (selectedBg) {
+        localStorage.setItem('selectedBg', selectedBg.dataset.bg);
+        applyBackground(selectedBg.dataset.bg);
+    }
+    closeSettings();
+    showNotif('✅ Настройки сохранены!');
+}
+
+// ВЫБОР ФОНА
+bgOptions.forEach(opt => {
+    opt.addEventListener('click', () => {
+        bgOptions.forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+    });
+});
+
+// СЛУШАТЕЛИ ЯРКОСТИ
+if (brightnessSlider) {
+    brightnessSlider.addEventListener('input', (e) => {
+        applyBrightness(parseInt(e.target.value));
+    });
+}
+
+// СОБЫТИЯ
+if (avatarImg) avatarImg.addEventListener('click', openSettings);
+if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
+if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', saveAllSettings);
+if (settingsModal) {
+    settingsModal.addEventListener('click', (e) => {
+        if (e.target === settingsModal) closeSettings();
+    });
+}
+
+// ЗАГРУЗИТЬ НАСТРОЙКИ ПРИ СТАРТЕ
+loadSavedSettings();
+
+// ========== КНОПКА ПОЛУЧИТЬ ЗАРПЛАТУ (картинка + аудио) ==========
+const salaryBtn = document.getElementById('salaryBtn');
+const salaryModal = document.getElementById('salaryModal');
+const closeSalaryBtn = document.getElementById('closeSalaryBtn');
+const salaryAudio = document.getElementById('salaryAudio');
+
+// ОТКРЫТИЕ - показываем картинку и включаем музыку
+function openSalaryModal() {
+    salaryModal.classList.add('show');
+    if (salaryAudio) {
+        salaryAudio.play().catch(e => console.log('Автовоспроизведение заблокировано, нажмите на окно'));
+    }
+}
+
+// ЗАКРЫТИЕ - прячем окно и ВЫКЛЮЧАЕМ музыку
+function closeSalaryModal() {
+    salaryModal.classList.remove('show');
+    if (salaryAudio) {
+        salaryAudio.pause();
+        salaryAudio.currentTime = 0;  // перематываем на начало
+    }
+}
+
+// НАЖАТИЕ НА КНОПКУ
+if (salaryBtn) {
+    salaryBtn.addEventListener('click', openSalaryModal);
+}
+
+// НАЖАТИЕ НА КРЕСТИК
+if (closeSalaryBtn) {
+    closeSalaryBtn.addEventListener('click', closeSalaryModal);
+}
+
+// КЛИК ПО ФОНУ (ЗАТЕМНЕНИЮ) - тоже закрывает
+if (salaryModal) {
+    salaryModal.addEventListener('click', function(e) {
+        if (e.target === salaryModal) {
+            closeSalaryModal();
+        }
+    });
+}
+
+// ДОПОЛНИТЕЛЬНО: если браузер блокирует автовоспроизведение,
+// пользователь может кликнуть по окну чтобы включить музыку
+if (salaryModal) {
+    salaryModal.addEventListener('click', function() {
+        if (salaryModal.classList.contains('show') && salaryAudio && salaryAudio.paused) {
+            salaryAudio.play().catch(e => console.log('Всё ещё заблокировано'));
+        }
+    });
+}
+
