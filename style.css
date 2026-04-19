@@ -1411,3 +1411,17 @@ button{font-family:inherit}
 .sidebar-logo {
     cursor: pointer;
 }
+
+.team-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.team-card:hover .team-avatar {
+    transform: scale(1.05);
+    border-color: gold;
+}
