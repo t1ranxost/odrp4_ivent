@@ -975,7 +975,8 @@ function applyBackground(bgId) {
         2: 'https://imgfy.ru/ib/qv3BW9jCym57tnU_1776609369.webp',
         3: 'https://imgfy.ru/ib/lEqijyGxCjX8z3l_1776609368.webp',
         4: 'https://imgfy.ru/ib/msGNDVjfXFM4ffS_1776609635.webp',
-        5: 'https://imgfy.ru/ib/yTWGwkqDzLAjhoc_1776609368.webp'
+        5: 'https://imgfy.ru/ib/yTWGwkqDzLAjhoc_1776609368.webp',
+        6: 'https://i.ibb.co/vC3t0sSq/Garrys-Mod-x64-18-04-2026-22-21-03.png'
     };
     const bgElement = document.getElementById('moving-bg');
     if (bgElement && bgUrls[bgId]) {
