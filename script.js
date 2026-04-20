@@ -1,7 +1,7 @@
 // ========== ТВОИ ДАННЫЕ ==========
 let eventsData = [
     { id: 1, name: "емендемс", platform: "Foxy", organizer: "Тявкобой", date: "20.04.26, 0:39 - 20.04.26, 0:44", status: "Проведен", rating: "30.000$", members: 3, callStatus: "🟡Скоро", fullDetails: { description: "под вами 4 пропа разных цветов и над вами 1 проп. вам нужно встать на цвета соответствующие пропу над вами.", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 2, name: "емендемс 2.0", platform: "Foxy", organizer: "Тявкобой", date: "20.04.26, 12:40 - 20.04.26, 13:00", status: "Проведен", rating: "50.000$", members: 12, callStatus: "🟡Скоро", fullDetails: { description: "Суть та-же что и в прошлый раз, но он теперь автоматизирован и проводиться в темноте", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 2, name: "емендемс 2.0", platform: "Foxy", organizer: "Тявкобой", date: "20.04.26, 12:40 - 20.04.26, 13:00", status: "Проведен", rating: "30.000$", members: 3, callStatus: "🟡Скоро", fullDetails: { description: "под вами 4 пропа разных цветов и над вами 1 проп. вам нужно встать на цвета соответствующие пропу над вами.", tasks: "", feedback: "", rewards: "", extra: "" } },
 ];
 
 let teamData = [
@@ -17,6 +17,196 @@ let teamData = [
     { id: 10, name: "somcop", role: "Ивентер", discord: "76561199768219919", status: "Онлайн", eventsCount: "-", joinDate: "13.04.26", rating: "Модератор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } },
     { id: 11, name: "кусочек шаурмы", role: "Ивентер", discord: "636585910552756284", status: "Онлайн", eventsCount: "-", joinDate: "17.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } }
 ];
+
+// URL Google Apps Script
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbzCAoL5YLA1PXdU4Xbl9xl7taKo8SIjxFmO7SL-61K6uAm0CiAtqShL-ImYwsu1OuUo/exec';
+
+// Словарь аватарок
+const avatarMap = {
+    "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
+    "manisule": "https://avatars.akamai.steamstatic.com/3973c828510cfd75f32b6a4d09bffa642f6c975f_full.jpg",
+    "Гербикс": "https://avatars.akamai.steamstatic.com/3acd2544afbc953feb4af6da64440fa4bf48618e_full.jpg",
+    "Arbuz Madrazo": "https://avatars.akamai.steamstatic.com/60c2b352131f11a8bcbd08f452decd9dfea10a32_full.jpg",
+    "somcop": "https://avatars.akamai.steamstatic.com/181420ae4a4f46eabd79c3b6b56e5e5e70aa4b91_full.jpg",
+    "Foxy": "https://avatars.akamai.steamstatic.com/e2ae91fee516fc12a05fbfe995f52891db03c63f_full.jpg",
+    "Дмитрий Морозов": "https://avatars.akamai.steamstatic.com/5a54395d65879aed3fc59787f1d9eaf21a839ff5_full.jpg",
+    "Гофикал": "https://avatars.akamai.steamstatic.com/ed77d818ec20ca4aad3417f5033647f79229c92a_full.jpg",
+    "Himas": "https://avatars.akamai.steamstatic.com/40ddf358c9028e084e617b8edecfdc620e5c12c9_full.jpg",
+    "yaroslav1432": "https://shared.akamai.steamstatic.com/community_assets/images/items/1313140/4ae9f2b8739631ea806a9508785f0445557e9bff.gif",
+    "кусочек шаурмы": "https://avatars.akamai.steamstatic.com/a350434d0216c11358393f13cf8a95bfcf1509db_full.jpg",
+    "gans7824": "https://avatars.akamai.steamstatic.com/7ccb0ac2e182c765a7ddf35bb64dde75e26ddfc2_full.jpg"
+};
+
+function getAvatarUrl(username) {
+    return avatarMap[username] || "https://i.imgur.com/IAIJe65.png";
+}
+
+function loadComments(eventId) {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(Array.isArray(data) ? data : []);
+        };
+        
+        script.src = `${COMMENTS_API_URL}?action=getComments&eventId=${eventId}&callback=${callbackName}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve([]);
+        };
+        document.body.appendChild(script);
+    });
+}
+
+function addComment(eventId, userName, text) {
+    return new Promise((resolve) => {
+        const avatarUrl = getAvatarUrl(userName);
+        const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(data);
+        };
+        
+        const params = new URLSearchParams({
+            action: 'addComment',
+            eventId: eventId,
+            userName: userName,
+            avatarUrl: avatarUrl,
+            text: text,
+            callback: callbackName
+        });
+        
+        script.src = `${COMMENTS_API_URL}?${params.toString()}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve({ success: false, error: 'Network error' });
+        };
+        document.body.appendChild(script);
+    });
+}
+
+async function renderCommentsSection(eventId, container) {
+    // Сначала показываем заглушку "Загрузка..."
+    const section = document.createElement('div');
+    section.className = 'comments-section';
+    section.innerHTML = `
+        <div class="comments-title">
+            <svg class="icon" style="fill:var(--icon-fill); width:20px; height:20px;"><use href="#ic-chat"/></svg>
+            Комментарии (загрузка...)
+        </div>
+        <div class="comments-list" id="commentsList" style="opacity:0.6; text-align:center; padding:20px;">
+            Загрузка комментариев...
+        </div>
+        ${currentUser ? `
+        <div class="comment-form">
+            <textarea class="comment-input" id="newCommentText" placeholder="Напишите комментарий..." rows="1"></textarea>
+            <button class="comment-send-btn" id="sendCommentBtn">
+                <svg class="icon" style="fill:#fff; width:16px; height:16px;"><use href="#ic-send"/></svg>
+                Отправить
+            </button>
+        </div>
+        ` : '<div style="color:var(--text-muted); text-align:center;">Войдите, чтобы оставить комментарий</div>'}
+    `;
+    
+    container.appendChild(section);
+    const listEl = section.querySelector('#commentsList');
+    
+    // Загружаем комментарии в фоне
+    const comments = await loadComments(eventId);
+    
+    // Мгновенно заменяем заглушку на реальные данные
+    listEl.style.opacity = '1';
+    listEl.style.textAlign = 'left';
+    listEl.style.padding = '0';
+    listEl.innerHTML = '';
+    
+    const template = document.getElementById('commentTemplate');
+    
+    if (comments.length === 0) {
+        listEl.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:20px;">Пока нет комментариев</div>';
+    } else {
+        comments.forEach(c => {
+            const clone = template.content.cloneNode(true);
+            clone.querySelector('.comment-avatar').src = c.avatarUrl;
+            clone.querySelector('.comment-author').textContent = c.userName;
+            clone.querySelector('.comment-time').textContent = c.timestamp;
+            clone.querySelector('.comment-text').textContent = c.text;
+            listEl.appendChild(clone);
+        });
+    }
+    
+    // Обновляем счётчик
+    section.querySelector('.comments-title').innerHTML = `
+        <svg class="icon" style="fill:var(--icon-fill); width:20px; height:20px;"><use href="#ic-chat"/></svg>
+        Комментарии (${comments.length})
+    `;
+    
+    // Настройка кнопки отправки (код остаётся тот же)
+    if (currentUser) {
+        const sendBtn = section.querySelector('#sendCommentBtn');
+        const textarea = section.querySelector('#newCommentText');
+        
+        sendBtn.addEventListener('click', async () => {
+            const text = textarea.value.trim();
+            if (!text) {
+                showNotif('Введите текст комментария', true);
+                return;
+            }
+            
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Отправка...';
+            
+            const result = await addComment(eventId, currentUser, text);
+            
+            if (result.success) {
+                showNotif('✅ Комментарий добавлен');
+                
+                const clone = template.content.cloneNode(true);
+                clone.querySelector('.comment-avatar').src = getAvatarUrl(currentUser);
+                clone.querySelector('.comment-author').textContent = currentUser;
+                clone.querySelector('.comment-time').textContent = new Date().toLocaleString("ru-RU");
+                clone.querySelector('.comment-text').textContent = text;
+                listEl.appendChild(clone);
+                
+                if (listEl.querySelector('div[style*="Пока нет комментариев"]')) {
+                    listEl.innerHTML = '';
+                    listEl.appendChild(clone);
+                }
+                
+                const newCount = listEl.children.length;
+                section.querySelector('.comments-title').innerHTML = `
+                    <svg class="icon" style="fill:var(--icon-fill); width:20px; height:20px;"><use href="#ic-chat"/></svg>
+                    Комментарии (${newCount})
+                `;
+                
+                textarea.value = '';
+            } else {
+                showNotif('❌ Ошибка отправки', true);
+            }
+            
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = `
+                <svg class="icon" style="fill:#fff; width:16px; height:16px;"><use href="#ic-send"/></svg>
+                Отправить
+            `;
+        });
+        
+        textarea.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendBtn.click();
+            }
+        });
+    }
+}
 
 function countEventsByPlatform() {
     const counts = {};
@@ -232,7 +422,7 @@ function renderTeamTable() {
         "Himas": "https://avatars.akamai.steamstatic.com/40ddf358c9028e084e617b8edecfdc620e5c12c9_full.jpg",
         "yaroslav1432": "https://shared.akamai.steamstatic.com/community_assets/images/items/1313140/4ae9f2b8739631ea806a9508785f0445557e9bff.gif",
         "кусочек шаурмы": "https://avatars.akamai.steamstatic.com/a350434d0216c11358393f13cf8a95bfcf1509db_full.jpg",
-        "gans7824": "https://avatars.akamai.steamstatic.com/7ccb0ac2e182c765a7ddf35bb64dde75e26ddfc2_full.jpg"
+        "gans7824": "https://avatars.akamai.steamstatic.com/7ccb0ac2e182c765a7ddf35bb64dde75e26ddfc2_full.jpg",
     };
     
     const avatarUrl = avatarMap[m.name] || "https://i.imgur.com/IAIJe65.png";
@@ -301,14 +491,27 @@ function attachRowClicks() {
 }
 
 function openEventModal(ev) {
-    document.getElementById('modalTitle').innerHTML = '📌 Детали ивента';
-    document.getElementById('modalBody').innerHTML = `
+    document.getElementById('modalTitle').innerHTML = `
+        <svg class="icon icon-accent" style="flex-shrink:0;"><use href="#ic-detail"/></svg>
+        Детали ивента
+    `;
+    
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
         <div class="detail-row"><span class="detail-label">Название:</span><span>${escapeHtml(ev.name)}</span></div>
         <div class="detail-row"><span class="detail-label">Организатор:</span><span>${ev.platform}</span></div>
         <div class="detail-row"><span class="detail-label">Дата:</span><span>${ev.date}</span></div>
         <div class="detail-row"><span class="detail-label">Категория:</span><span>${ev.callStatus}</span></div>
-        <div style="margin-top:12px; background:var(--card-bg); padding:12px; border-radius:24px;"><b>Описание:</b><br>${ev.fullDetails.description}</div>
+        <div style="margin-top:12px; background:var(--card-bg); padding:12px; border-radius:24px;">
+            <b>Описание:</b><br>${ev.fullDetails.description}
+        </div>
+        <div id="commentsContainer"></div>
     `;
+    
+    // ВОТ ЭТА СТРОКА ДОБАВЛЯЕТ КОММЕНТАРИИ
+    const commentsContainer = document.getElementById('commentsContainer');
+    renderCommentsSection(ev.id, commentsContainer);
+    
     document.getElementById('infoModal').style.display = 'flex';
 }
 
@@ -1483,7 +1686,7 @@ if (salaryModal) {
     }
     
     // ========== ПОДКЛЮЧЕНИЕ К GOOGLE SHEETS ==========
-const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwN1n8dKGVc1_jpHh_Y4oH8rSdTp1t8RXEvefYUifkclHI5bXZkr7EKZ0po6tkkQz4Geg/exec';
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzVWRepqj2f3qyoMNBrrz-4k00v2BqH2YtoxlkSBKc_ThaRLSF9pFf8eCgf6AF33R0TtA/exec';
 
 // ФУНКЦИЯ ДЛЯ ОБНОВЛЕНИЯ СТАТУСА В ТАБЛИЦЕ
 async function syncStatusToSheet(eventId, newStatus, userName) {
