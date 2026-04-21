@@ -566,6 +566,17 @@ function showNotif(msg, isErr = false) {
     setTimeout(() => d.remove(), 3000);
 }
 
+// Функции для глобальной загрузки
+function showGlobalLoading() {
+    const overlay = document.getElementById('globalLoadingOverlay');
+    if (overlay) overlay.style.display = 'flex';
+}
+
+function hideGlobalLoading() {
+    const overlay = document.getElementById('globalLoadingOverlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
 function escapeHtml(s) { 
     if(!s) return ''; 
     return s.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); 
@@ -1052,7 +1063,7 @@ navs.forEach(n => {
         </div>
     `;
         } else if (tab === 'event_guide') {
-    document.getElementById('eventDynamicContent').innerHTML = `
+    document.getElementById('eventDynamicContent').innerHTML = ` 
         <style>
             .methodology-container {
                 background: var(--card-bg);
@@ -1672,7 +1683,12 @@ function onContinue() {
     welcomeContainer.classList.add('hidden');
     mainDashboard.style.display = 'block';
     renderEventsTable();
-    refreshEventsData();
+    
+    // Загрузка ТОЛЬКО здесь
+    showGlobalLoading();
+    refreshEventsData().finally(() => {
+        hideGlobalLoading();
+    });
 }
 
 function logout() {
