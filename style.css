@@ -764,14 +764,9 @@ button{font-family:inherit}
         inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
-/* Старый спиннер скрыт */
 .loading-spinner {
     display: none;
 }
-
-/* =========================================================
-   SLEEP ICON
-========================================================= */
 
 .sleep-container {
     position: relative;
@@ -783,7 +778,6 @@ button{font-family:inherit}
     margin-bottom: 10px;
 }
 
-/* Оригинальную картинку скрываем */
 .sleep-icon {
     width: 85px;
     height: 85px;
@@ -792,7 +786,6 @@ button{font-family:inherit}
     position: absolute;
 }
 
-/* Основная черноватая иконка */
 .sleep-container::before {
     content: '';
     position: absolute;
@@ -831,7 +824,6 @@ button{font-family:inherit}
         sleepPulse 3s ease-in-out infinite;
 }
 
-/* Верхний блик */
 .sleep-container::after {
     content: '';
     position: absolute;
@@ -862,10 +854,6 @@ button{font-family:inherit}
 
     animation: sleepBob 3s ease-in-out infinite;
 }
-
-/* =========================================================
-   Z LETTERS
-========================================================= */
 
 .z-letter {
     position: absolute;
@@ -1557,4 +1545,58 @@ button{font-family:inherit}
 .comment-send-btn:hover {
   transform: scale(1.02);
   opacity: 0.92;
+}
+
+.form-group select {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    padding: 0.7rem 1rem;
+    border-radius: 20px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    backdrop-filter: blur(12px);
+    cursor: pointer;
+}
+
+.form-group select option {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.comment-delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.2s, color 0.2s;
+    margin-left: auto;
+}
+
+.comment-item:hover .comment-delete-btn {
+    opacity: 1;
+}
+
+.comment-delete-btn:hover {
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.1);
+}
+
+.comment-header {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.comment-author-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
 }
