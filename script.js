@@ -19,7 +19,7 @@ let teamData = [
     { id: 11, name: "кусочек шаурмы", role: "Ивентер", discord: "636585910552756284", status: "Онлайн", eventsCount: "-", joinDate: "17.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } }
 ];
 
-const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbxqY268ub3UFP2wXmAjZ5gNNpLvhlHCB5yG1Q0v6cQW0Qa48r267YYahD0VNZkUzx9n/exec';
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbxkGPpYOXPnVelr_vDk3nli7JMNh7ZT_XZ1wwY-Nk2DzCAQwhqH_QFfqWpk17LDCWTd/exec';
 
 const avatarMap = {
     "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
