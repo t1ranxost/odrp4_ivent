@@ -8,116 +8,93 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
-    <!-- Inline SVG-спрайт: все иконки в одном месте -->
     <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
         <defs>
 
-            <!-- Орёл / птица -->
             <symbol id="ic-eagle" viewBox="0 0 24 24">
                 <path d="M21 8c-1.5 0-2.9.6-3.9 1.6L12 5 6.9 9.6A5.5 5.5 0 0 0 3 8H1l3 4-3 4h2a5.5 5.5 0 0 0 3.9-1.6L9 16l-2 5h2l3-4 3 4h2l-2-5 1.1-1.6A5.5 5.5 0 0 0 20 16h2l-3-4 3-4h-1Z"/>
             </symbol>
 
-            <!-- Рука/приветствие -->
             <symbol id="ic-wave" viewBox="0 0 24 24">
                 <path d="M7.5 4a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-2.5A.75.75 0 0 1 7.5 4ZM12 2a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 12 2Zm4.5 2a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-2.5A.75.75 0 0 1 16.5 4ZM5.25 8.5A2.75 2.75 0 0 1 8 5.75h.25V8A3.25 3.25 0 0 0 11.5 11h1A3.25 3.25 0 0 0 16 8V5.75H16.25A2.75 2.75 0 0 1 19 8.5v1a8.75 8.75 0 0 1-8.75 8.75H8.5A6.25 6.25 0 0 1 2.25 12v-1A2.75 2.75 0 0 1 5 8.25l.25.25Z"/>
             </symbol>
 
-            <!-- Таблица / список -->
             <symbol id="ic-table" viewBox="0 0 24 24">
                 <path d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm1 5v3h5V8H4Zm7 0v3h5V8h-5Zm7 0v3h1V8h-1Zm-14 5v3h5v-3H4Zm7 0v3h5v-3h-5Zm7 0v3h1v-3h-1Zm-14 5v1h5v-1H4Zm7 0v1h5v-1h-5Zm7 0v1h1v-1h-1Z"/>
             </symbol>
 
-            <!-- Люди / команда -->
             <symbol id="ic-team" viewBox="0 0 24 24">
                 <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z"/>
             </symbol>
 
-            <!-- Плюс / добавить -->
             <symbol id="ic-plus" viewBox="0 0 24 24">
                 <path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 0 1 0 2h-6v6a1 1 0 0 1-2 0v-6H5a1 1 0 0 1 0-2h6V5a1 1 0 0 1 1-1Z"/>
             </symbol>
 
-            <!-- График / статистика / норма -->
             <symbol id="ic-chart" viewBox="0 0 24 24">
                 <path d="M3 3v18h18v-2H5V3H3Zm14 9-4-4-4 4-2-2-1.4 1.4L9 14.8l4-4 4 4 4-4-1.4-1.4L17 12Z"/>
             </symbol>
 
-            <!-- Книга / методичка -->
             <symbol id="ic-book" viewBox="0 0 24 24">
                 <path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Zm0 18H6V4h2v8l2.5-1.5L13 12V4h5v16Z"/>
             </symbol>
 
-            <!-- Коробка / аддоны -->
             <symbol id="ic-box" viewBox="0 0 24 24">
                 <path d="m20.7 7.5-8-4.5a1.5 1.5 0 0 0-1.4 0l-8 4.5A1.5 1.5 0 0 0 2.5 9v6a1.5 1.5 0 0 0 .8 1.3l8 4.5a1.5 1.5 0 0 0 1.4 0l8-4.5a1.5 1.5 0 0 0 .8-1.3V9a1.5 1.5 0 0 0-.8-1.5ZM12 4.5 18.5 8 12 11.5 5.5 8 12 4.5ZM4.5 9.7l7 3.9v7l-7-3.9v-7Zm9 10.9v-7l7-3.9v7l-7 3.9Z"/>
             </symbol>
 
-            <!-- Солнце — светлая тема -->
             <symbol id="ic-sun" viewBox="0 0 24 24">
                 <path d="M12 7a5 5 0 1 0 0 10A5 5 0 0 0 12 7Zm0-5a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1Zm0 16a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0v-1a1 1 0 0 1 1-1Zm8-9a1 1 0 0 1 0 2h-1a1 1 0 0 1 0-2h1ZM5 12a1 1 0 0 1-1 1H3a1 1 0 0 1 0-2h1a1 1 0 0 1 1 1Zm11.95-5.364a1 1 0 0 1 0 1.414l-.707.707a1 1 0 0 1-1.414-1.414l.707-.707a1 1 0 0 1 1.414 0ZM7.757 16.95a1 1 0 0 1 0 1.414l-.707.707a1 1 0 0 1-1.414-1.414l.707-.707a1 1 0 0 1 1.414 0Zm9.9 1.414a1 1 0 0 1-1.414 0l-.707-.707a1 1 0 0 1 1.414-1.414l.707.707a1 1 0 0 1 0 1.414ZM7.05 8.464a1 1 0 0 1-1.414 0l-.707-.707A1 1 0 0 1 6.343 6.343l.707.707a1 1 0 0 1 0 1.414Z"/>
             </symbol>
 
-            <!-- Луна — тёмная тема -->
             <symbol id="ic-moon" viewBox="0 0 24 24">
                 <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1Z"/>
             </symbol>
 
-            <!-- Выход / дверь -->
             <symbol id="ic-logout" viewBox="0 0 24 24">
                 <path d="M5 3h7a1 1 0 0 1 0 2H5v14h7a1 1 0 0 1 0 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm10.3 4.3 3.4 3.4a1 1 0 0 1 0 1.4l-3.4 3.4a1 1 0 0 1-1.4-1.4L15.6 13H9a1 1 0 0 1 0-2h6.6l-1.7-1.7a1 1 0 0 1 1.4-1.4Z"/>
             </symbol>
 
-            <!-- Закрыть / X -->
             <symbol id="ic-close" viewBox="0 0 24 24">
                 <path d="M18.3 5.7a1 1 0 0 0-1.4 0L12 10.6 7.1 5.7a1 1 0 0 0-1.4 1.4L10.6 12l-4.9 4.9a1 1 0 0 0 1.4 1.4L12 13.4l4.9 4.9a1 1 0 0 0 1.4-1.4L13.4 12l4.9-4.9a1 1 0 0 0 0-1.4Z"/>
             </symbol>
 
-            <!-- Предупреждение / ошибка -->
             <symbol id="ic-warn" viewBox="0 0 24 24">
                 <path d="M12 2 1 21h22L12 2Zm0 3.5 8.5 15.5h-17L12 5.5ZM11 10v4h2v-4h-2Zm0 6v2h2v-2h-2Z"/>
             </symbol>
 
-            <!-- Корона / старший -->
             <symbol id="ic-crown" viewBox="0 0 24 24">
                 <path d="M12 3 8.5 8.5 3 6l2 12h14l2-12-5.5 2.5L12 3Z"/>
             </symbol>
 
-            <!-- Звезда / младший -->
             <symbol id="ic-star" viewBox="0 0 24 24">
                 <path d="M12 2l2.9 6.3 6.8.9-4.9 4.8 1.2 6.8L12 17.7l-6 3.1 1.2-6.8L2.3 9.2l6.8-.9L12 2Z"/>
             </symbol>
 
-            <!-- Стрелка вправо / продолжить -->
             <symbol id="ic-arrow-right" viewBox="0 0 24 24">
                 <path d="M12 4l-1.4 1.4L16.2 11H4v2h12.2l-5.6 5.6L12 20l8-8-8-8Z"/>
             </symbol>
 
-            <!-- Стрелка влево (галерея) -->
             <symbol id="ic-arrow-left" viewBox="0 0 24 24">
                 <path d="M12 4l1.4 1.4L7.8 11H20v2H7.8l5.6 5.6L12 20l-8-8 8-8Z"/>
             </symbol>
 
-            <!-- Чат / сообщение -->
             <symbol id="ic-chat" viewBox="0 0 24 24">
                 <path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z"/>
             </symbol>
 
-            <!-- Отправить / самолётик -->
             <symbol id="ic-send" viewBox="0 0 24 24">
                 <path d="M2 21 23 12 2 3v7l15 2-15 2v7Z"/>
             </symbol>
 
-            <!-- Инфо / подсказка -->
             <symbol id="ic-info" viewBox="0 0 24 24">
                 <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2Zm0 4a1.25 1.25 0 1 1 0 2.5A1.25 1.25 0 0 1 12 6Zm1.5 12h-3v-7h3v7Z"/>
             </symbol>
 
-            <!-- Детали / документ -->
             <symbol id="ic-detail" viewBox="0 0 24 24">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm4 18H6V4h7v5h5v11Z"/>
             </symbol>
 
-            <!-- Часы / время -->
             <symbol id="ic-clock" viewBox="0 0 24 24">
                 <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16Zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7Z"/>
             </symbol>
@@ -126,18 +103,14 @@
     </svg>
 </head>
 <body>
-<!-- Контейнер для частиц -->
 <canvas id="particleCanvas"></canvas>
 
-<!-- ===== ФОН С ОРЛОМ ===== -->
 <div id="moving-bg"></div>
 <div id="bg-overlay"></div>
 
-<!-- ===== МОДАЛЬНОЕ ОКНО ВХОДА ===== -->
 <div id="loginOverlay" class="modal-overlay">
     <div class="login-modal">
 
-        <!-- Иконка вместо 🦅 -->
         <div style="text-align:center; margin-bottom:0.6rem;">
             <svg class="icon icon-xl" style="fill:#c9a0ff; filter:drop-shadow(0 4px 14px rgba(139,92,246,0.55));">
                 <use href="#ic-eagle"/>
@@ -158,7 +131,6 @@
 
         <button class="login-btn" id="loginBtn">Войти</button>
 
-        <!-- Иконка предупреждения вместо ⚠️ -->
         <div id="errorMsg" class="error-message">
             <svg class="icon" style="fill:#fca5a5; vertical-align:middle; margin-right:4px;">
                 <use href="#ic-warn"/>
@@ -168,18 +140,15 @@
     </div>
 </div>
 
-<!-- ===== ПРИВЕТСТВЕННЫЙ ЭКРАН ===== -->
 <div id="welcomeContainer" class="welcome-container">
     <div class="welcome-card">
 
-        <!-- Орёл SVG вместо 🦅 -->
         <div class="welcome-eagle">
             <svg class="icon icon-xl welcome-eagle-icon" style="fill:#d8b4fe;">
                 <use href="#ic-eagle"/>
             </svg>
         </div>
 
-        <!-- Иконка рукопожатия вместо 👋 -->
         <h1>
             <svg class="icon" style="fill:#ffd6aa; vertical-align:middle; margin-right:6px; width:28px; height:28px;">
                 <use href="#ic-wave"/>
@@ -189,7 +158,6 @@
 
         <p>Рады видеть вас снова в<br><strong>UnionTeam · Ивент-отдел</strong></p>
 
-        <!-- Стрелка вместо ➜ -->
         <button class="continue-btn" id="continueBtn">
             Продолжить
             <svg class="icon" style="fill:white; vertical-align:middle; margin-left:6px;">
@@ -199,11 +167,8 @@
     </div>
 </div>
 
-<!-- ===== ОСНОВНОЙ ДАШБОРД ===== -->
-<!-- ===== ОСНОВНОЙ ДАШБОРД ===== -->
 <div class="dashboard" id="mainDashboard" style="display: none;">
 
-    <!-- SIDEBAR (вынесен, position:fixed) -->
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="https://i.imgur.com/IAIJe65.png" alt="UnionTeam" class="sidebar-logo">
@@ -247,10 +212,13 @@
                 <svg class="icon"><use href="#ic-crown"/></svg>
                 <span>АВТОМАТИЧЕСКОЕ ПОВЫШЕНИЕ ДО КУРАТОРА</span>
             </div>
+            <!--<div class="nav-item" id="addMemberNavBtn" style="display:none;">
+                <svg class="icon"><use href="#ic-plus"/></svg>
+                <span>Добавить участника</span>
+            </div>-->
         </div>
     </div>
 
-    <!-- TOP BAR -->
     <div class="top-bar">
         <div class="logo-area"></div>
         <div class="user-actions">
@@ -270,7 +238,6 @@
         </div>
     </div>
 
-    <!-- MAIN LAYOUT (только контент, без sidebar) -->
     <div class="main-layout">
         <div class="content-area" id="eventDynamicContent"></div>
     </div>
@@ -280,11 +247,9 @@
     </footer>
 </div>
 
-<!-- ===== МОДАЛЬНОЕ ОКНО ДЕТАЛЕЙ ===== -->
 <div id="infoModal" class="modal">
     <div class="modal-card">
         <div class="modal-header">
-            <!-- Иконка вместо 📋 -->
             <span id="modalTitle" style="display:flex; align-items:center; gap:8px;">
                 <svg class="icon icon-accent" style="flex-shrink:0;">
                     <use href="#ic-detail"/>
@@ -301,7 +266,6 @@
     </div>
 </div>
 
-<!-- Модальное окно с видео и музыкой -->
 <div id="salaryModal" class="salary-modal-overlay">
     <div class="salary-modal">
         <div class="salary-modal-header">
@@ -320,7 +284,6 @@
 </audio>
 
 
-<!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
 <div id="settingsModal" class="settings-modal">
     <div class="settings-card">
         <div class="settings-header">
@@ -329,9 +292,8 @@
         </div>
         
         <div class="settings-body">
-            <!-- СТАТИСТИКА ИВЕНТОВ -->
             <div class="settings-section">
-                <div class="settings-section-title">📊 МОЯ СТАТИСТИКА</div>
+                <div class="settings-section-title">МОЯ СТАТИСТИКА</div>
                 <div class="stats-block" id="userStatsBlock">
                     <div class="stat-row">
                         <span class="stat-label">Всего ивентов проведено:</span>
@@ -348,18 +310,16 @@
                 </div>
             </div>
             
-            <!-- НАСТРОЙКА ЯРКОСТИ -->
             <div class="settings-section">
-                <div class="settings-section-title">☀️ ЯРКОСТЬ ЭКРАНА</div>
+                <div class="settings-section-title">ЯРКОСТЬ ЭКРАНА</div>
                 <div class="brightness-control">
-                    <span>🌑</span>
+                    <span></span>
                     <input type="range" id="brightnessSlider" min="30" max="150" value="100" step="5">
-                    <span>☀️</span>
+                    <span></span>
                     <span id="brightnessValue" class="brightness-percent">100%</span>
                 </div>
             </div>
             
-            <!-- ВЫБОР ФОНА -->
             <div class="settings-section">
                 <div class="settings-section-title">🖼️ ВЫБОР ФОНА</div>
                 <div class="background-grid" id="backgroundGrid">
@@ -402,13 +362,66 @@
     <img class="comment-avatar" src="" alt="avatar">
     <div class="comment-content">
       <div class="comment-header">
-        <span class="comment-author"></span>
-        <span class="comment-time"></span>
+        <div class="comment-author-wrapper">
+          <span class="comment-author"></span>
+          <span class="comment-time"></span>
+        </div>
+        <button class="comment-delete-btn" style="display:none;">🗑️</button>
       </div>
       <div class="comment-text"></div>
     </div>
   </div>
 </template>
+
+<div id="addMemberModal" class="modal" style="display:none;">
+    <div class="modal-card" style="max-width:500px;">
+        <div class="modal-header">
+            <span>➕ Добавить участника</span>
+            <button class="close-modal" id="closeAddMemberModal">
+                <svg class="icon"><use href="#ic-close"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Никнейм *</label>
+                <input type="text" id="memberName" placeholder="Введите никнейм">
+            </div>
+            <div class="form-group">
+                <label>Роль *</label>
+                <input type="text" id="memberRole" placeholder="Например: Ивентер">
+            </div>
+            <div class="form-group">
+                <label>Discord ID</label>
+                <input type="text" id="memberDiscord" placeholder="Например: 1246076621484724320">
+            </div>
+            <div class="form-group">
+                <label>Статус *</label>
+                <select id="memberStatus">
+                    <option value="Онлайн">🟢 Онлайн</option>
+                    <option value="Заморозка">⏸️ Заморозка</option>
+                    <option value="Отпуск">🏖️ Отпуск</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Дата вступления *</label>
+                <input type="text" id="memberJoinDate" placeholder="Например: 20.04.26">
+            </div>
+            <div class="form-group">
+                <label>Ранг *</label>
+                <input type="text" id="memberRating" placeholder="Например: Администратор">
+            </div>
+            <div class="form-group">
+                <label>Категория *</label>
+                <select id="memberCategory">
+                    <option value="Младший состав">🌟 Младший состав</option>
+                    <option value="Старший состав">👑 Старший состав</option>
+                </select>
+            </div>
+            <button class="submit-btn" id="saveMemberBtn">💾 Сохранить</button>
+        </div>
+    </div>
+</div>  
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
 </body>
