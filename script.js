@@ -277,7 +277,7 @@ let cachedConfig = null;
 async function loadConfig() {
     if (cachedConfig) return cachedConfig;
     
-    const GIST_URL = "https://gist.githubusercontent.com/t1ranxost/aa24e72a4a38ff01eae3b7ee4908cf43/raw/604af3c017601560842b7007b1f159e7771f81e9/config.json";
+    const GIST_URL = "https://gist.githubusercontent.com/t1ranxost/aa24e72a4a38ff01eae3b7ee4908cf43/raw/8b9253901e90723dd90112f5749efc3ea9d4d79c/config.json";
     try {
         const response = await fetch(GIST_URL);
         const data = await response.json();
