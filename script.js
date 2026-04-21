@@ -1244,7 +1244,7 @@ async function loadPasswordsFromGist() {
     if (cachedPasswords) return cachedPasswords;
     
     // ВАША ССЫЛКА НА GIST
-    const PASSWORDS_URL = "https://gist.githubusercontent.com/t1ranxost/29a25573757446992fa647e2605af3c4/raw/ad873343cfb9a8a65cf8f1ae48c8dea896587bba/password.json";
+    const PASSWORDS_URL = "https://gist.githubusercontent.com/t1ranxost/29a25573757446992fa647e2605af3c4/raw/1a62ddd601e74d4067a0e771b81cfe030c2c9478/password.json";
     
     try {
         const response = await fetch(PASSWORDS_URL);
