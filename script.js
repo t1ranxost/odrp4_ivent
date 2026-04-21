@@ -1,4 +1,3 @@
-// ========== ТВОИ ДАННЫЕ ==========
 let eventsData = [
     { id: 1, name: "емендемс", platform: "Foxy", organizer: "Тявкобой", date: "20.04.26, 0:39 - 20.04.26, 0:44", status: "Проведен", rating: "30.000$", members: 3, callStatus: "🟡Скоро", fullDetails: { description: "под вами 4 пропа разных цветов и над вами 1 проп. вам нужно встать на цвета соответствующие пропу над вами.", tasks: "", feedback: "", rewards: "", extra: "" } },
     { id: 2, name: "емендемс 2.0", platform: "Foxy", organizer: "Тявкобой", date: "20.04.26, 12:40 - 20.04.26, 13:00", status: "Проведен", rating: "50.000$", members: 12, callStatus: "🟡Скоро", fullDetails: { description: "Суть та-же что и в прошлый раз, но он теперь автоматизирован и проводиться в темноте", tasks: "", feedback: "", rewards: "", extra: "" } },
@@ -20,10 +19,8 @@ let teamData = [
     { id: 11, name: "кусочек шаурмы", role: "Ивентер", discord: "636585910552756284", status: "Онлайн", eventsCount: "-", joinDate: "17.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } }
 ];
 
-// URL Google Apps Script
-const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbzCAoL5YLA1PXdU4Xbl9xl7taKo8SIjxFmO7SL-61K6uAm0CiAtqShL-ImYwsu1OuUo/exec';
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbxqY268ub3UFP2wXmAjZ5gNNpLvhlHCB5yG1Q0v6cQW0Qa48r267YYahD0VNZkUzx9n/exec';
 
-// Словарь аватарок
 const avatarMap = {
     "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
     "manisule": "https://avatars.akamai.steamstatic.com/3973c828510cfd75f32b6a4d09bffa642f6c975f_full.jpg",
@@ -95,8 +92,37 @@ function addComment(eventId, userName, text) {
     });
 }
 
+// Удаление комментария
+function deleteComment(commentId, userName) {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(data);
+        };
+        
+        const params = new URLSearchParams({
+            action: 'deleteComment',
+            commentId: commentId,
+            userName: userName,
+            callback: callbackName
+        });
+        
+        script.src = `${COMMENTS_API_URL}?${params.toString()}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve({ success: false, error: 'Network error' });
+        };
+        document.body.appendChild(script);
+    });
+}
+
 async function renderCommentsSection(eventId, container) {
-    // Сначала показываем заглушку "Загрузка..."
+    
     const section = document.createElement('div');
     section.className = 'comments-section';
     section.innerHTML = `
@@ -120,17 +146,15 @@ async function renderCommentsSection(eventId, container) {
     
     container.appendChild(section);
     const listEl = section.querySelector('#commentsList');
+    const template = document.getElementById('commentTemplate');
     
-    // Загружаем комментарии в фоне
+    
     const comments = await loadComments(eventId);
     
-    // Мгновенно заменяем заглушку на реальные данные
     listEl.style.opacity = '1';
     listEl.style.textAlign = 'left';
     listEl.style.padding = '0';
     listEl.innerHTML = '';
-    
-    const template = document.getElementById('commentTemplate');
     
     if (comments.length === 0) {
         listEl.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:20px;">Пока нет комментариев</div>';
@@ -141,47 +165,99 @@ async function renderCommentsSection(eventId, container) {
             clone.querySelector('.comment-author').textContent = c.userName;
             clone.querySelector('.comment-time').textContent = c.timestamp;
             clone.querySelector('.comment-text').textContent = c.text;
+            
+            const deleteBtn = clone.querySelector('.comment-delete-btn');
+            
+            if (currentUser && currentUser === c.userName && c.id) {
+                deleteBtn.style.display = 'block';
+                deleteBtn.dataset.commentId = c.id;
+                deleteBtn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    if (!confirm('Удалить комментарий?')) return;
+                    
+                    deleteBtn.disabled = true;
+                    const result = await deleteComment(c.id, currentUser);
+                    
+                    if (result.success) {
+                        showNotif('✅ Комментарий удалён');
+                        deleteBtn.closest('.comment-item').remove();
+                        
+                        const newCount = listEl.children.length;
+                        section.querySelector('.comments-title').innerHTML = `
+                            <svg class="icon" style="fill:var(--icon-fill); width:20px; height:20px;"><use href="#ic-chat"/></svg>
+                            Комментарии (${newCount})
+                        `;
+                        
+                        delete commentsCache[eventId];
+                    } else {
+                        showNotif('❌ ' + (result.error || 'Ошибка удаления'), true);
+                    }
+                    deleteBtn.disabled = false;
+                });
+            }
+            
             listEl.appendChild(clone);
         });
     }
     
-    // Обновляем счётчик
     section.querySelector('.comments-title').innerHTML = `
         <svg class="icon" style="fill:var(--icon-fill); width:20px; height:20px;"><use href="#ic-chat"/></svg>
         Комментарии (${comments.length})
     `;
     
-    // Настройка кнопки отправки (код остаётся тот же)
     if (currentUser) {
         const sendBtn = section.querySelector('#sendCommentBtn');
         const textarea = section.querySelector('#newCommentText');
         
-        sendBtn.addEventListener('click', async () => {
-            const text = textarea.value.trim();
+        const newSendBtn = sendBtn.cloneNode(true);
+        sendBtn.parentNode.replaceChild(newSendBtn, sendBtn);
+        const newTextarea = textarea.cloneNode(true);
+        textarea.parentNode.replaceChild(newTextarea, textarea);
+        
+        newSendBtn.addEventListener('click', async () => {
+            const text = newTextarea.value.trim();
             if (!text) {
                 showNotif('Введите текст комментария', true);
                 return;
             }
             
-            sendBtn.disabled = true;
-            sendBtn.textContent = 'Отправка...';
+            newSendBtn.disabled = true;
+            newSendBtn.textContent = 'Отправка...';
             
             const result = await addComment(eventId, currentUser, text);
             
             if (result.success) {
                 showNotif('✅ Комментарий добавлен');
                 
+                const emptyMsg = listEl.querySelector('div[style*="Пока нет комментариев"]');
+                if (emptyMsg) {
+                    listEl.innerHTML = '';
+                }
+                
                 const clone = template.content.cloneNode(true);
                 clone.querySelector('.comment-avatar').src = getAvatarUrl(currentUser);
                 clone.querySelector('.comment-author').textContent = currentUser;
                 clone.querySelector('.comment-time').textContent = new Date().toLocaleString("ru-RU");
                 clone.querySelector('.comment-text').textContent = text;
-                listEl.appendChild(clone);
                 
-                if (listEl.querySelector('div[style*="Пока нет комментариев"]')) {
-                    listEl.innerHTML = '';
-                    listEl.appendChild(clone);
-                }
+                const deleteBtn = clone.querySelector('.comment-delete-btn');
+                deleteBtn.style.display = 'block';
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!confirm('Удалить комментарий?')) return;
+                    
+                    deleteBtn.closest('.comment-item').remove();
+                    
+                    const newCount = listEl.children.length;
+                    section.querySelector('.comments-title').innerHTML = `
+                        <svg class="icon" style="fill:var(--icon-fill); width:20px; height:20px;"><use href="#ic-chat"/></svg>
+                        Комментарии (${newCount})
+                    `;
+                    
+                    showNotif('✅ Комментарий удалён');
+                });
+                
+                listEl.appendChild(clone);
                 
                 const newCount = listEl.children.length;
                 section.querySelector('.comments-title').innerHTML = `
@@ -189,22 +265,69 @@ async function renderCommentsSection(eventId, container) {
                     Комментарии (${newCount})
                 `;
                 
-                textarea.value = '';
+                newTextarea.value = '';
+                delete commentsCache[eventId];
+                
+                setTimeout(async () => {
+                    const freshComments = await loadComments(eventId);
+                    if (freshComments.length > 0) {
+                        listEl.innerHTML = '';
+                        freshComments.forEach(c => {
+                            const freshClone = template.content.cloneNode(true);
+                            freshClone.querySelector('.comment-avatar').src = c.avatarUrl;
+                            freshClone.querySelector('.comment-author').textContent = c.userName;
+                            freshClone.querySelector('.comment-time').textContent = c.timestamp;
+                            freshClone.querySelector('.comment-text').textContent = c.text;
+                            
+                            const freshDeleteBtn = freshClone.querySelector('.comment-delete-btn');
+                            if (currentUser && currentUser === c.userName && c.id) {
+                                freshDeleteBtn.style.display = 'block';
+                                freshDeleteBtn.addEventListener('click', async (e) => {
+                                    e.stopPropagation();
+                                    if (!confirm('Удалить комментарий?')) return;
+                                    
+                                    freshDeleteBtn.disabled = true;
+                                    const delResult = await deleteComment(c.id, currentUser);
+                                    
+                                    if (delResult.success) {
+                                        showNotif('✅ Комментарий удалён');
+                                        freshDeleteBtn.closest('.comment-item').remove();
+                                        
+                                        const count = listEl.children.length;
+                                        section.querySelector('.comments-title').innerHTML = `
+                                            <svg class="icon" style="fill:var(--icon-fill); width:20px; height:20px;"><use href="#ic-chat"/></svg>
+                                            Комментарии (${count})
+                                        `;
+                                        delete commentsCache[eventId];
+                                    } else {
+                                        showNotif('❌ Ошибка удаления', true);
+                                    }
+                                    freshDeleteBtn.disabled = false;
+                                });
+                            }
+                            listEl.appendChild(freshClone);
+                        });
+                        section.querySelector('.comments-title').innerHTML = `
+                            <svg class="icon" style="fill:var(--icon-fill); width:20px; height:20px;"><use href="#ic-chat"/></svg>
+                            Комментарии (${freshComments.length})
+                        `;
+                    }
+                }, 1000);
             } else {
                 showNotif('❌ Ошибка отправки', true);
             }
             
-            sendBtn.disabled = false;
-            sendBtn.innerHTML = `
+            newSendBtn.disabled = false;
+            newSendBtn.innerHTML = `
                 <svg class="icon" style="fill:#fff; width:16px; height:16px;"><use href="#ic-send"/></svg>
                 Отправить
             `;
         });
         
-        textarea.addEventListener('keydown', (e) => {
+        newTextarea.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                sendBtn.click();
+                newSendBtn.click();
             }
         });
     }
@@ -289,13 +412,11 @@ async function loadConfig() {
     }
 }
 
-// Получение вебхука
 async function getWebhookUrl() {
     const config = await loadConfig();
     return config ? config.webhook : null;
 }
 
-// ========== СИСТЕМА ЛОГИНОВ ==========
 const VALID_LOGINS = [
     "кусочек шаурмы", "Foxy", "somcop", "T1Ran", "manisule",
     "Гербикс", "Arbuz madrazo", "Дмитрий Морозов", "Гофикал", "Himas", "yaroslav1432", "gans7824"
@@ -327,7 +448,6 @@ function changeEventStatus(eventId, newStatus) {
         updateNormStats();
         showNotif(`✅ Статус изменён на "${newStatus}"`);
         
-        // 👇 ЭТУ СТРОЧКУ ДОБАВЬ (отправка в Google Sheets)
         syncStatusToSheet(eventId, newStatus, currentUser);
         
         return true;
@@ -510,7 +630,6 @@ function openEventModal(ev) {
         <div id="commentsContainer"></div>
     `;
     
-    // ВОТ ЭТА СТРОКА ДОБАВЛЯЕТ КОММЕНТАРИИ
     const commentsContainer = document.getElementById('commentsContainer');
     renderCommentsSection(ev.id, commentsContainer);
     
@@ -553,10 +672,8 @@ navs.forEach(n => {
     const teamMembersCount = teamData.length;
     const onlineCount = teamData.filter(m => m.status === "Онлайн").length;
     
-    // Считаем ивенты по каждому сотруднику
     const eventCounts = countEventsByPlatform();
     
-    // Сортируем сотрудников по количеству ивентов
     const sortedByEvents = [...teamData].sort((a, b) => {
         const countA = eventCounts[a.name] || 0;
         const countB = eventCounts[b.name] || 0;
@@ -1237,13 +1354,12 @@ function checkAuth() {
     }
 }
 
-// ========== ЗАГРУЗКА ПАРОЛЕЙ ИЗ GIST (ВАРИАНТ 2) ==========
 let cachedPasswords = null;
 
 async function loadPasswordsFromGist() {
     if (cachedPasswords) return cachedPasswords;
     
-    // ВАША ССЫЛКА НА GIST
+
     const PASSWORDS_URL = "https://gist.githubusercontent.com/t1ranxost/29a25573757446992fa647e2605af3c4/raw/1a62ddd601e74d4067a0e771b81cfe030c2c9478/password.json";
     
     try {
@@ -1254,7 +1370,6 @@ async function loadPasswordsFromGist() {
         return data;
     } catch(e) {
         console.error('❌ Ошибка загрузки паролей:', e);
-        // Фолбэк на случай ошибки (можно оставить старые пароли)
         return {
             users: {},
             creator_password: "creator2026",
@@ -1274,7 +1389,6 @@ async function doLogin() {
         return;
     }
     
-    // Проверяем, существует ли пользователь
     if (!VALID_LOGINS.includes(login)) {
         errMsg.textContent = "❌ Пользователь не найден!";
         errMsg.classList.add('show');
@@ -1282,10 +1396,8 @@ async function doLogin() {
         return;
     }
     
-    // Загружаем пароли из Gist
     const passwords = await loadPasswordsFromGist();
     
-    // ПРОВЕРКА 1: Пароль создателя (даёт права редактора)
     if (pwd === passwords.creator_password) {
         sessionStorage.setItem('user', login);
         sessionStorage.setItem('isEditor', 'true');
@@ -1301,7 +1413,6 @@ async function doLogin() {
         return;
     }
     
-    // ПРОВЕРКА 2: Кастомный пароль пользователя из Gist
     if (passwords.users && passwords.users[login] === pwd) {
         sessionStorage.setItem('user', login);
         sessionStorage.setItem('isEditor', 'false');
@@ -1317,7 +1428,6 @@ async function doLogin() {
         return;
     }
     
-    // ПРОВЕРКА 3: Дефолтный пользовательский пароль (если кастомного нет в Gist)
     if (passwords.user_default_password === pwd) {
         sessionStorage.setItem('user', login);
         sessionStorage.setItem('isEditor', 'false');
@@ -1333,7 +1443,6 @@ async function doLogin() {
         return;
     }
     
-    // Неверный пароль
     errMsg.textContent = "❌ Неверный пароль!";
     errMsg.classList.add('show');
     setTimeout(() => errMsg.classList.remove('show'), 2000);
@@ -1383,12 +1492,10 @@ if (bg) {
     smoothAnimate();
     }
 
-    // ===== СМЕНА АВАТАРКИ В ЗАВИСИМОСТИ ОТ ЛОГИНА =====
 function updateSidebarAvatar(username) {
     const avatarImg = document.querySelector('.sidebar-logo');
     if (!avatarImg) return;
-    
-    // Словарь: логин → ссылка на аватарку
+
     const avatarMap = {
         "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg", 
         "manisule": "https://avatars.akamai.steamstatic.com/3973c828510cfd75f32b6a4d09bffa642f6c975f_full.jpg",
@@ -1410,7 +1517,6 @@ function updateSidebarAvatar(username) {
 
 doLogin
 
-// ========== НАСТРОЙКИ ПО НАЖАТИЮ НА АВАТАРКУ ==========
 const avatarImg = document.querySelector('.sidebar-logo');
 const settingsModal = document.getElementById('settingsModal');
 const closeSettingsBtn = document.getElementById('closeSettingsBtn');
@@ -1422,7 +1528,6 @@ const userEventsCountSpan = document.getElementById('userEventsCount');
 const userPrizesCountSpan = document.getElementById('userPrizesCount');
 const userJoinDateSpan = document.getElementById('userJoinDate');
 
-// ПОЛУЧИТЬ СТАТИСТИКУ ПОЛЬЗОВАТЕЛЯ
 function getUserStats() {
     const username = currentUser || sessionStorage.getItem('user') || 'Гость';
     let userEvents = eventsData.filter(e => e.platform === username).length;
@@ -1439,7 +1544,6 @@ function getUserStats() {
     return { events: userEvents, prizes: totalPrizes, joinDate: joinDate };
 }
 
-// ОБНОВИТЬ СТАТИСТИКУ
 function updateStatsDisplay() {
     const stats = getUserStats();
     if (userEventsCountSpan) userEventsCountSpan.textContent = stats.events;
@@ -1447,7 +1551,6 @@ function updateStatsDisplay() {
     if (userJoinDateSpan) userJoinDateSpan.textContent = stats.joinDate;
 }
 
-// РЕАЛЬНОЕ ИЗМЕНЕНИЕ ЯРКОСТИ
 function applyBrightness(value) {
     const percent = value / 100;
     const bg = document.getElementById('moving-bg');
@@ -1480,7 +1583,6 @@ function applyBrightness(value) {
     if (brightnessValue) brightnessValue.textContent = value + '%';
 }
 
-// ПРИМЕНИТЬ ВЫБРАННЫЙ ФОН
 function applyBackground(bgId) {
     const bgUrls = {
         1: 'https://imgfy.ru/ib/XGApUH780EjwsYN_1776609369.webp',
@@ -1496,18 +1598,15 @@ function applyBackground(bgId) {
     }
 }
 
-// ОТКРЫТЬ НАСТРОЙКИ
 function openSettings() {
     updateStatsDisplay();
     settingsModal.classList.add('show');
 }
 
-// ЗАКРЫТЬ НАСТРОЙКИ
 function closeSettings() {
     settingsModal.classList.remove('show');
 }
 
-// ЗАГРУЗИТЬ СОХРАНЁННЫЕ НАСТРОЙКИ
 function loadSavedSettings() {
     const savedBrightness = localStorage.getItem('brightness');
     if (savedBrightness && brightnessSlider) {
@@ -1527,7 +1626,6 @@ function loadSavedSettings() {
     }
 }
 
-// СОХРАНИТЬ НАСТРОЙКИ
 function saveAllSettings() {
     const brightness = brightnessSlider.value;
     localStorage.setItem('brightness', brightness);
@@ -1541,7 +1639,6 @@ function saveAllSettings() {
     showNotif('✅ Настройки сохранены!');
 }
 
-// ВЫБОР ФОНА
 bgOptions.forEach(opt => {
     opt.addEventListener('click', () => {
         bgOptions.forEach(o => o.classList.remove('selected'));
@@ -1549,14 +1646,12 @@ bgOptions.forEach(opt => {
     });
 });
 
-// СЛУШАТЕЛИ ЯРКОСТИ
 if (brightnessSlider) {
     brightnessSlider.addEventListener('input', (e) => {
         applyBrightness(parseInt(e.target.value));
     });
 }
 
-// СОБЫТИЯ
 if (avatarImg) avatarImg.addEventListener('click', openSettings);
 if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
 if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', saveAllSettings);
@@ -1566,16 +1661,13 @@ if (settingsModal) {
     });
 }
 
-// ЗАГРУЗИТЬ НАСТРОЙКИ ПРИ СТАРТЕ
 loadSavedSettings();
 
-// ========== КНОПКА ПОЛУЧИТЬ ЗАРПЛАТУ (картинка + аудио) ==========
 const salaryBtn = document.getElementById('salaryBtn');
 const salaryModal = document.getElementById('salaryModal');
 const closeSalaryBtn = document.getElementById('closeSalaryBtn');
 const salaryAudio = document.getElementById('salaryAudio');
 
-// ОТКРЫТИЕ - показываем картинку и включаем музыку
 function openSalaryModal() {
     salaryModal.classList.add('show');
     if (salaryAudio) {
@@ -1583,26 +1675,22 @@ function openSalaryModal() {
     }
 }
 
-// ЗАКРЫТИЕ - прячем окно и ВЫКЛЮЧАЕМ музыку
 function closeSalaryModal() {
     salaryModal.classList.remove('show');
     if (salaryAudio) {
         salaryAudio.pause();
-        salaryAudio.currentTime = 0;  // перематываем на начало
+        salaryAudio.currentTime = 0; 
     }
 }
 
-// НАЖАТИЕ НА КНОПКУ
 if (salaryBtn) {
     salaryBtn.addEventListener('click', openSalaryModal);
 }
 
-// НАЖАТИЕ НА КРЕСТИК
 if (closeSalaryBtn) {
     closeSalaryBtn.addEventListener('click', closeSalaryModal);
 }
 
-// КЛИК ПО ФОНУ (ЗАТЕМНЕНИЮ) - тоже закрывает
 if (salaryModal) {
     salaryModal.addEventListener('click', function(e) {
         if (e.target === salaryModal) {
@@ -1611,8 +1699,6 @@ if (salaryModal) {
     });
 }
 
-// ДОПОЛНИТЕЛЬНО: если браузер блокирует автовоспроизведение,
-// пользователь может кликнуть по окну чтобы включить музыку
 if (salaryModal) {
     salaryModal.addEventListener('click', function() {
         if (salaryModal.classList.contains('show') && salaryAudio && salaryAudio.paused) {
@@ -1677,9 +1763,6 @@ if (salaryModal) {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startBanAnimation);
     else startBanAnimation();
 
-    /* ========================================
-       SWEET EARN
-    ======================================== */
     let sweetEarnIsOpen       = false;
     let sweetEarnCloseTimer   = null;
     let sweetEarnCleanupTimer = null;
@@ -1744,11 +1827,9 @@ if (salaryModal) {
             if (e.key === 'Escape' && sweetEarnIsOpen) closeSweetEarn();
         });
     }
-    
-    // ========== ПОДКЛЮЧЕНИЕ К GOOGLE SHEETS ==========
+
 const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzVWRepqj2f3qyoMNBrrz-4k00v2BqH2YtoxlkSBKc_ThaRLSF9pFf8eCgf6AF33R0TtA/exec';
 
-// ФУНКЦИЯ ДЛЯ ОБНОВЛЕНИЯ СТАТУСА В ТАБЛИЦЕ
 async function syncStatusToSheet(eventId, newStatus, userName) {
     try {
         const response = await fetch(GOOGLE_SHEETS_URL, {
@@ -1763,7 +1844,6 @@ async function syncStatusToSheet(eventId, newStatus, userName) {
     }
 }
 
-// ФУНКЦИЯ ЗАГРУЗКИ СТАТУСОВ ИЗ ТАБЛИЦЫ
 async function loadStatusesFromSheet() {
     try {
         const response = await fetch(GOOGLE_SHEETS_URL);
@@ -1776,7 +1856,6 @@ async function loadStatusesFromSheet() {
     }
 }
 
-// ЗАГРУЗКА СТАТУСОВ ПРИ СТАРТЕ
 async function initStatuses() {
     const statuses = await loadStatusesFromSheet();
     if (statuses && statuses.length > 0) {
@@ -1792,24 +1871,20 @@ async function initStatuses() {
     }
 }
 
-// Вызови эту функцию после загрузки данных
 initStatuses();
 
-// ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ СТАТУСОВ ИЗ ТАБЛИЦЫ
 async function refreshStatusesFromSheet() {
     try {
         const response = await fetch(GOOGLE_SHEETS_URL);
         const data = await response.json();
         
         console.log('Получены данные из таблицы:', data);
-        
-        // Обновляем статусы в eventsData
+
         let updated = false;
         for (const item of data) {
             const eventId = parseInt(item.ID);
             const newStatus = item.Статус;
-            
-            // Убираем эмодзи если есть
+
             let cleanStatus = newStatus;
             if (newStatus.includes('✅')) cleanStatus = '✅Одобрен';
             else if (newStatus.includes('❌')) cleanStatus = '🔴Отказано';
@@ -1836,12 +1911,10 @@ async function refreshStatusesFromSheet() {
     }
 }
 
-// АВТООБНОВЛЕНИЕ КАЖДЫЕ 10 СЕКУНД
 setInterval(() => {
     refreshStatusesFromSheet();
 }, 5000);
 
-// ========== ПРИКОЛЬНЫЕ ЧАСТИЦЫ ==========
 (function() {
     const canvas = document.getElementById('particleCanvas');
     if (!canvas) return;
@@ -1851,10 +1924,10 @@ setInterval(() => {
     
     const ctx = canvas.getContext('2d');
     
-    // НАСТРОЙКИ (меняй на свои)
-    const PARTICLE_COUNT = 120;        // Количество частиц
+
+    const PARTICLE_COUNT = 120;        
     const COLORS = ['#ff66cc', '#c9a0ff', '#ff99ff', '#ff66aa', '#d4b8ff', '#ff88dd'];
-    const MOUSE_RADIUS = 100;          // Радиус отталкивания от мыши
+    const MOUSE_RADIUS = 100;          
     
     let particles = [];
     let mouseX = null, mouseY = null;
@@ -1875,19 +1948,15 @@ setInterval(() => {
         }
         
         update() {
-            // Движение
             this.x += this.speedX;
             this.y += this.speedY;
             
-            // Пульсация размера
             this.size += this.sizePulse * this.pulseDir;
             if (this.size > 6) this.pulseDir = -1;
             if (this.size < 2) this.pulseDir = 1;
             
-            // Вращение
             this.angle += this.angleSpeed;
             
-            // Отталкивание от мыши
             if (mouseX !== null && mouseY !== null) {
                 const dx = this.x - mouseX;
                 const dy = this.y - mouseY;
@@ -1900,7 +1969,6 @@ setInterval(() => {
                 }
             }
             
-            // Границы с отражением
             if (this.x < -20) this.x = canvas.width + 20;
             if (this.x > canvas.width + 20) this.x = -20;
             if (this.y < -20) this.y = canvas.height + 20;
@@ -1912,7 +1980,6 @@ setInterval(() => {
             ctx.translate(this.x, this.y);
             ctx.rotate(this.angle);
             
-            // Рисуем звездочку/цветочек
             ctx.beginPath();
             for (let i = 0; i < 5; i++) {
                 const radius = this.size * (i % 2 === 0 ? 1 : 0.5);
@@ -1927,7 +1994,6 @@ setInterval(() => {
             ctx.globalAlpha = this.alpha;
             ctx.fill();
             
-            // Внутреннее свечение
             ctx.beginPath();
             ctx.arc(0, 0, this.size * 0.6, 0, Math.PI * 2);
             ctx.fillStyle = 'white';
@@ -1937,20 +2003,17 @@ setInterval(() => {
             ctx.restore();
         }
     }
-    
-    // СОЗДАНИЕ ЧАСТИЦ
+
     function initParticles() {
         particles = [];
         for (let i = 0; i < PARTICLE_COUNT; i++) {
             particles.push(new Particle());
         }
     }
-    
-    // ОТРИСОВКА
+
     function animateParticles() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Фоновое свечение
+
         ctx.fillStyle = 'rgba(0,0,0,0.05)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
@@ -1959,7 +2022,6 @@ setInterval(() => {
             p.draw();
         }
         
-        // Рисуем линии между близкими частицами
         ctx.globalAlpha = 0.15;
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
