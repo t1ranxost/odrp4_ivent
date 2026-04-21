@@ -41,6 +41,11 @@ function getAvatarUrl(username) {
 }
 
 function loadComments(eventId) {
+    if (commentsCache[eventId]) {
+        console.log('Загружено из кеша:', eventId);
+        return Promise.resolve(commentsCache[eventId]);
+    }
+    
     return new Promise((resolve) => {
         const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
         const script = document.createElement('script');
@@ -48,7 +53,9 @@ function loadComments(eventId) {
         window[callbackName] = (data) => {
             delete window[callbackName];
             document.body.removeChild(script);
-            resolve(Array.isArray(data) ? data : []);
+            const comments = Array.isArray(data) ? data : [];
+            commentsCache[eventId] = comments;
+            resolve(comments);
         };
         
         script.src = `${COMMENTS_API_URL}?action=getComments&eventId=${eventId}&callback=${callbackName}`;
@@ -60,6 +67,7 @@ function loadComments(eventId) {
         document.body.appendChild(script);
     });
 }
+
 
 function addComment(eventId, userName, text) {
     return new Promise((resolve) => {
@@ -332,6 +340,8 @@ async function renderCommentsSection(eventId, container) {
         });
     }
 }
+
+const commentsCache = {};
 
 function countEventsByPlatform() {
     const counts = {};
@@ -1328,6 +1338,39 @@ const errMsg = document.getElementById('errorMsg');
 const contBtn = document.getElementById('continueBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 
+// Функция показа/скрытия кнопки добавления участника
+function updateUIBasedOnRole() {
+    const addMemberBtn = document.getElementById('addMemberNavBtn');
+    if (addMemberBtn) {
+        addMemberBtn.style.display = isEditor ? 'flex' : 'none';
+    }
+}
+
+// Инициализация модального окна добавления участника
+const addMemberModal = document.getElementById('addMemberModal');
+const addMemberNavBtn = document.getElementById('addMemberNavBtn');
+const closeAddMemberModal = document.getElementById('closeAddMemberModal');
+const saveMemberBtn = document.getElementById('saveMemberBtn');
+
+if (addMemberNavBtn) {
+    addMemberNavBtn.addEventListener('click', () => {
+        addMemberModal.style.display = 'flex';
+    });
+}
+
+if (closeAddMemberModal) {
+    closeAddMemberModal.addEventListener('click', () => {
+        addMemberModal.style.display = 'none';
+    });
+}
+
+// Закрытие по клику на фон
+window.addEventListener('click', (e) => {
+    if (e.target === addMemberModal) {
+        addMemberModal.style.display = 'none';
+    }
+});
+
 function checkAuth() {
     const saved = sessionStorage.getItem('user');
     const savedIsEditor = sessionStorage.getItem('isEditor');
@@ -1337,6 +1380,7 @@ function checkAuth() {
         updateSidebarAvatar(saved);
         isEditor = savedIsEditor === 'true';
         loginOverlay.style.display = 'none';
+        updateUIBasedOnRole();
         if (continued === 'true') {
             welcomeContainer.classList.add('hidden');
             mainDashboard.style.display = 'block';
