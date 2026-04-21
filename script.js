@@ -3,6 +3,7 @@ let eventsData = [
     { id: 1, name: "емендемс", platform: "Foxy", organizer: "Тявкобой", date: "20.04.26, 0:39 - 20.04.26, 0:44", status: "Проведен", rating: "30.000$", members: 3, callStatus: "🟡Скоро", fullDetails: { description: "под вами 4 пропа разных цветов и над вами 1 проп. вам нужно встать на цвета соответствующие пропу над вами.", tasks: "", feedback: "", rewards: "", extra: "" } },
     { id: 2, name: "емендемс 2.0", platform: "Foxy", organizer: "Тявкобой", date: "20.04.26, 12:40 - 20.04.26, 13:00", status: "Проведен", rating: "50.000$", members: 12, callStatus: "🟡Скоро", fullDetails: { description: "Суть та-же что и в прошлый раз, но он теперь автоматизирован и проводиться в темноте", tasks: "", feedback: "", rewards: "", extra: "" } },
     { id: 3, name: "Отыгровка совета безопасности", platform: "Дмитрий Морозов", organizer: "Бредик, kipi, Himas", date: "20.04.26, 13:50 - 15:00", status: "Проведен", rating: "-", members: 125, callStatus: "🟡Скоро", fullDetails: { description: "Тиран знает", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 4, name: "пив паф", platform: "Foxy", organizer: "Нет", date: "21.04.26, 1:50 - 21.04.26, 2:05", status: "Проведен", rating: "22.500$", members: 4, callStatus: "🟡Скоро", fullDetails: { description: "есть две команды спецы и терры. они сражаются за победу в 3 раундах", tasks: "", feedback: "", rewards: "", extra: "" } },
 ];
 
 let teamData = [
