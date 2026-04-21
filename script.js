@@ -1,8 +1,5 @@
 let eventsData = [
-    { id: 1, name: "емендемс", platform: "Foxy", organizer: "Тявкобой", date: "20.04.26, 0:39 - 20.04.26, 0:44", status: "Проведен", rating: "30.000$", members: 3, callStatus: "🟡Скоро", fullDetails: { description: "под вами 4 пропа разных цветов и над вами 1 проп. вам нужно встать на цвета соответствующие пропу над вами.", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 2, name: "емендемс 2.0", platform: "Foxy", organizer: "Тявкобой", date: "20.04.26, 12:40 - 20.04.26, 13:00", status: "Проведен", rating: "50.000$", members: 12, callStatus: "🟡Скоро", fullDetails: { description: "Суть та-же что и в прошлый раз, но он теперь автоматизирован и проводиться в темноте", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 3, name: "Отыгровка совета безопасности", platform: "Дмитрий Морозов", organizer: "Бредик, kipi, Himas", date: "20.04.26, 13:50 - 15:00", status: "Проведен", rating: "-", members: 125, callStatus: "🟡Скоро", fullDetails: { description: "Тиран знает", tasks: "", feedback: "", rewards: "", extra: "" } },
-    { id: 4, name: "пив паф", platform: "Foxy", organizer: "Нет", date: "21.04.26, 1:50 - 21.04.26, 2:05", status: "Проведен", rating: "22.500$", members: 4, callStatus: "🟡Скоро", fullDetails: { description: "есть две команды спецы и терры. они сражаются за победу в 3 раундах", tasks: "", feedback: "", rewards: "", extra: "" } },
+    { id: 1, name: "Ждите загрузки...", platform: "Ивент-отдел UnionTeam", organizer: "-", date: "", status: "Проведен", rating: "", members: 0, callStatus: "🟡Скоро", fullDetails: { description: "под вами 4 пропа разных цветов и над вами 1 проп. вам нужно встать на цвета соответствующие пропу над вами.", tasks: "", feedback: "", rewards: "", extra: "" } },
 ];
 
 let teamData = [
@@ -19,7 +16,7 @@ let teamData = [
     { id: 11, name: "кусочек шаурмы", role: "Ивентер", discord: "636585910552756284", status: "Онлайн", eventsCount: "-", joinDate: "17.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } }
 ];
 
-const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbxkGPpYOXPnVelr_vDk3nli7JMNh7ZT_XZ1wwY-Nk2DzCAQwhqH_QFfqWpk17LDCWTd/exec';
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbznGYLLMSAV01HJyl2EGP9DpaQNgrLIeFvDXAFkpo6B-tnDV_lPcQdSOa5oFcZi33WR/exec';
 
 const avatarMap = {
     "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
@@ -343,6 +340,132 @@ async function renderCommentsSection(eventId, container) {
 
 const commentsCache = {};
 
+// URL тот же, что для комментариев
+const EVENTS_API_URL = COMMENTS_API_URL;
+
+function addEventToSheet(eventData) {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(data);
+        };
+        
+        const params = new URLSearchParams({
+            action: 'addEvent',
+            name: eventData.name,
+            platform: eventData.platform,
+            organizer: eventData.organizer,
+            helpers: eventData.helpers,
+            date: eventData.date,
+            status: eventData.status,
+            rating: eventData.rating,
+            members: eventData.members,
+            description: eventData.description,
+            callback: callbackName
+        });
+        
+        script.src = `${EVENTS_API_URL}?${params.toString()}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve({ success: false, error: 'Network error' });
+        };
+        document.body.appendChild(script);
+    });
+}
+
+// Загрузка ивентов из Google Таблицы
+function loadEventsFromSheet() {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(Array.isArray(data) ? data : []);
+        };
+        
+        script.src = `${EVENTS_API_URL}?action=getEvents&callback=${callbackName}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve([]);
+        };
+        document.body.appendChild(script);
+    });
+}
+
+async function refreshEventsData() {
+    const events = await loadEventsFromSheet();
+    console.log('Загружено ивентов из таблицы:', events.length);
+    
+    if (events.length > 0) {
+        const newEventsData = events.map(e => ({
+            id: e.id,
+            name: e.name,
+            platform: e.platform,
+            organizer: e.organizer,
+            date: e.date,
+            status: 'Проведен', // ← ВСЕГДА "Проведен", игнорируем то, что в таблице!
+            rating: e.rating,
+            members: parseInt(e.members) || 0,
+            callStatus: '🟡Скоро', // Временный статус
+            fullDetails: {
+                description: e.description || '',
+                tasks: '',
+                feedback: '',
+                rewards: '',
+                extra: ''
+            }
+        }));
+        
+        newEventsData.sort((a, b) => a.id - b.id);
+        eventsData = newEventsData;
+        saveAllData();
+        
+        // Загружаем статусы одобрения из отдельной таблицы
+        await loadAndApplyStatuses();
+        
+        renderEventsTable();
+        showNotif('📊 Ивенты обновлены');
+    }
+}
+
+async function loadAndApplyStatuses() {
+    const statuses = await loadStatusesFromSheet();
+    console.log('Статусы из отдельной таблицы:', statuses);
+    
+    if (statuses && statuses.length > 0) {
+        statuses.forEach(item => {
+            // ПРАВИЛЬНЫЕ КЛЮЧИ — ТОЧНО КАК В ТАБЛИЦЕ!
+            const eventId = item['ID ивента'];
+            const rawStatus = item['Статус'];
+            
+            console.log('Обработка:', eventId, rawStatus);
+            
+            const event = eventsData.find(e => e.id == eventId);
+            if (event && rawStatus) {
+                // Очищаем статус
+                let cleanStatus = rawStatus;
+                if (rawStatus.includes('✅')) cleanStatus = '✅Одобрен';
+                else if (rawStatus.includes('🔴')) cleanStatus = '🔴Отказано';
+                else if (rawStatus.includes('🟡')) cleanStatus = '🟡Скоро';
+                
+                event.callStatus = cleanStatus;
+                console.log(`Применён статус для ивента ${eventId}: ${cleanStatus}`);
+            }
+        });
+        saveAllData();
+        renderEventsTable();
+    }
+}
+
+
 function countEventsByPlatform() {
     const counts = {};
     for (let event of eventsData) {
@@ -410,7 +533,7 @@ let cachedConfig = null;
 async function loadConfig() {
     if (cachedConfig) return cachedConfig;
     
-    const GIST_URL = "https://gist.githubusercontent.com/t1ranxost/aa24e72a4a38ff01eae3b7ee4908cf43/raw/8b9253901e90723dd90112f5749efc3ea9d4d79c/config.json";
+    const GIST_URL = "https://gist.githubusercontent.com/t1ranxost/abf0e3ccad0561a3b34c5895b83bbb54/raw/fef129d01c9cc7431c4d4fc54aa6b0327cf5f64a/config.json";
     try {
         const response = await fetch(GIST_URL);
         const data = await response.json();
@@ -489,10 +612,16 @@ function renderEventsTable() {
         row.insertCell(1).textContent = event.platform;
         row.insertCell(2).textContent = event.organizer;
         row.insertCell(3).textContent = event.date;
+        
+        // СТАТУС — всегда "Проведен" (event.status)
         row.insertCell(4).innerHTML = `<span class="status-badge status-active">${event.status}</span>`;
+        
         row.insertCell(5).innerHTML = `<span class="rating-star">⭐ ${event.rating}</span>`;
         row.insertCell(6).innerHTML = `<span style="font-weight:600;">${event.members}</span>`;
+        
+        // ОДОБРЕН — статус одобрения (event.callStatus)
         row.insertCell(7).innerHTML = `<span style="background:var(--badge-bg); padding:0.2rem 0.6rem; border-radius:20px;">${event.callStatus}</span>`;
+        
         if (canEdit) {
             const cell = row.insertCell(8);
             cell.innerHTML = `
@@ -1273,7 +1402,7 @@ async function sendEventToDiscord() {
     const description = document.getElementById('eventDescription')?.value.trim();
     const startTime = document.getElementById('eventStartTime')?.value.trim() || 'Не указано';
     const endTime = document.getElementById('eventEndTime')?.value.trim() || 'Не указано';
-    const members = document.getElementById('eventMembers')?.value.trim() || 'Не указано';
+    const members = document.getElementById('eventMembers')?.value.trim() || '0';
     const prizes = document.getElementById('eventPrizes')?.value.trim() || 'Не было';
     let organizer = document.getElementById('eventOrganizer')?.value.trim() || currentUser || 'Неизвестно';
     const helpers = document.getElementById('eventHelpers')?.value.trim() || 'Нет';
@@ -1283,48 +1412,90 @@ async function sendEventToDiscord() {
         return;
     }
     
-    const newId = eventsData.length + 1;
-    eventsData.push({
-        id: newId, name: name, platform: organizer, organizer: helpers,
-        date: startTime + " - " + endTime, status: "Проведен",
-        rating: (prizes !== 'Не было' ? prizes.replace(/[^0-9]/g, '') : '0') + '$',
-        members: parseInt(members) || 0, callStatus: "🟡Скоро",
-        fullDetails: { description: description, tasks: "", feedback: "", rewards: "", extra: "" }
-    });
-    saveAllData();
-    renderEventsTable();
-    renderTeamTable();
-    updateNormStats();
+    const sendBtn = document.getElementById('sendEventToDiscordBtn');
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Отправка...';
     
-    const webhookURL = await getWebhookUrl();
-    if (!webhookURL) {
-        showNotif('❌ Не удалось загрузить вебхук.', true);
+    const date = startTime + " - " + endTime;
+    const rating = (prizes !== 'Не было' ? prizes.replace(/[^0-9]/g, '') : '0') + '$';
+    
+    // 1. Добавляем в Google Таблицу
+    const sheetResult = await addEventToSheet({
+        name: name,
+        platform: organizer,
+        organizer: helpers,
+        helpers: helpers,
+        date: date,
+        status: 'Проведен',
+        rating: rating,
+        members: members,
+        callStatus: '🟡Скоро',
+        description: description
+    });
+    
+    if (!sheetResult.success) {
+        showNotif('❌ Ошибка сохранения в таблицу', true);
+        sendBtn.disabled = false;
+        sendBtn.textContent = '📤 Отправить в Discord';
         return;
     }
     
-    try {
-        await fetch(webhookURL, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                content: `<@1246076621484724320> Новый ивент от ${organizer}!`,
-                embeds: [{
-                    title: "📅 Новый ивент", color: 0x5865F2,
-                    fields: [
-                        { name: "📌 Название", value: name },
-                        { name: "📝 Описание", value: description.substring(0, 500) },
-                        { name: "⏰ Время", value: startTime + " - " + endTime, inline: true },
-                        { name: "👥 Участников", value: members.toString(), inline: true },
-                        { name: "🎁 Призы", value: prizes, inline: false },
-                        { name: "👤 Организатор", value: organizer, inline: true },
-                        { name: "🤝 Помощники", value: helpers, inline: true }
-                    ], footer: { text: "Ивент-отдел UnionTeam" }, timestamp: new Date().toISOString()
-                }], username: "Ивент-отдел UnionTeam", avatar_url: "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg"
-            })
-        });
-        showNotif('✅ Ивент добавлен!');
-    } catch(e) {
-        showNotif('❌ Ошибка отправки в Discord', true);
+    // 2. Отправляем в Discord
+    const webhookURL = await getWebhookUrl();
+    if (webhookURL) {
+        try {
+            await fetch(webhookURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    content: `<@1246076621484724320> Новый ивент от ${organizer}!`,
+                    embeds: [{
+                        title: "📅 Новый ивент",
+                        color: 0x5865F2,
+                        fields: [
+                            { name: "📌 Название", value: name },
+                            { name: "📝 Описание", value: description.substring(0, 500) },
+                            { name: "⏰ Время", value: startTime + " - " + endTime, inline: true },
+                            { name: "👥 Участников", value: members.toString(), inline: true },
+                            { name: "🎁 Призы", value: prizes, inline: false },
+                            { name: "👤 Организатор", value: organizer, inline: true },
+                            { name: "🤝 Помощники", value: helpers, inline: true }
+                        ],
+                        footer: { text: "Ивент-отдел UnionTeam" },
+                        timestamp: new Date().toISOString()
+                    }],
+                    username: "Ивент-отдел UnionTeam",
+                    avatar_url: "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg"
+                })
+            });
+        } catch(e) {
+            console.error('Ошибка Discord:', e);
+        }
     }
+    
+    showNotif('✅ Ивент добавлен!');
+    sendBtn.disabled = false;
+    sendBtn.textContent = '📤 Отправить в Discord';
+    
+    // Очищаем форму
+    document.getElementById('eventName').value = '';
+    document.getElementById('eventDescription').value = '';
+    document.getElementById('eventStartTime').value = '';
+    document.getElementById('eventEndTime').value = '';
+    document.getElementById('eventMembers').value = '';
+    document.getElementById('eventPrizes').value = '';
+    document.getElementById('eventOrganizer').value = '';
+    document.getElementById('eventHelpers').value = '';
+    
+    // ВАЖНО: Обновляем данные из Google Sheets
+    await refreshEventsData();
+    
+    // Показываем таблицу ивентов
+    renderEventsTable();
+    
+    // Активируем вкладку "Таблица ивентов" в меню
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelector('[data-tab="events_table"]').classList.add('active');
 }
 
 // АВТОРИЗАЦИЯ
@@ -1385,6 +1556,7 @@ function checkAuth() {
             welcomeContainer.classList.add('hidden');
             mainDashboard.style.display = 'block';
             renderEventsTable();
+            refreshEventsData();
         } else {
             welcomeContainer.classList.remove('hidden');
             mainDashboard.style.display = 'none';
@@ -1454,6 +1626,7 @@ async function doLogin() {
         updateSidebarAvatar(login);
         errMsg.classList.remove('show');
         showNotif(`👑 Добро пожаловать, создатель ${login}!`);
+        refreshEventsData();
         return;
     }
     
@@ -1469,6 +1642,7 @@ async function doLogin() {
         updateSidebarAvatar(login);
         errMsg.classList.remove('show');
         showNotif(`✅ Добро пожаловать, ${login}!`);
+        refreshEventsData();
         return;
     }
     
@@ -1484,6 +1658,7 @@ async function doLogin() {
         updateSidebarAvatar(login);
         errMsg.classList.remove('show');
         showNotif(`✅ Добро пожаловать, ${login}!`);
+        refreshEventsData();
         return;
     }
     
@@ -1497,6 +1672,7 @@ function onContinue() {
     welcomeContainer.classList.add('hidden');
     mainDashboard.style.display = 'block';
     renderEventsTable();
+    refreshEventsData();
 }
 
 function logout() {
@@ -1872,87 +2048,117 @@ if (salaryModal) {
         });
     }
 
-const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzVWRepqj2f3qyoMNBrrz-4k00v2BqH2YtoxlkSBKc_ThaRLSF9pFf8eCgf6AF33R0TtA/exec';
+const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbypHeOJJsTeeYryopA4g1lrg_cUQa1FfkpKv5WzD_VWnU1toj-rz6YLIhz3CKEYUY0Pig/exec';
 
-async function syncStatusToSheet(eventId, newStatus, userName) {
-    try {
-        const response = await fetch(GOOGLE_SHEETS_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ eventId, newStatus, userName })
+function syncStatusToSheet(eventId, newStatus, userName) {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_status_sync_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            console.log('✅ Статус сохранён:', eventId, newStatus);
+            resolve(data || { success: true });
+        };
+        
+        const params = new URLSearchParams({
+            action: 'updateStatus',
+            eventId: eventId,
+            newStatus: newStatus,
+            userName: userName,
+            callback: callbackName
         });
-        console.log('Статус отправлен в таблицу:', eventId, newStatus);
-    } catch(e) {
-        console.error('Ошибка отправки в таблицу:', e);
-    }
+        
+        script.src = `${GOOGLE_SHEETS_URL}?${params.toString()}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            console.error('❌ Ошибка сохранения статуса');
+            resolve({ success: false });
+        };
+        document.body.appendChild(script);
+    });
 }
 
-async function loadStatusesFromSheet() {
-    try {
-        const response = await fetch(GOOGLE_SHEETS_URL);
-        const data = await response.json();
-        console.log('Статусы из таблицы:', data);
-        return data;
-    } catch(e) {
-        console.error('Ошибка загрузки статусов:', e);
-        return [];
-    }
+function loadStatusesFromSheet() {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_status_load_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(Array.isArray(data) ? data : []);
+        };
+        
+        script.src = `${GOOGLE_SHEETS_URL}?callback=${callbackName}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve([]);
+        };
+        document.body.appendChild(script);
+    });
 }
 
 async function initStatuses() {
-    const statuses = await loadStatusesFromSheet();
-    if (statuses && statuses.length > 0) {
-        statuses.forEach(item => {
-            const event = eventsData.find(e => e.id == item.ID);
-            if (event && item.Статус) {
-                event.callStatus = item.Статус;
-            }
-        });
-        saveAllData();
-        renderEventsTable();
-        console.log('Статусы загружены из Google Sheets');
-    }
+    await loadAndApplyStatuses();
+    renderEventsTable();
+    console.log('Статусы загружены из Google Sheets');
 }
 
 initStatuses();
 
-async function refreshStatusesFromSheet() {
-    try {
-        const response = await fetch(GOOGLE_SHEETS_URL);
-        const data = await response.json();
+function refreshStatusesFromSheet() {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_status_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
         
-        console.log('Получены данные из таблицы:', data);
-
-        let updated = false;
-        for (const item of data) {
-            const eventId = parseInt(item.ID);
-            const newStatus = item.Статус;
-
-            let cleanStatus = newStatus;
-            if (newStatus.includes('✅')) cleanStatus = '✅Одобрен';
-            else if (newStatus.includes('❌')) cleanStatus = '🔴Отказано';
-            else if (newStatus.includes('🟡')) cleanStatus = '🟡Скоро';
+        window[callbackName] = async (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
             
-            const event = eventsData.find(e => e.id === eventId);
-            if (event && event.callStatus !== cleanStatus) {
-                event.callStatus = cleanStatus;
-                updated = true;
-                console.log(`Обновлён статус ивента ${eventId}: ${cleanStatus}`);
+            console.log('Получены данные из таблицы статусов:', data);
+            
+            let updated = false;
+            if (Array.isArray(data)) {
+                for (const item of data) {
+                    // ПРАВИЛЬНЫЕ КЛЮЧИ!
+                    const eventId = parseInt(item['ID ивента']);
+                    const newStatus = item['Статус'];
+                    
+                    let cleanStatus = newStatus;
+                    if (newStatus && newStatus.includes('✅')) cleanStatus = '✅Одобрен';
+                    else if (newStatus && newStatus.includes('🔴')) cleanStatus = '🔴Отказано';
+                    else if (newStatus && newStatus.includes('🟡')) cleanStatus = '🟡Скоро';
+                    
+                    const event = eventsData.find(e => e.id === eventId);
+                    if (event && event.callStatus !== cleanStatus) {
+                        event.callStatus = cleanStatus;
+                        updated = true;
+                        console.log(`Обновлён статус ивента ${eventId}: ${cleanStatus}`);
+                    }
+                }
             }
-        }
+            
+            if (updated) {
+                saveAllData();
+                renderEventsTable();
+                showNotif('📊 Статусы обновлены');
+            }
+            
+            resolve(data);
+        };
         
-        if (updated) {
-            saveAllData();
-            renderEventsTable();
-            showNotif('📊 Статусы обновлены из Google Sheets');
-        }
-        
-        return data;
-    } catch(e) {
-        console.error('Ошибка обновления:', e);
-        return [];
-    }
+        script.src = `${GOOGLE_SHEETS_URL}?callback=${callbackName}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve([]);
+        };
+        document.body.appendChild(script);
+    });
 }
 
 setInterval(() => {
