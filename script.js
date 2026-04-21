@@ -1237,48 +1237,106 @@ function checkAuth() {
     }
 }
 
+// ========== ЗАГРУЗКА ПАРОЛЕЙ ИЗ GIST (ВАРИАНТ 2) ==========
+let cachedPasswords = null;
+
+async function loadPasswordsFromGist() {
+    if (cachedPasswords) return cachedPasswords;
+    
+    // ВАША ССЫЛКА НА GIST
+    const PASSWORDS_URL = "https://gist.githubusercontent.com/t1ranxost/29a25573757446992fa647e2605af3c4/raw/ad873343cfb9a8a65cf8f1ae48c8dea896587bba/password.json";
+    
+    try {
+        const response = await fetch(PASSWORDS_URL);
+        const data = await response.json();
+        cachedPasswords = data;
+        console.log('✅ Пароли загружены из Gist');
+        return data;
+    } catch(e) {
+        console.error('❌ Ошибка загрузки паролей:', e);
+        // Фолбэк на случай ошибки (можно оставить старые пароли)
+        return {
+            users: {},
+            creator_password: "creator2026",
+            user_default_password: "user123"
+        };
+    }
+}
+
 async function doLogin() {
     const login = loginInput.value.trim();
     const pwd = passInput.value;
     
-    const config = await loadConfig();
-    if (!config) {
-        showNotif('❌ Ошибка загрузки конфигурации', true);
+    if (!login || !pwd) {
+        errMsg.textContent = "❌ Введите логин и пароль!";
+        errMsg.classList.add('show');
+        setTimeout(() => errMsg.classList.remove('show'), 2000);
         return;
     }
     
-    if (VALID_LOGINS.includes(login)) {
-        if (pwd === config.creator_password) {
-            sessionStorage.setItem('user', login);
-            sessionStorage.setItem('isEditor', 'true');
-            sessionStorage.removeItem('continued');
-            currentUser = login;
-            isEditor = true;
-            loginOverlay.style.display = 'none';
-            welcomeContainer.classList.remove('hidden');
-            mainDashboard.style.display = 'none';
-            errMsg.classList.remove('show');
-            showNotif(`✅ Добро пожаловать, создатель ${login}!`);
-        } else if (pwd === config.user_password) {
-            sessionStorage.setItem('user', login);
-            sessionStorage.setItem('isEditor', 'false');
-            sessionStorage.removeItem('continued');
-            currentUser = login;
-            updateSidebarAvatar(login);
-            isEditor = false;
-            loginOverlay.style.display = 'none';
-            welcomeContainer.classList.remove('hidden');
-            mainDashboard.style.display = 'none';
-            errMsg.classList.remove('show');
-            showNotif(`✅ Добро пожаловать, ${login}!`);
-        } else {
-            errMsg.classList.add('show');
-            setTimeout(() => errMsg.classList.remove('show'), 2000);
-        }
-    } else {
+    // Проверяем, существует ли пользователь
+    if (!VALID_LOGINS.includes(login)) {
+        errMsg.textContent = "❌ Пользователь не найден!";
         errMsg.classList.add('show');
         setTimeout(() => errMsg.classList.remove('show'), 2000);
+        return;
     }
+    
+    // Загружаем пароли из Gist
+    const passwords = await loadPasswordsFromGist();
+    
+    // ПРОВЕРКА 1: Пароль создателя (даёт права редактора)
+    if (pwd === passwords.creator_password) {
+        sessionStorage.setItem('user', login);
+        sessionStorage.setItem('isEditor', 'true');
+        sessionStorage.removeItem('continued');
+        currentUser = login;
+        isEditor = true;
+        loginOverlay.style.display = 'none';
+        welcomeContainer.classList.remove('hidden');
+        mainDashboard.style.display = 'none';
+        updateSidebarAvatar(login);
+        errMsg.classList.remove('show');
+        showNotif(`👑 Добро пожаловать, создатель ${login}!`);
+        return;
+    }
+    
+    // ПРОВЕРКА 2: Кастомный пароль пользователя из Gist
+    if (passwords.users && passwords.users[login] === pwd) {
+        sessionStorage.setItem('user', login);
+        sessionStorage.setItem('isEditor', 'false');
+        sessionStorage.removeItem('continued');
+        currentUser = login;
+        isEditor = false;
+        loginOverlay.style.display = 'none';
+        welcomeContainer.classList.remove('hidden');
+        mainDashboard.style.display = 'none';
+        updateSidebarAvatar(login);
+        errMsg.classList.remove('show');
+        showNotif(`✅ Добро пожаловать, ${login}!`);
+        return;
+    }
+    
+    // ПРОВЕРКА 3: Дефолтный пользовательский пароль (если кастомного нет в Gist)
+    if (passwords.user_default_password === pwd) {
+        sessionStorage.setItem('user', login);
+        sessionStorage.setItem('isEditor', 'false');
+        sessionStorage.removeItem('continued');
+        currentUser = login;
+        isEditor = false;
+        loginOverlay.style.display = 'none';
+        welcomeContainer.classList.remove('hidden');
+        mainDashboard.style.display = 'none';
+        updateSidebarAvatar(login);
+        errMsg.classList.remove('show');
+        showNotif(`✅ Добро пожаловать, ${login}!`);
+        return;
+    }
+    
+    // Неверный пароль
+    errMsg.textContent = "❌ Неверный пароль!";
+    errMsg.classList.add('show');
+    setTimeout(() => errMsg.classList.remove('show'), 2000);
 }
 
 function onContinue() {
