@@ -1600,3 +1600,24 @@ button{font-family:inherit}
     gap: 8px;
     flex: 1;
 }
+
+/* Обычный курсор */
+* {
+    cursor: url('https://i.imgur.com/44IjN8B.png') 16 16, auto !important;
+}
+
+/* Курсор при наведении */
+a:hover,
+button:hover,
+.clickable-row:hover,
+.nav-item:hover,
+.status-change-btn:hover,
+.comment-send-btn:hover,
+.continue-btn:hover,
+.login-btn:hover,
+.submit-btn:hover,
+.close-modal:hover,
+.settings-save:hover,
+.logout-btn:hover {
+    cursor: url('https://i.imgur.com/aH9Zrwl.png') 16 16, pointer !important;
+}
