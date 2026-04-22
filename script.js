@@ -97,7 +97,6 @@ function addComment(eventId, userName, text) {
     });
 }
 
-// Удаление комментария
 function deleteComment(commentId, userName) {
     return new Promise((resolve) => {
         const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
@@ -340,7 +339,6 @@ async function renderCommentsSection(eventId, container) {
 
 const commentsCache = {};
 
-// URL тот же, что для комментариев
 const EVENTS_API_URL = COMMENTS_API_URL;
 
 function addEventToSheet(eventData) {
@@ -408,7 +406,7 @@ async function refreshEventsData() {
         const newEventsData = events.map(e => ({
             id: e.id,
             name: e.name,
-            platform: e.platform || e.organizer, // Если platform пустой, берем organizer
+            platform: e.platform || e.organizer,
             organizer: e.organizer,
             date: e.date,
             status: 'Проведен',
@@ -691,7 +689,6 @@ function changeEventStatus(eventId, newStatus) {
 
 function renderEventsTable() {
     const container = document.getElementById('eventDynamicContent');
-    // Кнопки действий показываем ВСЕМ авторизованным
     const showActions = currentUser !== null;
     
     container.innerHTML = `
@@ -718,7 +715,7 @@ function renderEventsTable() {
         row.insertCell(2).textContent = event.organizer;
         row.insertCell(3).textContent = event.date;
         row.insertCell(4).innerHTML = `<span class="status-badge status-active">${event.status}</span>`;
-        row.insertCell(5).innerHTML = `<span class="rating-star">⭐ ${event.rating}</span>`;
+        row.insertCell(5).innerHTML = `<span class="rating-star">${event.rating}</span>`;
         row.insertCell(6).innerHTML = `<span style="font-weight:600;">${event.members}</span>`;
         row.insertCell(7).innerHTML = `<span style="background:var(--badge-bg); padding:0.2rem 0.6rem; border-radius:20px;">${event.callStatus}</span>`;
         
@@ -736,8 +733,8 @@ function renderEventsTable() {
     
     // Кнопки редактирования/удаления - для создателя ИЛИ организатора ивента
     const editButtons = canModify ? `
-    <button class="edit-event-btn" data-id="${event.id}" style="margin-top:5px;">✏️</button>
-    <button class="delete-event-btn" data-id="${event.id}" style="margin-top:5px;">🗑️</button>                           
+    <button class="edit-event-btn" data-id="${event.id}" style="margin-top:5px;">Редактировать</button>
+    <button class="delete-event-btn" data-id="${event.id}" style="margin-top:5px;">Удалить</button>                           
 ` : '';
     
     cell.innerHTML = statusButtons + editButtons;
