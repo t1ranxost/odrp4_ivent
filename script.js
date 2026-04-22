@@ -566,7 +566,35 @@ function showNotif(msg, isErr = false) {
     setTimeout(() => d.remove(), 3000);
 }
 
-// Функции для глобальной загрузки
+(function() {
+    const cursor = document.getElementById('customCursor');
+    const cursorDot = document.getElementById('customCursorDot');
+    
+    if (!cursor || !cursorDot) return;
+    
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        cursorDot.style.left = e.clientX + 'px';
+        cursorDot.style.top = e.clientY + 'px';
+    });
+    
+    const clickables = document.querySelectorAll('a, button, .clickable-row, .clickable-card, .nav-item, .status-change-btn, .comment-send-btn, .continue-btn, .login-btn, .submit-btn, .close-modal, .settings-save, .logout-btn');
+    
+    clickables.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.classList.add('hover');
+            cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+        });
+        el.addEventListener('mouseleave', () => {
+            cursor.classList.remove('hover');
+            cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+        });
+    });
+
+    document.body.style.cursor = 'none';
+})();
+
 function showGlobalLoading() {
     const overlay = document.getElementById('globalLoadingOverlay');
     if (overlay) overlay.style.display = 'flex';
@@ -2309,8 +2337,7 @@ setInterval(() => {
         
         requestAnimationFrame(animateParticles);
     }
-    
-    // ОБРАБОТКА ДВИЖЕНИЯ МЫШИ
+
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
@@ -2320,15 +2347,60 @@ setInterval(() => {
         mouseX = null;
         mouseY = null;
     });
-    
-    // ОБНОВЛЕНИЕ ПРИ ИЗМЕНЕНИИ РАЗМЕРА ОКНА
+
     window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         initParticles();
     });
-    
-    // ЗАПУСК
+
     initParticles();
     animateParticles();
+})();
+
+// ========== КАСТОМНЫЙ КУРСОР ==========
+(function() {
+    const cursor = document.getElementById('customCursor');
+    const cursorDot = document.getElementById('customCursorDot');
+    
+    if (!cursor || !cursorDot) return;
+    
+    // Движение за мышкой
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        cursorDot.style.left = e.clientX + 'px';
+        cursorDot.style.top = e.clientY + 'px';
+    });
+    
+    // При нажатии — кружок уменьшается, точка остаётся в центре
+    document.addEventListener('mousedown', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        cursorDot.style.transform = 'translate(-50%, -50%) scale(1.2)';
+        cursor.style.transition = 'transform 0.1s ease';
+        cursorDot.style.transition = 'transform 0.1s ease';
+    });
+    
+    // При отпускании — возвращаем
+    document.addEventListener('mouseup', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+        cursor.style.transition = 'transform 0.15s ease-out';
+        cursorDot.style.transition = 'transform 0.15s ease-out';
+    });
+    
+    // При наведении на кликабельные элементы
+    const clickables = document.querySelectorAll('a, button, .clickable-row, .clickable-card, .nav-item, .status-change-btn, .comment-send-btn, .continue-btn, .login-btn, .submit-btn, .close-modal, .settings-save, .logout-btn');
+    
+    clickables.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.classList.add('hover');
+        });
+        el.addEventListener('mouseleave', () => {
+            cursor.classList.remove('hover');
+        });
+    });
+    
+    // Скрываем стандартный курсор
+    document.body.style.cursor = 'none';
 })();
