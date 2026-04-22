@@ -1,3 +1,15 @@
+/* Запрещаем появление стандартного курсора при наведении на любые элементы */
+* {
+    cursor: none !important;
+}
+
+/* Для интерактивных элементов (кнопки, ссылки) можно оставить кастомный курсор */
+button, a, .clickable-row, .clickable-card, .nav-item, .status-change-btn, 
+.comment-send-btn, .continue-btn, .login-btn, .submit-btn, .close-modal, 
+.settings-save, .logout-btn, .edit-event-btn, .delete-event-btn {
+    cursor: none !important;
+}
+
 *{margin:0;padding:0;box-sizing:border-box}
 
 :root{
@@ -1650,3 +1662,114 @@ button{font-family:inherit}
 .delete-event-btn:hover {
     background: rgba(244, 67, 54, 0.3) !important;
 }
+
+/* Стили для кнопок статусов (общие) */
+.status-change-btn {
+    background: var(--badge-bg);
+    border: none;
+    border-radius: 20px;
+    padding: 4px 10px;
+    margin: 0 3px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s, filter 0.1s;
+    color: var(--text-primary);
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    backdrop-filter: blur(10px);
+}
+
+.status-change-btn .icon {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.status-change-btn:hover {
+    transform: scale(0.95);
+    filter: brightness(0.9);
+}
+
+/* Стили для кнопки редактирования (если нужен отдельный) */
+.edit-event-btn {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+}
+
+.edit-event-btn:hover {
+    background: rgba(76, 175, 80, 0.4);
+}
+
+/* Стили для кнопки удаления */
+.delete-event-btn {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+}
+
+.delete-event-btn:hover {
+    background: rgba(244, 67, 54, 0.4);
+}
+
+/* Стили для кнопок статусов */
+.btn-approved {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+}
+
+.btn-soon {
+    background: rgba(255, 152, 0, 0.2);
+    color: #ff9800;
+}
+
+.btn-completed {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+}
+
+/* Кнопка редактирования */
+.edit-event-btn {
+    margin: 5px;
+    background: rgba(76, 175, 80, 0.25) !important;
+    border: 1px solid rgba(76, 175, 80, 0.4) !important;
+    border-radius: 20px !important;
+    padding: 4px 10px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    color: #4caf50 !important;
+    font-family: inherit !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.edit-event-btn:hover {
+    transform: scale(0.95) !important;
+    background: rgba(76, 175, 80, 0.4) !important;
+    border-color: rgba(76, 175, 80, 0.6) !important;
+}
+
+/* Кнопка удаления */
+.delete-event-btn {
+    background: rgba(244, 67, 54, 0.25) !important;
+    border: 1px solid rgba(244, 67, 54, 0.4) !important;
+    border-radius: 20px !important;
+    padding: 4px 10px !important;
+    margin: 5px;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    color: #f44336 !important;
+    font-family: inherit !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.delete-event-btn:hover {
+    transform: scale(0.95) !important;
+    background: rgba(244, 67, 54, 0.4) !important;
+    border-color: rgba(244, 67, 54, 0.6) !important;
+}
+
