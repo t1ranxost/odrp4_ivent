@@ -487,6 +487,45 @@
 }
 </style>
 
+<!-- Модальное окно редактирования ивента -->
+<div id="editEventModal" class="modal" style="display:none;">
+    <div class="modal-card" style="max-width:600px;">
+        <div class="modal-header">
+            <span>✏️ Редактировать ивент</span>
+            <button class="close-modal" id="closeEditEventModal">
+                <svg class="icon"><use href="#ic-close"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editEventId">
+            <div class="form-group">
+                <label>Название ивента</label>
+                <input type="text" id="editEventName" placeholder="Название">
+            </div>
+            <div class="form-group">
+                <label>Описание</label>
+                <textarea id="editEventDescription" rows="3" placeholder="Описание"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Дата</label>
+                <input type="text" id="editEventDate" placeholder="Дата">
+            </div>
+            <div class="form-group">
+                <label>Призовые</label>
+                <input type="text" id="editEventRating" placeholder="Призовые">
+            </div>
+            <div class="form-group">
+                <label>Участников</label>
+                <input type="number" id="editEventMembers" placeholder="Количество">
+            </div>
+            <div class="form-group">
+                <label>Помощники</label>
+                <input type="text" id="editEventHelpers" placeholder="Помощники">
+            </div>
+            <button class="submit-btn" id="saveEditEventBtn">💾 Сохранить</button>
+        </div>
+    </div>
+</div>
 
 <!-- Кастомный курсор-кружок -->
 <div id="customCursor"></div>
