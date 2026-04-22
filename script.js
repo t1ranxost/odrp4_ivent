@@ -736,9 +736,9 @@ function renderEventsTable() {
     
     // Кнопки редактирования/удаления - для создателя ИЛИ организатора ивента
     const editButtons = canModify ? `
-        <button class="status-change-btn edit-event-btn" data-id="${event.id}" style="margin-top:5px;">✏️</button>
-        <button class="status-change-btn delete-event-btn" data-id="${event.id}" style="margin-top:5px;">🗑️</button>
-    ` : '';
+    <button class="edit-event-btn" data-id="${event.id}" style="margin-top:5px;">✏️</button>
+    <button class="delete-event-btn" data-id="${event.id}" style="margin-top:5px;">🗑️</button>                           
+` : '';
     
     cell.innerHTML = statusButtons + editButtons;
     
@@ -2698,7 +2698,7 @@ if (saveEditBtn) {
     // Скрываем стандартный курсор
     document.body.style.cursor = 'none';
 
-    // ========== ГЛОБАЛЬНЫЙ ОБРАБОТЧИК КЛИКОВ (ВНЕ ФУНКЦИЙ) ==========
+// ========== ГЛОБАЛЬНЫЙ ОБРАБОТЧИК КЛИКОВ ==========
 document.addEventListener('click', function(e) {
     // Кнопка редактирования
     const editBtn = e.target.closest('.edit-event-btn');
@@ -2722,14 +2722,16 @@ document.addEventListener('click', function(e) {
         return;
     }
     
-    // Кнопки статусов (только для создателя)
-    const statusBtn = e.target.closest('.status-change-btn:not(.edit-event-btn):not(.delete-event-btn)');
-    if (statusBtn && statusBtn.dataset.status && isEditor) {
+    // Кнопки статусов (только для создателя, И НЕ для кнопок редактирования/удаления)
+    const statusBtn = e.target.closest('.status-change-btn');
+    if (statusBtn && !statusBtn.classList.contains('edit-event-btn') && !statusBtn.classList.contains('delete-event-btn') && isEditor) {
         e.preventDefault();
         e.stopPropagation();
         const eventId = parseInt(statusBtn.dataset.id);
         const newStatus = statusBtn.dataset.status;
-        changeEventStatus(eventId, newStatus);
+        if (newStatus) {
+            changeEventStatus(eventId, newStatus);
+        }
         return;
     }
 });
