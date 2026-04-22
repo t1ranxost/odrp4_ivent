@@ -1601,23 +1601,39 @@ button{font-family:inherit}
     flex: 1;
 }
 
-/* Обычный курсор */
+/* ========== КАСТОМНЫЙ КУРСОР-КРУЖОК ========== */
+
+/* Скрываем стандартный курсор */
 * {
-    cursor: url('https://i.imgur.com/44IjN8B.png') 16 16, auto !important;
+    cursor: none !important;
 }
 
-/* Курсор при наведении */
-a:hover,
-button:hover,
-.clickable-row:hover,
-.nav-item:hover,
-.status-change-btn:hover,
-.comment-send-btn:hover,
-.continue-btn:hover,
-.login-btn:hover,
-.submit-btn:hover,
-.close-modal:hover,
-.settings-save:hover,
-.logout-btn:hover {
-    cursor: url('https://i.imgur.com/aH9Zrwl.png') 16 16, pointer !important;
+#customCursor {
+    position: fixed;
+    width: 17px;
+    height: 17px;
+    border: 2px solid #f0f0f0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+}
+
+#customCursorDot {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background: #bbb8c0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 100000;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px #89888a;
+}
+
+#customCursor.hover {
+    width: 23px;
+    height: 23px;
+    border-color: #fff;
+    background: rgba(201, 195, 207, 0.15);
 }
