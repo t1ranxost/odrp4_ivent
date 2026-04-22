@@ -2179,7 +2179,7 @@ function refreshStatusesFromSheet() {
 
 setInterval(() => {
     refreshStatusesFromSheet();
-}, 5000);
+}, 180000);
 
 (function() {
     const canvas = document.getElementById('particleCanvas');
