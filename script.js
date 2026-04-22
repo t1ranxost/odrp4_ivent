@@ -691,19 +691,23 @@ function changeEventStatus(eventId, newStatus) {
 
 function renderEventsTable() {
     const container = document.getElementById('eventDynamicContent');
-    const canEdit = isEditor;
+    // Кнопки действий показываем ВСЕМ авторизованным
+    const showActions = currentUser !== null;
+    
     container.innerHTML = `
         <div class="page-header"><h2>📅 Таблица мероприятий</h2></div>
-        <div class="click-hint">🔽 ${canEdit ? 'У вас есть права изменять статус' : '🔽 Режим просмотра'}</div>
+        <div class="click-hint">🔽 ${showActions ? 'Вы можете редактировать и удалять СВОИ ивенты' : '🔽 Режим просмотра'}</div>
         <div class="table-wrapper">
             <table class="data-table">
-                <thead><tr><th>ИВЕНТ</th><th>ОРГАНИЗАТОР</th><th>ПОМОЩНИКИ</th><th>ДАТА</th><th>СТАТУС</th><th>ПРИЗОВЫЕ</th><th>УЧАСТНИКИ</th><th>ОДОБРЕН</th>${canEdit ? '<th>ДЕЙСТВИЯ</th>' : ''}</td></thead>
+                <thead><tr><th>ИВЕНТ</th><th>ОРГАНИЗАТОР</th><th>ПОМОЩНИКИ</th><th>ДАТА</th><th>СТАТУС</th><th>ПРИЗОВЫЕ</th><th>УЧАСТНИКИ</th><th>ОДОБРЕН</th>${showActions ? '<th>ДЕЙСТВИЯ</th>' : ''}</td></thead>
                 <tbody id="eventsTableBody"></tbody>
             </table>
         </div>
     `;
+    
     const tbody = document.getElementById('eventsTableBody');
     tbody.innerHTML = '';
+    
     eventsData.forEach(event => {
         const row = tbody.insertRow();
         row.classList.add('clickable-row');
@@ -713,34 +717,72 @@ function renderEventsTable() {
         row.insertCell(1).textContent = event.platform;
         row.insertCell(2).textContent = event.organizer;
         row.insertCell(3).textContent = event.date;
-        
-        // СТАТУС — всегда "Проведен" (event.status)
         row.insertCell(4).innerHTML = `<span class="status-badge status-active">${event.status}</span>`;
-        
         row.insertCell(5).innerHTML = `<span class="rating-star">⭐ ${event.rating}</span>`;
         row.insertCell(6).innerHTML = `<span style="font-weight:600;">${event.members}</span>`;
-        
-        // ОДОБРЕН — статус одобрения (event.callStatus)
         row.insertCell(7).innerHTML = `<span style="background:var(--badge-bg); padding:0.2rem 0.6rem; border-radius:20px;">${event.callStatus}</span>`;
         
-        if (canEdit) {
+        if (showActions) {
     const cell = row.insertCell(8);
-    // Проверяем, может ли пользователь редактировать этот ивент
-    // isEditor = создатель (пароль creator2026) может всё
-    // ИЛИ текущий пользователь === организатор ивента
+    // Проверяем, может ли пользователь редактировать ЭТОТ ивент
     const canModify = isEditor || (currentUser && currentUser === event.platform);
     
-    cell.innerHTML = `
+    // Кнопки статусов - ТОЛЬКО для создателя (isEditor)
+    const statusButtons = isEditor ? `
         <button class="status-change-btn btn-approved" data-id="${event.id}" data-status="✅Одобрен">✅ Одобрен</button>
         <button class="status-change-btn btn-soon" data-id="${event.id}" data-status="🟡Скоро">🟡 Скоро</button>
         <button class="status-change-btn btn-completed" data-id="${event.id}" data-status="🔴Отказано">🔴 Отказано</button>
-        ${canModify ? `
-            <button class="status-change-btn edit-event-btn" data-id="${event.id}" style="margin-top:5px;">✏️ Редактировать</button>
-            <button class="status-change-btn delete-event-btn" data-id="${event.id}" style="margin-top:5px;">🗑️ Удалить</button>
-        ` : ''}
-    `;
+    ` : '';
+    
+    // Кнопки редактирования/удаления - для создателя ИЛИ организатора ивента
+    const editButtons = canModify ? `
+        <button class="status-change-btn edit-event-btn" data-id="${event.id}" style="margin-top:5px;">✏️</button>
+        <button class="status-change-btn delete-event-btn" data-id="${event.id}" style="margin-top:5px;">🗑️</button>
+    ` : '';
+    
+    cell.innerHTML = statusButtons + editButtons;
+    
+    // ПРЯМЫЕ ОБРАБОТЧИКИ на кнопки (чтобы не было всплытия)
+    if (canModify) {
+        const editBtn = cell.querySelector('.edit-event-btn');
+        const deleteBtn = cell.querySelector('.delete-event-btn');
+        
+        if (editBtn) {
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                console.log('Редактирование ивента:', event.id);
+                openEditEventModal(event.id);
+            });
+        }
+        
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                console.log('Удаление ивента:', event.id);
+                if (confirm('🗑️ Удалить ивент навсегда? Это действие нельзя отменить!')) {
+                    deleteEventHandler(event.id);
+                }
+            });
+        }
+    }
+    
+    if (isEditor) {
+        const statusBtns = cell.querySelectorAll('.status-change-btn');
+        statusBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                const eventId = parseInt(btn.dataset.id);
+                const newStatus = btn.dataset.status;
+                changeEventStatus(eventId, newStatus);
+            });
+        });
+    }
 }
     });
+    
     attachRowClicks();
 }
 
@@ -2312,10 +2354,7 @@ function refreshStatusesFromSheet() {
 setInterval(() => {
     refreshStatusesFromSheet();
 }, 180000);
-
-// ========== РЕДАКТИРОВАНИЕ И УДАЛЕНИЕ ИВЕНТОВ (ИСПРАВЛЕННАЯ ВЕРСИЯ) ==========
-
-// Функция для открытия модалки редактирования
+    
 function openEditEventModal(eventId) {
     const event = eventsData.find(ev => ev.id === eventId);
     if (!event) {
@@ -2424,6 +2463,7 @@ if (saveEditBtn) {
         this.disabled = true;
         this.textContent = '💾 Сохранение...';
         
+        // Обновляем в Google Sheets
         const result = await updateEventInSheet({
             id: eventId,
             name: name,
@@ -2435,17 +2475,31 @@ if (saveEditBtn) {
         });
         
         if (result.success) {
-            showNotif('✅ Ивент успешно обновлён!');
+            showNotif('✅ Ивент сохранён! Обновление через 2 секунды...');
             document.getElementById('editEventModal').style.display = 'none';
-            await refreshEventsData(); // Обновляем данные из таблицы
-            renderEventsTable(); // Перерисовываем таблицу
+            
+            // Показываем индикатор загрузки
+            showGlobalLoading();
+            
+            // ЖДЕМ 2 СЕКУНДЫ И ОБНОВЛЯЕМ
+            setTimeout(async () => {
+                await refreshEventsData();  // Загружаем свежие данные
+                renderEventsTable();        // Перерисовываем таблицу
+                hideGlobalLoading();        // Скрываем индикатор
+                showNotif('✅ Таблица обновлена!');
+            }, 2000);
+            
         } else {
             showNotif('❌ Ошибка обновления: ' + (result.error || 'неизвестная ошибка'), true);
+            this.disabled = false;
+            this.textContent = '💾 Сохранить';
         }
         
-        // Разблокируем кнопку
-        this.disabled = false;
-        this.textContent = '💾 Сохранить';
+        // Разблокируем кнопку (только если не было ошибки, иначе уже разблокировали)
+        if (result.success) {
+            this.disabled = false;
+            this.textContent = '💾 Сохранить';
+        }
     });
 }
 
@@ -2643,4 +2697,40 @@ if (saveEditBtn) {
     
     // Скрываем стандартный курсор
     document.body.style.cursor = 'none';
+
+    // ========== ГЛОБАЛЬНЫЙ ОБРАБОТЧИК КЛИКОВ (ВНЕ ФУНКЦИЙ) ==========
+document.addEventListener('click', function(e) {
+    // Кнопка редактирования
+    const editBtn = e.target.closest('.edit-event-btn');
+    if (editBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const eventId = parseInt(editBtn.dataset.id);
+        console.log('Редактирование ивента:', eventId);
+        openEditEventModal(eventId);
+        return;
+    }
+    
+    // Кнопка удаления
+    const deleteBtn = e.target.closest('.delete-event-btn');
+    if (deleteBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const eventId = parseInt(deleteBtn.dataset.id);
+        console.log('Удаление ивента:', eventId);
+        deleteEventHandler(eventId);
+        return;
+    }
+    
+    // Кнопки статусов (только для создателя)
+    const statusBtn = e.target.closest('.status-change-btn:not(.edit-event-btn):not(.delete-event-btn)');
+    if (statusBtn && statusBtn.dataset.status && isEditor) {
+        e.preventDefault();
+        e.stopPropagation();
+        const eventId = parseInt(statusBtn.dataset.id);
+        const newStatus = statusBtn.dataset.status;
+        changeEventStatus(eventId, newStatus);
+        return;
+    }
+});
 })();
