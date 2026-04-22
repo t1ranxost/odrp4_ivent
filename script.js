@@ -16,7 +16,7 @@ let teamData = [
     { id: 11, name: "кусочек шаурмы", role: "Ивентер", discord: "636585910552756284", status: "Онлайн", eventsCount: "-", joinDate: "17.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } }
 ];
 
-const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbznGYLLMSAV01HJyl2EGP9DpaQNgrLIeFvDXAFkpo6B-tnDV_lPcQdSOa5oFcZi33WR/exec';
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbwK_e4QNxPMHwrC-5EPHR-NviNhB1YrMQNthjtoWSKKyHDsb5sePjcoZrFwRd6Cnsd1/exec';
 
 const avatarMap = {
     "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
@@ -402,19 +402,19 @@ function loadEventsFromSheet() {
 
 async function refreshEventsData() {
     const events = await loadEventsFromSheet();
-    console.log('Загружено ивентов из таблицы:', events.length);
+    console.log('Загружено ивентов из таблицы:', events);
     
     if (events.length > 0) {
         const newEventsData = events.map(e => ({
             id: e.id,
             name: e.name,
-            platform: e.platform,
+            platform: e.platform || e.organizer, // Если platform пустой, берем organizer
             organizer: e.organizer,
             date: e.date,
-            status: 'Проведен', // ← ВСЕГДА "Проведен", игнорируем то, что в таблице!
+            status: 'Проведен',
             rating: e.rating,
             members: parseInt(e.members) || 0,
-            callStatus: '🟡Скоро', // Временный статус
+            callStatus: '🟡Скоро',
             fullDetails: {
                 description: e.description || '',
                 tasks: '',
@@ -426,15 +426,77 @@ async function refreshEventsData() {
         
         newEventsData.sort((a, b) => a.id - b.id);
         eventsData = newEventsData;
+        
+        console.log('ИТОГОВЫЕ ИВЕНТЫ:', eventsData.map(e => ({id: e.id, name: e.name, organizer: e.platform})));
+        
         saveAllData();
-        
-        // Загружаем статусы одобрения из отдельной таблицы
         await loadAndApplyStatuses();
-        
         renderEventsTable();
         showNotif('📊 Ивенты обновлены');
     }
 }
+
+// Удаление ивента
+function deleteEventFromSheet(eventId) {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_delete_event_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(data);
+        };
+        
+        const params = new URLSearchParams({
+            action: 'deleteEvent',
+            eventId: eventId,
+            callback: callbackName
+        });
+        
+        script.src = `${EVENTS_API_URL}?${params.toString()}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve({ success: false });
+        };
+        document.body.appendChild(script);
+    });
+}
+
+// Обновление ивента
+function updateEventInSheet(eventData) {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_update_event_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(data);
+        };
+        
+        const params = new URLSearchParams({
+            action: 'updateEvent',
+            eventId: eventData.id,
+            name: eventData.name,
+            description: eventData.description,
+            date: eventData.date,
+            rating: eventData.rating,
+            members: eventData.members,
+            helpers: eventData.helpers,
+            callback: callbackName
+        });
+        
+        script.src = `${EVENTS_API_URL}?${params.toString()}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve({ success: false });
+        };
+        document.body.appendChild(script);
+    });
+}   
 
 async function loadAndApplyStatuses() {
     const statuses = await loadStatusesFromSheet();
@@ -662,22 +724,23 @@ function renderEventsTable() {
         row.insertCell(7).innerHTML = `<span style="background:var(--badge-bg); padding:0.2rem 0.6rem; border-radius:20px;">${event.callStatus}</span>`;
         
         if (canEdit) {
-            const cell = row.insertCell(8);
-            cell.innerHTML = `
-                <button class="status-change-btn btn-approved" data-id="${event.id}" data-status="✅Одобрен">✅ Одобрен</button>
-                <button class="status-change-btn btn-soon" data-id="${event.id}" data-status="🟡Скоро">🟡 Скоро</button>
-                <button class="status-change-btn btn-completed" data-id="${event.id}" data-status="🔴Отказано">🔴 Отказано</button>
-            `;
-        }
+    const cell = row.insertCell(8);
+    // Проверяем, может ли пользователь редактировать этот ивент
+    // isEditor = создатель (пароль creator2026) может всё
+    // ИЛИ текущий пользователь === организатор ивента
+    const canModify = isEditor || (currentUser && currentUser === event.platform);
+    
+    cell.innerHTML = `
+        <button class="status-change-btn btn-approved" data-id="${event.id}" data-status="✅Одобрен">✅ Одобрен</button>
+        <button class="status-change-btn btn-soon" data-id="${event.id}" data-status="🟡Скоро">🟡 Скоро</button>
+        <button class="status-change-btn btn-completed" data-id="${event.id}" data-status="🔴Отказано">🔴 Отказано</button>
+        ${canModify ? `
+            <button class="status-change-btn edit-event-btn" data-id="${event.id}" style="margin-top:5px;">✏️ Редактировать</button>
+            <button class="status-change-btn delete-event-btn" data-id="${event.id}" style="margin-top:5px;">🗑️ Удалить</button>
+        ` : ''}
+    `;
+}
     });
-    if (canEdit) {
-        document.querySelectorAll('.status-change-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                changeEventStatus(parseInt(btn.dataset.id), btn.dataset.status);
-            });
-        });
-    }
     attachRowClicks();
 }
 
@@ -1458,19 +1521,17 @@ async function sendEventToDiscord() {
     const date = startTime + " - " + endTime;
     const rating = (prizes !== 'Не было' ? prizes.replace(/[^0-9]/g, '') : '0') + '$';
     
-    // 1. Добавляем в Google Таблицу
     const sheetResult = await addEventToSheet({
-        name: name,
-        platform: organizer,
-        organizer: helpers,
-        helpers: helpers,
-        date: date,
-        status: 'Проведен',
-        rating: rating,
-        members: members,
-        callStatus: '🟡Скоро',
-        description: description
-    });
+    name: name,
+    platform: organizer,     // platform - это организатор (отображается в колонке ОРГАНИЗАТОР)
+    organizer: organizer,    // organizer - тоже организатор (для проверки прав)
+    helpers: helpers,
+    date: date,
+    status: 'Проведен',
+    rating: rating,
+    members: members,
+    description: description
+});
     
     if (!sheetResult.success) {
         showNotif('❌ Ошибка сохранения в таблицу', true);
@@ -2032,65 +2093,108 @@ if (salaryModal) {
     let sweetEarnCleanupTimer = null;
 
     function initSweetEarnFeature() {
-        if (window.__sweetEarnFeatureInit) return;
-        window.__sweetEarnFeatureInit = true;
+    if (window.__sweetEarnFeatureInit) return;
+    window.__sweetEarnFeatureInit = true;
 
-        function getSweetEarnEls() {
-            return {
-                overlay:   document.getElementById('sweetEarnOverlay'),
-                text:      document.getElementById('sweetEarnText'),
-                imageWrap: document.getElementById('sweetEarnImageWrap')
-            };
-        }
-
-        function clearSweetEarnTimers() {
-            if (sweetEarnCloseTimer)   { clearTimeout(sweetEarnCloseTimer);   sweetEarnCloseTimer   = null; }
-            if (sweetEarnCleanupTimer) { clearTimeout(sweetEarnCleanupTimer); sweetEarnCleanupTimer = null; }
-        }
-
-        function openSweetEarn() {
-            const { overlay, text, imageWrap } = getSweetEarnEls();
-            if (!overlay || !text || !imageWrap) { console.error('SweetEarn: элементы не найдены'); return; }
-            clearSweetEarnTimers();
-            sweetEarnIsOpen = true;
-            overlay.classList.remove('sweet-earn-hide', 'is-closing', 'is-active', 'is-flashing');
-            text.classList.remove('animate');
-            imageWrap.classList.remove('animate');
-            void overlay.offsetWidth; void text.offsetWidth; void imageWrap.offsetWidth;
-            overlay.classList.add('is-active', 'is-flashing');
-            overlay.setAttribute('aria-hidden', 'false');
-            text.classList.add('animate');
-            setTimeout(() => imageWrap.classList.add('animate'), 180);
-            sweetEarnCloseTimer = setTimeout(closeSweetEarn, 7000);
-        }
-
-        function closeSweetEarn() {
-            const { overlay, text, imageWrap } = getSweetEarnEls();
-            if (!overlay) return;
-            clearSweetEarnTimers();
-            sweetEarnIsOpen = false;
-            overlay.classList.remove('is-active', 'is-flashing');
-            overlay.classList.add('is-closing');
-            overlay.setAttribute('aria-hidden', 'true');
-            sweetEarnCleanupTimer = setTimeout(() => {
-                overlay.classList.add('sweet-earn-hide');
-                overlay.classList.remove('is-closing');
-                if (text)      text.classList.remove('animate');
-                if (imageWrap) imageWrap.classList.remove('animate');
-            }, 450);
-        }
-
-        document.addEventListener('click', (e) => {
-            const btn = e.target.closest('#sweetEarnBtn');
-            if (btn) { e.preventDefault(); openSweetEarn(); return; }
-            const overlay = document.getElementById('sweetEarnOverlay');
-            if (overlay && e.target === overlay && sweetEarnIsOpen) closeSweetEarn();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && sweetEarnIsOpen) closeSweetEarn();
-        });
+    function getSweetEarnEls() {
+        return {
+            overlay:   document.getElementById('sweetEarnOverlay'),
+            text:      document.getElementById('sweetEarnText'),
+            imageWrap: document.getElementById('sweetEarnImageWrap')
+        };
     }
+
+    function clearSweetEarnTimers() {
+        if (sweetEarnCloseTimer)   { clearTimeout(sweetEarnCloseTimer);   sweetEarnCloseTimer   = null; }
+        if (sweetEarnCleanupTimer) { clearTimeout(sweetEarnCleanupTimer); sweetEarnCleanupTimer = null; }
+    }
+
+    function openSweetEarn() {
+        const { overlay, text, imageWrap } = getSweetEarnEls();
+        if (!overlay || !text || !imageWrap) { console.error('SweetEarn: элементы не найдены'); return; }
+        clearSweetEarnTimers();
+        sweetEarnIsOpen = true;
+        overlay.classList.remove('sweet-earn-hide', 'is-closing', 'is-active', 'is-flashing');
+        text.classList.remove('animate');
+        imageWrap.classList.remove('animate');
+        void overlay.offsetWidth; void text.offsetWidth; void imageWrap.offsetWidth;
+        overlay.classList.add('is-active', 'is-flashing');
+        overlay.setAttribute('aria-hidden', 'false');
+        text.classList.add('animate');
+        setTimeout(() => imageWrap.classList.add('animate'), 180);
+        sweetEarnCloseTimer = setTimeout(closeSweetEarn, 7000);
+    }
+
+    function closeSweetEarn() {
+        const { overlay, text, imageWrap } = getSweetEarnEls();
+        if (!overlay) return;
+        clearSweetEarnTimers();
+        sweetEarnIsOpen = false;
+        overlay.classList.remove('is-active', 'is-flashing');
+        overlay.classList.add('is-closing');
+        overlay.setAttribute('aria-hidden', 'true');
+        sweetEarnCleanupTimer = setTimeout(() => {
+            overlay.classList.add('sweet-earn-hide');
+            overlay.classList.remove('is-closing');
+            if (text)      text.classList.remove('animate');
+            if (imageWrap) imageWrap.classList.remove('animate');
+        }, 450);
+    }
+initSweetEarnFeature()
+
+// Закрытие модалки
+const closeEditModalBtn = document.getElementById('closeEditEventModal');
+if (closeEditModalBtn) {
+    closeEditModalBtn.addEventListener('click', function() {
+        document.getElementById('editEventModal').style.display = 'none';
+    });
+}
+
+// Сохранение
+const saveEditBtn = document.getElementById('saveEditEventBtn');
+if (saveEditBtn) {
+    saveEditBtn.addEventListener('click', async function() {
+        const eventId = parseInt(document.getElementById('editEventId').value);
+        const name = document.getElementById('editEventName').value.trim();
+        const description = document.getElementById('editEventDescription').value.trim();
+        const date = document.getElementById('editEventDate').value.trim();
+        const rating = document.getElementById('editEventRating').value.trim();
+        const members = document.getElementById('editEventMembers').value.trim();
+        const helpers = document.getElementById('editEventHelpers').value.trim();
+        
+        if (!name) {
+            showNotif('❌ Название обязательно!', true);
+            return;
+        }
+        
+        this.disabled = true;
+        
+        const result = await updateEventInSheet({
+            id: eventId,
+            name,
+            description,
+            date,
+            rating,
+            members,
+            helpers
+        });
+        
+        if (result.success) {
+            showNotif('✅ Ивент обновлён');
+            document.getElementById('editEventModal').style.display = 'none';
+            await refreshEventsData();
+        } else {
+            showNotif('❌ Ошибка обновления', true);
+        }
+        
+        this.disabled = false;
+    });
+}
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sweetEarnIsOpen) closeSweetEarn();
+    });
+}
 
 const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbypHeOJJsTeeYryopA4g1lrg_cUQa1FfkpKv5WzD_VWnU1toj-rz6YLIhz3CKEYUY0Pig/exec';
 
@@ -2208,6 +2312,142 @@ function refreshStatusesFromSheet() {
 setInterval(() => {
     refreshStatusesFromSheet();
 }, 180000);
+
+// ========== РЕДАКТИРОВАНИЕ И УДАЛЕНИЕ ИВЕНТОВ (ИСПРАВЛЕННАЯ ВЕРСИЯ) ==========
+
+// Функция для открытия модалки редактирования
+function openEditEventModal(eventId) {
+    const event = eventsData.find(ev => ev.id === eventId);
+    if (!event) {
+        console.error('Ивент не найден:', eventId);
+        showNotif('❌ Ивент не найден', true);
+        return;
+    }
+    
+    const modal = document.getElementById('editEventModal');
+    if (!modal) {
+        console.error('Модалка editEventModal не найдена в DOM');
+        showNotif('❌ Ошибка: модальное окно не найдено', true);
+        return;
+    }
+    
+    // Заполняем поля
+    document.getElementById('editEventId').value = event.id;
+    document.getElementById('editEventName').value = event.name || '';
+    document.getElementById('editEventDescription').value = event.fullDetails?.description || '';
+    document.getElementById('editEventDate').value = event.date || '';
+    document.getElementById('editEventRating').value = event.rating || '';
+    document.getElementById('editEventMembers').value = event.members || '';
+    document.getElementById('editEventHelpers').value = event.organizer || '';
+    
+    // Показываем модалку
+    modal.style.display = 'flex';
+}
+
+// Функция для удаления ивента
+async function deleteEventHandler(eventId) {
+    if (!confirm('🗑️ Удалить ивент навсегда? Это действие нельзя отменить!')) {
+        return;
+    }
+    
+    const result = await deleteEventFromSheet(eventId);
+    if (result.success) {
+        showNotif('✅ Ивент удалён');
+        await refreshEventsData(); // Обновляем таблицу
+        renderEventsTable(); // Перерисовываем
+    } else {
+        showNotif('❌ Ошибка удаления: ' + (result.error || 'неизвестная ошибка'), true);
+    }
+}
+
+// Глобальный обработчик кликов для кнопок (ОСНОВНОЙ)
+document.addEventListener('click', function(e) {
+    // Кнопка редактирования
+    const editBtn = e.target.closest('.edit-event-btn');
+    if (editBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const eventId = parseInt(editBtn.dataset.id);
+        console.log('Редактирование ивента:', eventId);
+        openEditEventModal(eventId);
+        return;
+    }
+    
+    // Кнопка удаления
+    const deleteBtn = e.target.closest('.delete-event-btn');
+    if (deleteBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const eventId = parseInt(deleteBtn.dataset.id);
+        console.log('Удаление ивента:', eventId);
+        deleteEventHandler(eventId);
+        return;
+    }
+});
+
+// Закрытие модалки редактирования
+const closeEditModalBtn = document.getElementById('closeEditEventModal');
+if (closeEditModalBtn) {
+    closeEditModalBtn.addEventListener('click', function() {
+        document.getElementById('editEventModal').style.display = 'none';
+    });
+}
+
+// Закрытие по клику на фон
+const editEventModal = document.getElementById('editEventModal');
+if (editEventModal) {
+    editEventModal.addEventListener('click', function(e) {
+        if (e.target === editEventModal) {
+            editEventModal.style.display = 'none';
+        }
+    });
+}
+
+// Сохранение изменений
+const saveEditBtn = document.getElementById('saveEditEventBtn');
+if (saveEditBtn) {
+    saveEditBtn.addEventListener('click', async function() {
+        const eventId = parseInt(document.getElementById('editEventId').value);
+        const name = document.getElementById('editEventName').value.trim();
+        const description = document.getElementById('editEventDescription').value.trim();
+        const date = document.getElementById('editEventDate').value.trim();
+        const rating = document.getElementById('editEventRating').value.trim();
+        const members = document.getElementById('editEventMembers').value.trim();
+        const helpers = document.getElementById('editEventHelpers').value.trim();
+        
+        if (!name) {
+            showNotif('❌ Название ивента обязательно!', true);
+            return;
+        }
+        
+        // Блокируем кнопку
+        this.disabled = true;
+        this.textContent = '💾 Сохранение...';
+        
+        const result = await updateEventInSheet({
+            id: eventId,
+            name: name,
+            description: description,
+            date: date,
+            rating: rating,
+            members: members,
+            helpers: helpers
+        });
+        
+        if (result.success) {
+            showNotif('✅ Ивент успешно обновлён!');
+            document.getElementById('editEventModal').style.display = 'none';
+            await refreshEventsData(); // Обновляем данные из таблицы
+            renderEventsTable(); // Перерисовываем таблицу
+        } else {
+            showNotif('❌ Ошибка обновления: ' + (result.error || 'неизвестная ошибка'), true);
+        }
+        
+        // Разблокируем кнопку
+        this.disabled = false;
+        this.textContent = '💾 Сохранить';
+    });
+}
 
 (function() {
     const canvas = document.getElementById('particleCanvas');
