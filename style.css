@@ -1773,3 +1773,26 @@ button{font-family:inherit}
     border-color: rgba(244, 67, 54, 0.6) !important;
 }
 
+/* Кнопка 67 в футере */
+#play67FooterBtn {
+    background: linear-gradient(135deg, #9b9999, #d4d4d4);
+    border: none;
+    border-radius: 40px;
+    padding: 8px 20px;
+    margin-top: 12px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+#play67FooterBtn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(167, 155, 155, 0.4);
+}
+
+#play67FooterBtn:active {
+    transform: scale(0.95);
+}
