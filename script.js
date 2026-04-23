@@ -2733,3 +2733,24 @@ document.addEventListener('click', function(e) {
     }
 });
 })();
+
+function play67Track() {
+    const audio = new Audio();
+    audio.src = 'https://videotourl.com/audio/1776950054502-7076b567-2429-4db8-8053-ece161ff38ac.mp3';
+    audio.volume = 0.7;
+    
+    showNotif('Вам конец, ребенок 67 взломал вас');
+
+    audio.play().catch(e => console.log('Ошибка воспроизведения:', e));
+    
+    setTimeout(() => {
+        audio.pause();
+        audio.currentTime = 0;
+        showNotif('Успешный взлом!');
+    }, 6000);
+}
+
+const play67Btn = document.getElementById('play67FooterBtn');
+if (play67Btn) {
+    play67Btn.addEventListener('click', play67Track);
+}
