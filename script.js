@@ -860,7 +860,7 @@ function renderTeamTable() {
     
     container.innerHTML = `
         <div class="page-header"><h2>👥 Команда ивент-отдела</h2></div>
-        <div class="click-hint">🔽 Нажмите на карточку участника — полная информация</div>
+    
         <div class="team-section"><div class="section-header senior"><span class="section-icon">👑</span><span class="section-title senior">Старший состав</span><span class="section-count">${seniorMembers.length} чел</span></div><div class="team-grid">${seniorHtml || '<div style="text-align:center; padding:2rem;">Нет участников</div>'}</div></div>
         <div class="team-section"><div class="section-header junior"><span class="section-icon">🌟</span><span class="section-title junior">Младший состав</span><span class="section-count">${juniorMembers.length} чел</span></div><div class="team-grid">${juniorHtml || '<div style="text-align:center; padding:2rem;">Нет участников</div>'}</div></div>
     `;
@@ -1355,19 +1355,19 @@ navs.forEach(n => {
         
         <div class="methodology-container">
             <div class="methodology-header">
-                <div class="methodology-title">📖 Методичка Ивентологов</div>
+                <div class="methodology-title">Методичка Ивентологов</div>
                 <div class="methodology-subtitle">ОСНОВНЫЕ ПРАВИЛА ОТДЕЛА ИВЕНТОЛОГИИ</div>
             </div>
             
             <!-- ЧТО МОЖНО ДЕЛАТЬ -->
             <div class="section-block">
-                <div class="section-title green">✅ ЧТО МОЖНО ДЕЛАТЬ?</div>
+                <div class="section-title green">ЧТО МОЖНО ДЕЛАТЬ?</div>
                 <div class="rank-card ivent">
-                    <div class="rank-name">🎮 Кто может проводить ивенты?</div>
+                    <div class="rank-name">Кто может проводить ивенты?</div>
                     <div class="rank-desc">Проводить ивенты можно с ранга «Оператор», если вы состоите в отделе Ивентологии. С рангов ниже — только с разрешения Главы отдела или Куратора сервера.</div>
                 </div>
                 <div class="rank-card ivent">
-                    <div class="rank-name">👥 Кол-во администрации на ивенте</div>
+                    <div class="rank-name">Кол-во администрации на ивенте</div>
                     <div class="rank-desc">В ивенте может участвовать не более 25% от всей наборной администрации. <span class="stats-mini">Например: 10 админов → максимум 3</span></div>
                 </div>
                 <div class="rank-card ivent">
@@ -1375,35 +1375,35 @@ navs.forEach(n => {
                     <div class="rank-desc">Если завал начался во время ивента, его разрешено игнорировать.</div>
                 </div>
                 <div class="rank-card ivent">
-                    <div class="rank-name">🎯 Самостоятельность</div>
+                    <div class="rank-name">Самостоятельность</div>
                     <div class="rank-desc">Каждый Ивентер может проводить ивенты без разрешения от Ст. Администрации. Если ты на испытательном сроке — нужно одобрение от Ст. Ивентера.</div>
                 </div>
                 <div class="rank-card ivent">
-                    <div class="rank-name">💰 Награды</div>
+                    <div class="rank-name">Награды</div>
                     <div class="rank-desc">Если игрок использует баги/преимущества/нарушал правила — Ивентер может не выдавать приз. Если победа честная — Ивентер обязан выдать приз.</div>
                 </div>
                 <div class="rank-card ivent">
-                    <div class="rank-name">🎭 RP-Мероприятия</div>
+                    <div class="rank-name">RP-Мероприятия</div>
                     <div class="rank-desc">Помимо ивентов, вам также доступны РП-Мероприятия — сюжетные ролевые отыгровки в пределах RP-зоны. РП-мероприятие засчитывается как полноценный ивент.</div>
                 </div>
             </div>
             
             <!-- ЧТО ВЫ ОБЯЗАНЫ ДЕЛАТЬ -->
             <div class="section-block">
-                <div class="section-title orange">⚠️ ЧТО ВЫ ОБЯЗАНЫ ДЕЛАТЬ?</div>
+                <div class="section-title orange">ЧТО ВЫ ОБЯЗАНЫ ДЕЛАТЬ?</div>
                 <div class="rank-card senior">
-                    <div class="rank-name">📝 После ивента/РП-Мероприятия</div>
+                    <div class="rank-name">После ивента/РП-Мероприятия</div>
                     <div class="rank-desc">Убрать всё, что было построено/создано. Написать отчёт в специальный канал.</div>
                 </div>
                 <div class="rank-card senior">
-                    <div class="rank-name">🐌 Лаги</div>
+                    <div class="rank-name">Лаги</div>
                     <div class="rank-desc">Если во время ивента появились лаги или высокий пинг — ивент нужно как можно быстрее прекратить и сообщить Главе/Зам. Главы.</div>
                 </div>
             </div>
             
             <!-- ЧТО НЕЛЬЗЯ ДЕЛАТЬ -->
             <div class="section-block">
-                <div class="section-title red">🚫 ЧТО НЕЛЬЗЯ ДЕЛАТЬ?</div>
+                <div class="section-title red">ЧТО НЕЛЬЗЯ ДЕЛАТЬ?</div>
                 <ul class="rule-list">
                     <li>Запрещается привлекать игроков к РП-мероприятию через /OOC, участие должно происходить естественным RP путем.</li>
                     <li>Нельзя принуждать игроков к участию в мероприятии.</li>
@@ -1420,7 +1420,7 @@ navs.forEach(n => {
             
             <!-- УТОЧНЕНИЯ -->
             <div class="section-block">
-                <div class="section-title purple">📌 УТОЧНЕНИЯ</div>
+                <div class="section-title purple">УТОЧНЕНИЯ</div>
                 <ul class="rule-list">
                     <li>При проведении РП-мероприятий обязательно соблюдение всех действующих правил сервера.</li>
                     <li>Повышение до Ивент-Мастера не будет. Однако попросить его помощь вы можете в канале ┣🍽️・запрос-вещей.</li>
@@ -1431,7 +1431,7 @@ navs.forEach(n => {
             
             <!-- МАКСИМАЛЬНОЕ КОЛИЧЕСТВО МЕСТ -->
             <div class="section-block">
-                <div class="section-title blue">👥 Максимальное количество мест в отделе — 9</div>
+                <div class="section-title blue">Максимальное количество мест в отделе — 9</div>
                 <div class="norm-grid">
                     <div class="norm-card"><div class="norm-day">👑 Глава</div><div class="norm-value">1 место</div></div>
                     <div class="norm-card"><div class="norm-day">📿 Зам. Главы</div><div class="norm-value">1 место</div></div>
@@ -1442,16 +1442,16 @@ navs.forEach(n => {
             
             <!-- РАНГИ -->
             <div class="section-block">
-                <div class="section-title pink">🏅 РАНГИ</div>
-                <div class="rank-card ivent"><div class="rank-name">🤡 Ивентер</div><div class="rank-desc">Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела. Может игнорировать завал в случае, если ивент начался до завала.</div></div>
-                <div class="rank-card senior"><div class="rank-name">🍉 Ст. Ивентер</div><div class="rank-desc">Имеет все полномочия Ивентера, а также имеет право корректировать работу Ивентеров и давать рекомендации по поводу ивентов, выдавать наказания за их ошибки, а также одобрять отчётности.</div></div>
-                <div class="rank-card zam"><div class="rank-name">📿 Зам. Главы Ивентологии</div><div class="rank-desc">Имеет все полномочия нижестоящих рангов, а также имеет право набирать новых кадров в отдел, определять курс развития отдела и изменять норму и правила.</div></div>
-                <div class="rank-card glava"><div class="rank-name">👑 Глава Ивентологии</div><div class="rank-desc">Имеет полное владение над отделом Ивентологии, может самостоятельно изменять состав отдела Ивентологии и их норму/правила.</div></div>
+                <div class="section-title pink">РАНГИ</div>
+                <div class="rank-card ivent"><div class="rank-name">Ивентер</div><div class="rank-desc">Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела. Может игнорировать завал в случае, если ивент начался до завала.</div></div>
+                <div class="rank-card senior"><div class="rank-name">Ст. Ивентер</div><div class="rank-desc">Имеет все полномочия Ивентера, а также имеет право корректировать работу Ивентеров и давать рекомендации по поводу ивентов, выдавать наказания за их ошибки, а также одобрять отчётности.</div></div>
+                <div class="rank-card zam"><div class="rank-name">Зам. Главы Ивентологии</div><div class="rank-desc">Имеет все полномочия нижестоящих рангов, а также имеет право набирать новых кадров в отдел, определять курс развития отдела и изменять норму и правила.</div></div>
+                <div class="rank-card glava"><div class="rank-name">Глава Ивентологии</div><div class="rank-desc">Имеет полное владение над отделом Ивентологии, может самостоятельно изменять состав отдела Ивентологии и их норму/правила.</div></div>
             </div>
             
             <!-- НОРМА -->
             <div class="section-block">
-                <div class="section-title pink">📊 НОРМА</div>
+                <div class="section-title pink">НОРМА</div>
                 <ul class="rule-list">
                     <li>Ивентер из другого отдела — кол-во тикетов из вашего отдела | 2 ивента в неделю</li>
                     <li>Ивентер — 35 тикетов | 3 ивента в неделю</li>
@@ -1463,7 +1463,7 @@ navs.forEach(n => {
             
             <!-- НОРМА ПОСЛЕ ОТПУСКА -->
             <div class="section-block">
-                <div class="section-title orange">📅 Норма после отпуска/заморозки/вступлении в отдел</div>
+                <div class="section-title orange">Норма после отпуска/заморозки/вступлении в отдел</div>
                 <div class="norm-grid">
                     <div class="norm-card"><div class="norm-day">ПН</div><div class="norm-value">35 тикетов | 3 ивента</div></div>
                     <div class="norm-card"><div class="norm-day">ВТ</div><div class="norm-value">35 тикетов | 3 ивента</div></div>
@@ -1474,14 +1474,14 @@ navs.forEach(n => {
                     <div class="norm-card"><div class="norm-day">ВС</div><div class="norm-value">Освобождены от нормы</div></div>
                 </div>
                 <div class="rank-card ivent" style="margin-top: 1rem;">
-                    <div class="rank-name">📌 Примечание</div>
+                    <div class="rank-name">Примечание</div>
                     <div class="rank-desc">Если вы состоите в другом отделе и вышли с отпуска/мороза — с четверга вы обязуетесь провести 1 ивент. Если с понедельника и до среды – 2 ивента.</div>
                 </div>
             </div>
             
             <!-- НАКАЗАНИЯ -->
             <div class="section-block">
-                <div class="section-title red">⚖️ Наказания за невыполнение нормы</div>
+                <div class="section-title red">Наказания за невыполнение нормы</div>
                 <div class="punishment-card"><strong>25-35 тикетов и 2-3 ивента:</strong> В случае уважительной причины недобор прощается, в другом случае выдается предупреждение.</div>
                 <div class="punishment-card"><strong>15-24 тикета и 1-2 ивента:</strong> В случае уважительной причины выдается предупреждение, в другом случае выдается выговор.</div>
                 <div class="punishment-card"><strong>0-14 тикета и 0-1 ивент:</strong> В случае уважительной причины выдается выговор, в другом случае снятие или два выговора.</div>
@@ -1490,7 +1490,7 @@ navs.forEach(n => {
             
             <!-- ЗАРПЛАТА -->
             <div class="section-block">
-                <div class="section-title green">💰 Зарплата</div>
+                <div class="section-title green">Зарплата</div>
                 <div class="rank-card glava">
                     <div class="rank-desc">Зарплата выдаётся только за выполненные тикеты. Тех. Администрация не намеревается выдавать ЗП за ивенты, возможно когда-то в будущем у вас будет вознаграждение за ваши прекрасные ивенты.</div>
                 </div>
