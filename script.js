@@ -671,20 +671,40 @@ function escapeHtml(s) {
 }
 
 function changeEventStatus(eventId, newStatus) {
-    if (!isEditor) return false;
-    const event = eventsData.find(e => e.id === eventId);
-    if (event) {
-        event.callStatus = newStatus;
-        saveAllData();
-        renderEventsTable();
-        updateNormStats();
-        showNotif(`✅ Статус изменён на "${newStatus}"`);
-        
-        syncStatusToSheet(eventId, newStatus, currentUser);
-        
-        return true;
+    if (!isEditor) {
+        showNotif('❌ Нет прав для изменения статуса', true);
+        return false;
     }
-    return false;
+    
+    const event = eventsData.find(e => e.id === eventId);
+    if (!event) {
+        showNotif('❌ Ивент не найден', true);
+        return false;
+    }
+    
+    // Сохраняем старый статус на случай ошибки
+    const oldStatus = event.callStatus;
+    
+    // Обновляем локально
+    event.callStatus = newStatus;
+    renderEventsTable();
+    showNotif(`🔄 Статус изменён на "${newStatus}", синхронизация...`);
+    
+    // Отправляем в Google Sheets
+    syncStatusToSheet(eventId, newStatus, currentUser).then(result => {
+        if (result.success) {
+            showNotif(`✅ Статус успешно изменён на "${newStatus}"`);
+            // Принудительно обновляем данные из таблицы
+            refreshEventsData();
+        } else {
+            // Если ошибка - возвращаем старый статус
+            event.callStatus = oldStatus;
+            renderEventsTable();
+            showNotif(`❌ Ошибка синхронизации статуса`, true);
+        }
+    });
+    
+    return true;
 }
 
 function renderEventsTable() {
@@ -1587,7 +1607,7 @@ async function sendEventToDiscord() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    content: `<@1246076621484724320> Новый ивент от ${organizer}!`,
+                    content: `Появился новый ивент от ${organizer}!`,
                     embeds: [{
                         title: "📅 Новый ивент",
                         color: 0x5865F2,
@@ -2245,7 +2265,7 @@ function syncStatusToSheet(eventId, newStatus, userName) {
         window[callbackName] = (data) => {
             delete window[callbackName];
             document.body.removeChild(script);
-            console.log('✅ Статус сохранён:', eventId, newStatus);
+            console.log('✅ Статус сохранён в Google Sheets:', eventId, newStatus, data);
             resolve(data || { success: true });
         };
         
@@ -2253,7 +2273,7 @@ function syncStatusToSheet(eventId, newStatus, userName) {
             action: 'updateStatus',
             eventId: eventId,
             newStatus: newStatus,
-            userName: userName,
+            userName: userName || 'Система',
             callback: callbackName
         });
         
@@ -2262,7 +2282,7 @@ function syncStatusToSheet(eventId, newStatus, userName) {
             delete window[callbackName];
             document.body.removeChild(script);
             console.error('❌ Ошибка сохранения статуса');
-            resolve({ success: false });
+            resolve({ success: false, error: 'Network error' });
         };
         document.body.appendChild(script);
     });
