@@ -16,7 +16,7 @@ let teamData = [
     { id: 11, name: "кусочек шаурмы", role: "Ивентер", discord: "636585910552756284", status: "Онлайн", eventsCount: "-", joinDate: "17.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } }
 ];
 
-const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbwK_e4QNxPMHwrC-5EPHR-NviNhB1YrMQNthjtoWSKKyHDsb5sePjcoZrFwRd6Cnsd1/exec';
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbybx0X49OjyjPwT-RzuLVkPSdF2zI-33RkFj1qJW9XESJMBjCvm598GSai44oIVXWGB/exec';
 
 const avatarMap = {
     "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
@@ -376,7 +376,6 @@ function addEventToSheet(eventData) {
     });
 }
 
-// Загрузка ивентов из Google Таблицы
 function loadEventsFromSheet() {
     return new Promise((resolve) => {
         const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
@@ -388,7 +387,8 @@ function loadEventsFromSheet() {
             resolve(Array.isArray(data) ? data : []);
         };
         
-        script.src = `${EVENTS_API_URL}?action=getEvents&callback=${callbackName}`;
+        // Используем правильный URL для ивентов
+        script.src = `https://script.google.com/macros/s/AKfycbybx0X49OjyjPwT-RzuLVkPSdF2zI-33RkFj1qJW9XESJMBjCvm598GSai44oIVXWGB/exec?action=getEvents&callback=${callbackName}`;
         script.onerror = () => {
             delete window[callbackName];
             document.body.removeChild(script);
@@ -409,10 +409,10 @@ async function refreshEventsData() {
             platform: e.platform || e.organizer,
             organizer: e.organizer,
             date: e.date,
-            status: 'Проведен',
+            status: e.status || 'Проведен',
             rating: e.rating,
             members: parseInt(e.members) || 0,
-            callStatus: '🟡Скоро',
+            callStatus: '🟡Скоро',  // Временный статус
             fullDetails: {
                 description: e.description || '',
                 tasks: '',
@@ -425,10 +425,10 @@ async function refreshEventsData() {
         newEventsData.sort((a, b) => a.id - b.id);
         eventsData = newEventsData;
         
-        console.log('ИТОГОВЫЕ ИВЕНТЫ:', eventsData.map(e => ({id: e.id, name: e.name, organizer: e.platform})));
+        console.log('ИТОГОВЫЕ ИВЕНТЫ:', eventsData.map(e => ({id: e.id, name: e.name})));
         
         saveAllData();
-        await loadAndApplyStatuses();
+        await loadAndApplyStatuses();  // ← ЗАГРУЖАЕМ СТАТУСЫ ИЗ ОТДЕЛЬНОЙ ТАБЛИЦЫ
         renderEventsTable();
         showNotif('📊 Ивенты обновлены');
     }
@@ -496,35 +496,192 @@ function updateEventInSheet(eventData) {
     });
 }   
 
-async function loadAndApplyStatuses() {
-    const statuses = await loadStatusesFromSheet();
-    console.log('Статусы из отдельной таблицы:', statuses);
-    
-    if (statuses && statuses.length > 0) {
-        statuses.forEach(item => {
-            // ПРАВИЛЬНЫЕ КЛЮЧИ — ТОЧНО КАК В ТАБЛИЦЕ!
-            const eventId = item['ID ивента'];
-            const rawStatus = item['Статус'];
-            
-            console.log('Обработка:', eventId, rawStatus);
-            
-            const event = eventsData.find(e => e.id == eventId);
-            if (event && rawStatus) {
-                // Очищаем статус
-                let cleanStatus = rawStatus;
-                if (rawStatus.includes('✅')) cleanStatus = '✅Одобрен';
-                else if (rawStatus.includes('🔴')) cleanStatus = '🔴Отказано';
-                else if (rawStatus.includes('🟡')) cleanStatus = '🟡Скоро';
-                
-                event.callStatus = cleanStatus;
-                console.log(`Применён статус для ивента ${eventId}: ${cleanStatus}`);
-            }
-        });
-        saveAllData();
-        renderEventsTable();
-    }
+
+// ========== ФУНКЦИИ ДЛЯ РАБОТЫ С ТИКЕТАМИ ==========
+
+const TICKETS_API_URL = 'https://script.google.com/macros/s/AKfycbwlueUcV6HahGGG4TTNyhXi4_Rx_ArsHiUth6YNIziQg-2PGRm3is8I4nfNU0v0OFBo/exec';
+
+// Загрузка тикетов из Google Sheets
+function loadTicketsFromSheet() {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_tickets_load_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            console.log('Загруженные тикеты:', data);
+            // data приходит в формате { "имя": { done: X, goal: Y, eventsGoal: Z } }
+            resolve(data || {});
+        };
+        
+        script.src = `${COMMENTS_API_URL}?action=getTickets&callback=${callbackName}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve({});
+        };
+        document.body.appendChild(script);
+    });
 }
 
+// Сохранение тикетов в Google Sheets
+function saveTicketsToSheet(name, ticketsDone, ticketsGoal, eventsGoal) {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_tickets_save_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            console.log('Ответ сервера:', data);
+            resolve(data || { success: true });
+        };
+        
+        const params = new URLSearchParams({
+            action: 'updateTickets',
+            userName: name,
+            ticketsDone: ticketsDone.toString(),
+            ticketsGoal: ticketsGoal.toString(),
+            eventsGoal: eventsGoal.toString(),
+            updatedBy: currentUser || 'Система',
+            callback: callbackName
+        });
+        
+        script.src = `${COMMENTS_API_URL}?${params.toString()}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve({ success: false, error: 'Network error' });
+        };
+        document.body.appendChild(script);
+    });
+}
+
+async function renderTicketsEditor() {
+    console.log('renderTicketsEditor вызвана!');
+    if (!isEditor) {
+        showNotif('❌ Нет доступа', true);
+        return;
+    }
+    
+    const existingModal = document.getElementById('ticketsEditorModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    const modal = document.createElement('div');
+    modal.id = 'ticketsEditorModal';
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+        <div class="modal-card" style="max-width: 500px; width: 90%;">
+            <div class="modal-header">
+                <span>📊 Управление тикетами</span>
+                <button class="close-modal" id="closeTicketsEditorBtn">
+                    <svg class="icon"><use href="#ic-close"/></svg>
+                </button>
+            </div>
+            <div class="modal-body" id="ticketsEditorBody">
+                <div style="text-align: center; padding: 20px;">Загрузка...</div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    document.getElementById('closeTicketsEditorBtn').addEventListener('click', () => {
+        modal.remove();
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+    
+    showGlobalLoading();
+    
+    let ticketsData;
+    try {
+        ticketsData = await loadTicketsFromSheet();
+        console.log('Загружены тикеты:', ticketsData);
+    } catch (error) {
+        console.error('Ошибка загрузки тикетов:', error);
+        ticketsData = {};
+    }
+    
+    const members = [
+        { name: "кусочек шаурмы", discordId: "636585910552756284", defaultEventsGoal: 4 },
+        { name: "Himas", discordId: "1467081827670954015", defaultEventsGoal: 1 },
+        { name: "Гофикал", discordId: "1135087142385754123", defaultEventsGoal: 1 },
+        { name: "somcop", discordId: "989919183036874772", defaultEventsGoal: 1 },
+        { name: "Foxy", discordId: "1344959502436532304", defaultEventsGoal: 7 }
+    ];
+    
+    let html = '<div style="display: flex; flex-direction: column; gap: 15px;">';
+    
+    for (const member of members) {
+        const current = ticketsData[member.name] || { done: 0, goal: 25, eventsGoal: member.defaultEventsGoal };
+        html += `
+            <div style="background: var(--badge-bg); border-radius: 20px; padding: 12px; border: 1px solid var(--card-border);">
+                <div style="font-weight: 700; margin-bottom: 8px;">${member.name}</div>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.7rem;">Выполнено тикетов</label>
+                        <input type="number" id="tickets_done_${member.name.replace(/\s/g, '_')}" value="${current.done}" class="tickets-input" style="width: 100%; padding: 6px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary);">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.7rem;">Нужно тикетов</label>
+                        <input type="number" id="tickets_goal_${member.name.replace(/\s/g, '_')}" value="${current.goal}" class="tickets-input" style="width: 100%; padding: 6px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary);">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.7rem;">Нужно ивентов</label>
+                        <input type="number" id="events_goal_${member.name.replace(/\s/g, '_')}" value="${current.eventsGoal || member.defaultEventsGoal}" class="events-input" style="width: 100%; padding: 6px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary);">
+                    </div>
+                    <button class="save-tickets-btn" data-name="${member.name}" style="background: linear-gradient(95deg, rgba(85,85,85,0.5), rgba(51,51,51,0.5)); border: none; border-radius: 40px; padding: 8px 16px; color: white; cursor: pointer;">💾 Сохранить</button>
+                </div>
+            </div>
+        `;
+    }
+    
+    html += '</div>';
+    document.getElementById('ticketsEditorBody').innerHTML = html;
+    hideGlobalLoading();
+    
+    document.querySelectorAll('.save-tickets-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const name = btn.dataset.name;
+            const nameId = name.replace(/\s/g, '_');
+            const doneInput = document.getElementById(`tickets_done_${nameId}`);
+            const goalInput = document.getElementById(`tickets_goal_${nameId}`);
+            const eventsInput = document.getElementById(`events_goal_${nameId}`);
+            
+            const done = parseInt(doneInput.value);
+            const goal = parseInt(goalInput.value);
+            const eventsGoal = parseInt(eventsInput.value);
+            
+            if (isNaN(done) || isNaN(goal) || isNaN(eventsGoal)) {
+                showNotif('❌ Введите корректные числа', true);
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = '⏳ Сохранение...';
+            
+            const result = await saveTicketsToSheet(name, done, goal, eventsGoal);
+            
+            if (result.success) {
+                showNotif(`✅ Данные для ${name} сохранены!`);
+            } else {
+                showNotif(`❌ Ошибка сохранения: ${result.error || 'неизвестная ошибка'}`, true);
+            }
+            
+            btn.disabled = false;
+            btn.textContent = '💾 Сохранить';
+        });
+    });
+}
 
 function countEventsByPlatform() {
     const counts = {};
@@ -803,6 +960,8 @@ function renderEventsTable() {
     attachRowClicks();
 }
 
+
+
 function renderTeamTable() {
     const container = document.getElementById('eventDynamicContent');
     const eventCounts = countEventsByPlatform();
@@ -967,252 +1126,444 @@ navs.forEach(n => {
         else if (tab === 'add_event') renderAddEventForm();
         else if (tab === 'event_adons') renderAddonsPage();
         else if (tab === 'event_guidee') {
-    const totalPrizes = calculateTotalPrizes();
-    const eventsCount = eventsData.length;
-    const teamMembersCount = teamData.length;
-    const onlineCount = teamData.filter(m => m.status === "Онлайн").length;
+    // Показываем глобальную загрузку с орлом
+    showGlobalLoading();
     
-    const eventCounts = countEventsByPlatform();
-    
-    const sortedByEvents = [...teamData].sort((a, b) => {
-        const countA = eventCounts[a.name] || 0;
-        const countB = eventCounts[b.name] || 0;
-        return countB - countA;
-    });
-    
-    document.getElementById('eventDynamicContent').innerHTML = `
-        <style>
-            .norm-container {
-                background: var(--card-bg);
-                border-radius: 32px;
-                padding: 1.5rem;
-                border: 1px solid var(--card-border);
-                backdrop-filter: blur(20px);
-            }
-            
-            .norm-header {
-                text-align: center;
-                margin-bottom: 2rem;
-                padding-bottom: 1rem;
-                border-bottom: 1px solid var(--table-row-border);
-            }
-            
-            .norm-header h2 {
-                font-size: 1.8rem;
-                font-weight: 700;
-                background: linear-gradient(135deg, #fff, #aaa);
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-                margin-bottom: 0.5rem;
-            }
-            
-            .norm-header p {
-                color: var(--text-muted);
-                font-size: 0.85rem;
-            }
-            
-            /* СТАТИСТИКА */
-            .norm-stats-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 1rem;
-                margin-bottom: 2rem;
-            }
-            
-            .norm-stat-card {
-                background: rgba(0,0,0,0.2);
-                border-radius: 24px;
-                padding: 1.2rem;
-                text-align: center;
-                border: 1px solid var(--card-border);
-                backdrop-filter: blur(12px);
-                transition: transform 0.2s;
-            }
-            
-            .norm-stat-card:hover {
-                transform: translateY(-3px);
-                border-color: rgba(255,215,0,0.3);
-            }
-            
-            .norm-stat-value {
-                font-size: 2.5rem;
-                font-weight: 800;
-                background: linear-gradient(135deg, #fff, #aaa);
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-            }
-            
-            .norm-stat-label {
-                font-size: 0.7rem;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                color: var(--text-muted);
-                margin-top: 0.3rem;
-            }
-            
-            /* ТАБЛИЦА НОРМЫ */
-            .norm-table-wrapper {
-                overflow-x: auto;
-                border-radius: 24px;
-                background: rgba(0,0,0,0.25);
-                border: 1px solid var(--card-border);
-                backdrop-filter: blur(28px);
-                margin-bottom: 1.5rem;
-            }
-            
-            .norm-table {
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 0.85rem;
-            }
-            
-            .norm-table th {
-                text-align: left;
-                padding: 1rem;
-                background: var(--table-header-bg);
-                color: #888;
-                font-weight: 700;
-                font-size: 0.7rem;
-                letter-spacing: 1.2px;
-                text-transform: uppercase;
-                border-bottom: 2px solid var(--table-row-border);
-            }
-            
-            .norm-table td {
-                padding: 0.9rem 1rem;
-                border-bottom: 1px solid var(--table-row-border);
-                color: var(--text-primary);
-            }
-            
-            .norm-table tr:last-child td {
-                border-bottom: none;
-            }
-            
-            .norm-table tr:hover td {
-                background: var(--table-row-hover);
-            }
-            
-            .norm-badge {
-                display: inline-block;
-                padding: 0.2rem 0.7rem;
-                border-radius: 40px;
-                font-size: 0.7rem;
-                font-weight: 600;
-                background: var(--badge-bg);
-                backdrop-filter: blur(12px);
-            }
-            
-            .norm-badge.good {
-                background: rgba(76, 175, 80, 0.2);
-                color: #4caf50;
-            }
-            
-            .norm-badge.bad {
-                background: rgba(244, 67, 54, 0.2);
-                color: #f44336;
-            }
-            
-            .norm-badge.warning {
-                background: rgba(255, 152, 0, 0.2);
-                color: #ff9800;
-            }
-            
-            .norm-badge.none {
-                background: var(--badge-bg);
-                color: var(--text-muted);
-            }
-            
-            .norm-week {
-                margin-top: 1.5rem;
-                background: rgba(0,0,0,0.2);
-                border-radius: 24px;
-                padding: 1.2rem;
-                border: 1px solid var(--card-border);
-            }
-            
-            .norm-week-title {
-                font-size: 0.85rem;
-                font-weight: 700;
-                margin-bottom: 1rem;
-                color: #ffaa44;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            
-            .norm-week-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-                gap: 0.8rem;
-            }
-            
-            .norm-day-card {
-                background: rgba(0,0,0,0.15);
-                border-radius: 16px;
-                padding: 0.8rem;
-                text-align: center;
-                border: 1px solid var(--card-border);
-            }
-            
-            .norm-day-name {
-                font-size: 0.7rem;
-                font-weight: 700;
-                color: #ffaa44;
-                margin-bottom: 0.3rem;
-            }
-            
-            .norm-day-value {
-                font-size: 0.7rem;
-                color: var(--text-secondary);
-            }
-        </style>
+    // Асинхронно загружаем данные
+    (async () => {
+        // Загружаем тикеты из Google Sheets (теперь там есть eventsGoal)
+        const ticketsFromSheet = await loadTicketsFromSheet();
+        console.log('Данные из таблицы Тикеты:', ticketsFromSheet);
         
-        <div class="norm-container">
-            <div class="norm-header">
-                <h2>📊 НОРМА ОТДЕЛА</h2>
-                <p>Статистика и выполнение норм сотрудниками</p>
+        const totalPrizes = calculateTotalPrizes();
+        const eventsCount = eventsData.length;
+        const teamMembersCount = teamData.length;
+        const onlineCount = teamData.filter(m => m.status === "Онлайн").length;
+        
+        // Подсчитываем ивенты для каждого участника
+        const eventCounts = {};
+        eventsData.forEach(event => {
+            const organizer = event.platform;
+            if (organizer && organizer !== "Нет" && organizer !== "") {
+                eventCounts[organizer] = (eventCounts[organizer] || 0) + 1;
+            }
+        });
+        
+        // Данные по участникам (теперь берем eventsGoal из таблицы Тикеты)
+        const membersStats = {
+            "yaroslav1432": { 
+                discordId: "1286725096278331565", 
+                eventsGoal: (ticketsFromSheet["yaroslav1432"] && ticketsFromSheet["yaroslav1432"].eventsGoal) || 1,
+                eventsDone: eventCounts["yaroslav1432"] || 0, 
+                inDepartment: false 
+            },
+            "T1Ran": { 
+                discordId: "1246076621484724320", 
+                eventsGoal: (ticketsFromSheet["T1Ran"] && ticketsFromSheet["T1Ran"].eventsGoal) || 1,
+                eventsDone: eventCounts["T1Ran"] || 0, 
+                inDepartment: false 
+            },
+            "Дмитрий Морозов": { 
+                discordId: "859747626115006474", 
+                eventsGoal: (ticketsFromSheet["Дмитрий Морозов"] && ticketsFromSheet["Дмитрий Морозов"].eventsGoal) || 1,
+                eventsDone: eventCounts["Дмитрий Морозов"] || 0, 
+                inDepartment: false 
+            },
+            "кусочек шаурмы": { 
+                discordId: "636585910552756284", 
+                eventsGoal: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].eventsGoal) || 4,
+                eventsDone: eventCounts["кусочек шаурмы"] || 0,
+                ticketsDone: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].done) || 0,
+                ticketsGoal: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].goal) || 25,
+                inDepartment: true 
+            },
+            "Himas": { 
+                discordId: "1467081827670954015", 
+                eventsGoal: (ticketsFromSheet["Himas"] && ticketsFromSheet["Himas"].eventsGoal) || 1,
+                eventsDone: eventCounts["Himas"] || 0,
+                ticketsDone: (ticketsFromSheet["Himas"] && ticketsFromSheet["Himas"].done) || 0,
+                ticketsGoal: (ticketsFromSheet["Himas"] && ticketsFromSheet["Himas"].goal) || 25,
+                reason: "Есть причина", 
+                inDepartment: true 
+            },
+            "Гофикал": { 
+                discordId: "1135087142385754123", 
+                eventsGoal: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].eventsGoal) || 1,
+                eventsDone: eventCounts["Гофикал"] || 0,
+                ticketsDone: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].done) || 0,
+                ticketsGoal: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].goal) || 25,
+                inDepartment: true 
+            },
+            "somcop": { 
+                discordId: "989919183036874772", 
+                eventsGoal: (ticketsFromSheet["somcop"] && ticketsFromSheet["somcop"].eventsGoal) || 1,
+                eventsDone: eventCounts["somcop"] || 0,
+                ticketsDone: (ticketsFromSheet["somcop"] && ticketsFromSheet["somcop"].done) || 0,
+                ticketsGoal: (ticketsFromSheet["somcop"] && ticketsFromSheet["somcop"].goal) || 35,
+                inDepartment: true 
+            },
+            "Foxy": { 
+                discordId: "1344959502436532304", 
+                eventsGoal: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].eventsGoal) || 7,
+                eventsDone: eventCounts["Foxy"] || 0,
+                ticketsDone: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].done) || 0,
+                ticketsGoal: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].goal) || 25,
+                inDepartment: true 
+            }
+        };
+        
+        // СОБИРАЕМ СТРОКИ ДЛЯ КОПИРОВАНИЯ (ДРУГОЙ ОТДЕЛ)
+        let otherDeptLinesForCopy = [];
+        let otherDeptHtml = '';
+        
+        for (const [name, stats] of Object.entries(membersStats)) {
+            if (!stats.inDepartment) {
+                const isCompleted = stats.eventsDone >= stats.eventsGoal;
+                const icon = isCompleted ? '✅' : '❌';
+                
+                // Строка для копирования (с Discord ID)
+                const copyLine = `<@${stats.discordId}> - Ивенты: ${stats.eventsDone}/${stats.eventsGoal} ${icon}`;
+                otherDeptLinesForCopy.push(copyLine);
+                
+                // Отображение на сайте (с именем)
+                otherDeptHtml += `
+                    <div style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                        <strong>${name}</strong> - Ивенты: ${stats.eventsDone}/${stats.eventsGoal} ${icon}
+                    </div>
+                `;
+            }
+        }
+        
+        // СОБИРАЕМ СТРОКИ ДЛЯ КОПИРОВАНИЯ (ПОЛНОЦЕННЫЙ ОТДЕЛ)
+        let fullDeptLinesForCopy = [];
+        let fullDeptHtml = '';
+        
+        for (const [name, stats] of Object.entries(membersStats)) {
+            if (stats.inDepartment) {
+                const isEventsCompleted = stats.eventsDone >= stats.eventsGoal;
+                const eventsIcon = isEventsCompleted ? '✅' : '❌';
+                
+                const isTicketsCompleted = (stats.ticketsDone || 0) >= (stats.ticketsGoal || 25);
+                const ticketsIcon = isTicketsCompleted ? '✅' : '❌';
+                
+                // Строка для копирования (с Discord ID)
+                const copyLine = `<@${stats.discordId}> - Ивенты: ${stats.eventsDone}/${stats.eventsGoal} ${eventsIcon} | Тикеты: ${stats.ticketsDone || 0}/${stats.ticketsGoal || 25} ${ticketsIcon}`;
+                fullDeptLinesForCopy.push(copyLine);
+                
+                // Отображение на сайте (с именем)
+                fullDeptHtml += `
+                    <div style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                        <strong>${name}</strong> - Ивенты: ${stats.eventsDone}/${stats.eventsGoal} ${eventsIcon} | Тикеты: ${stats.ticketsDone || 0}/${stats.ticketsGoal || 25} ${ticketsIcon}
+                    </div>
+                `;
+            }
+        }
+        
+        // Объединяем строки для каждого раздела
+        const otherDeptTextToCopy = otherDeptLinesForCopy.join('\n');
+        const fullDeptTextToCopy = fullDeptLinesForCopy.join('\n');
+        
+        const ticketsEditorButton = isEditor ? `
+            <div style="text-align: right; margin-bottom: 15px;">
+                <button id="ticketsEditorFromNormBtn" style="background: linear-gradient(95deg, rgba(85,85,85,0.5), rgba(51,51,51,0.5)); border: none; border-radius: 40px; padding: 8px 16px; color: white; cursor: pointer; font-size: 0.8rem;">
+                    Управление Нормой
+                </button>
             </div>
+        ` : '';
+        
+        // Вставляем HTML
+        document.getElementById('eventDynamicContent').innerHTML = `
+            <style>
+                .norm-container {
+                    background: var(--card-bg);
+                    border-radius: 32px;
+                    padding: 1.5rem;
+                    border: 1px solid var(--card-border);
+                    backdrop-filter: blur(20px);
+                }
+                
+                .norm-header {
+                    text-align: center;
+                    margin-bottom: 2rem;
+                    padding-bottom: 1rem;
+                    border-bottom: 1px solid var(--table-row-border);
+                }
+                
+                .norm-header h2 {
+                    font-size: 1.8rem;
+                    font-weight: 700;
+                    background: linear-gradient(135deg, #fff, #aaa);
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    color: transparent;
+                    margin-bottom: 0.5rem;
+                }
+                
+                .norm-header p {
+                    color: var(--text-muted);
+                    font-size: 0.85rem;
+                }
+                
+                .norm-stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 1rem;
+                    margin-bottom: 2rem;
+                }
+                
+                .norm-stat-card {
+                    background: rgba(0,0,0,0.2);
+                    border-radius: 24px;
+                    padding: 1.2rem;
+                    text-align: center;
+                    border: 1px solid var(--card-border);
+                    backdrop-filter: blur(12px);
+                    transition: transform 0.2s;
+                }
+                
+                .norm-stat-card:hover {
+                    transform: translateY(-3px);
+                    border-color: rgba(95, 95, 91, 0.3);
+                }
+                
+                .norm-stat-value {
+                    font-size: 2.5rem;
+                    font-weight: 800;
+                    background: linear-gradient(135deg, #fff, #aaa);
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    color: transparent;
+                }
+                
+                .norm-stat-label {
+                    font-size: 0.7rem;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                    color: var(--text-muted);
+                    margin-top: 0.3rem;
+                }
+                
+                .member-stats-section {
+                    margin-top: 2rem;
+                    margin-bottom: 2rem;
+                }
+                
+                .member-stats-title {
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                    color: #ffffff;
+                    margin-bottom: 1rem;
+                    padding-left: 0.5rem;
+                    border-left: 4px solid #c1c0be;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                }
+                
+                .member-stats-block {
+                    background: rgba(0,0,0,0.2);
+                    border-radius: 24px;
+                    padding: 1.2rem;
+                    font-family: monospace;
+                    font-size: 0.9rem;
+                    line-height: 1.8;
+                    color: var(--text-primary);
+                    border: 1px solid var(--card-border);
+                }
+                
+                .member-stats-note {
+                    margin-top: 1rem;
+                    font-size: 0.7rem;
+                    color: var(--text-muted);
+                    text-align: center;
+                    padding-top: 0.8rem;
+                    border-top: 1px solid var(--card-border);
+                }
+                
+                .norm-week {
+                    margin-top: 1.5rem;
+                    background: rgba(0,0,0,0.2);
+                    border-radius: 24px;
+                    padding: 1.2rem;
+                    border: 1px solid var(--card-border);
+                }
+                
+                .norm-week-title {
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    margin-bottom: 1rem;
+                    color: #e0e0e0;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                
+                .norm-week-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                    gap: 0.8rem;
+                }
+                
+                .norm-day-card {
+                    background: rgba(0,0,0,0.15);
+                    border-radius: 16px;
+                    padding: 0.8rem;
+                    text-align: center;
+                    border: 1px solid var(--card-border);
+                }
+                
+                .norm-day-name {
+                    font-size: 0.7rem;
+                    font-weight: 700;
+                    color: #a5a5a4;
+                    margin-bottom: 0.3rem;
+                }
+                
+                .norm-day-value {
+                    font-size: 0.7rem;
+                    color: var(--text-secondary);
+                }
+                
+                .copy-section-btn {
+    background: var(--badge-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 40px;
+    padding: 8px 20px;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    backdrop-filter: blur(8px);
+}
+
+.copy-section-btn:hover {
+    background: var(--input-bg);
+    border-color: rgba(255,255,255,0.3);
+    transform: scale(1.02);
+}
+            </style>
             
-            <!-- ОБЩАЯ СТАТИСТИКА -->
-            <div class="norm-stats-grid">
-                <div class="norm-stat-card">
-                    <div class="norm-stat-value">${teamMembersCount}</div>
-                    <div class="norm-stat-label">Ивентеров</div>
+            <div class="norm-container">
+                <div class="norm-header">
+                    <h2>НОРМА ОТДЕЛА</h2>
+                    <p>Статистика и выполнение норм сотрудниками</p>
                 </div>
-                <div class="norm-stat-card">
-                    <div class="norm-stat-value">${eventsCount}</div>
-                    <div class="norm-stat-label">Проведено ивентов</div>
+                
+                ${ticketsEditorButton}
+                
+                <div class="norm-stats-grid">
+                    <div class="norm-stat-card">
+                        <div class="norm-stat-value">${teamMembersCount}</div>
+                        <div class="norm-stat-label">Ивентеров</div>
+                    </div>
+                    <div class="norm-stat-card">
+                        <div class="norm-stat-value">${eventsCount}</div>
+                        <div class="norm-stat-label">Проведено ивентов</div>
+                    </div>
+                    <div class="norm-stat-card">
+                        <div class="norm-stat-value">${onlineCount}</div>
+                        <div class="norm-stat-label">Сейчас онлайн</div>
+                    </div>
+                    <div class="norm-stat-card">
+                        <div class="norm-stat-value" style="color: #5fe147;">${totalPrizes.toLocaleString('ru-RU')}$</div>
+                        <div class="norm-stat-label">Всего призовых</div>
+                    </div>
                 </div>
-                <div class="norm-stat-card">
-                    <div class="norm-stat-value">${onlineCount}</div>
-                    <div class="norm-stat-label">Сейчас онлайн</div>
+                
+                <div class="member-stats-section">
+                    <div class="member-stats-title">
+                        <span>В другом отделе</span>
+                        <button class="copy-section-btn" id="copyOtherDeptBtn">📋 Копировать строки</button>
+                    </div>
+                    <div class="member-stats-block">
+                        ${otherDeptHtml || 'Нет данных'}
+                    </div>
                 </div>
-                <div class="norm-stat-card">
-                    <div class="norm-stat-value" style="color: #5fe147;">${totalPrizes.toLocaleString('ru-RU')}$</div>
-                    <div class="norm-stat-label">Всего призовых</div>
+                
+                <div class="member-stats-section">
+                    <div class="member-stats-title">
+                        <span>Полноценно в отделе</span>
+                        <button class="copy-section-btn" id="copyFullDeptBtn">📋 Копировать строки</button>
+                    </div>
+                    <div class="member-stats-block">
+                        ${fullDeptHtml || 'Нет данных'}
+                    </div>
+                    <div class="member-stats-note">
+                        ✅ - норма выполнена | ❌ - норма не выполнена<br>
+                        Ивенты считаются автоматически, норма ивентов берется из таблицы "Тикеты"<br>
+                        📋 Нажмите на кнопку "Копировать строки", чтобы скопировать строки с Discord упоминаниями
+                    </div>
+                </div>
+                
+                <div class="norm-week">
+                    <div class="norm-week-title">Норма после отпуска/вступления</div>
+                    <div class="norm-week-grid">
+                        <div class="norm-day-card"><div class="norm-day-name">ПН</div><div class="norm-day-value">35 тикетов | 3 ивента</div></div>
+                        <div class="norm-day-card"><div class="norm-day-name">ВТ</div><div class="norm-day-value">35 тикетов | 3 ивента</div></div>
+                        <div class="norm-day-card"><div class="norm-day-name">СР</div><div class="norm-day-value">30 тикетов | 2 ивента</div></div>
+                        <div class="norm-day-card"><div class="norm-day-name">ЧТ</div><div class="norm-day-value">25 тикетов | 1 ивент</div></div>
+                        <div class="norm-day-card"><div class="norm-day-name">ПТ</div><div class="norm-day-value">20 тикетов | 1 ивент</div></div>
+                        <div class="norm-day-card"><div class="norm-day-name">СБ</div><div class="norm-day-value">10 тикетов | 1 ивент</div></div>
+                        <div class="norm-day-card"><div class="norm-day-name">ВС</div><div class="norm-day-value">Освобождены</div></div>
+                    </div>
                 </div>
             </div>
-            
-            
-            
-            <!-- НОРМА ПО ДНЯМ -->
-            <div class="norm-week">
-                <div class="norm-week-title">📅 Норма после отпуска/вступления</div>
-                <div class="norm-week-grid">
-                    <div class="norm-day-card"><div class="norm-day-name">ПН</div><div class="norm-day-value">35 тикетов | 3 ивента</div></div>
-                    <div class="norm-day-card"><div class="norm-day-name">ВТ</div><div class="norm-day-value">35 тикетов | 3 ивента</div></div>
-                    <div class="norm-day-card"><div class="norm-day-name">СР</div><div class="norm-day-value">30 тикетов | 2 ивента</div></div>
-                    <div class="norm-day-card"><div class="norm-day-name">ЧТ</div><div class="norm-day-value">25 тикетов | 1 ивент</div></div>
-                    <div class="norm-day-card"><div class="norm-day-name">ПТ</div><div class="norm-day-value">20 тикетов | 1 ивент</div></div>
-                    <div class="norm-day-card"><div class="norm-day-name">СБ</div><div class="norm-day-value">10 тикетов | 1 ивент</div></div>
-                    <div class="norm-day-card"><div class="norm-day-name">ВС</div><div class="norm-day-value">Освобождены</div></div>
-                </div>
-            </div>
-        </div>
-    `;
-        } else if (tab === 'event_guide') {
+        `;
+        
+        // Функция для копирования текста
+        async function copyToClipboard(text, btn, successMessage) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showNotif(successMessage);
+                
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Скопировано!';
+                btn.style.background = 'linear-gradient(95deg, #4caf50, #45a049)';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = 'linear-gradient(95deg, #ffaa44, #ff8844)';
+                }, 2000);
+                
+            } catch (err) {
+                showNotif('❌ Не удалось скопировать', true);
+            }
+        }
+        
+        // Кнопка для раздела "В другом отделе"
+        const copyOtherDeptBtn = document.getElementById('copyOtherDeptBtn');
+        if (copyOtherDeptBtn && otherDeptTextToCopy) {
+            copyOtherDeptBtn.addEventListener('click', () => {
+                copyToClipboard(otherDeptTextToCopy, copyOtherDeptBtn, `✅ Скопировано ${otherDeptLinesForCopy.length} строк!`);
+            });
+        }
+        
+        // Кнопка для раздела "Полноценно в отделе"
+        const copyFullDeptBtn = document.getElementById('copyFullDeptBtn');
+        if (copyFullDeptBtn && fullDeptTextToCopy) {
+            copyFullDeptBtn.addEventListener('click', () => {
+                copyToClipboard(fullDeptTextToCopy, copyFullDeptBtn, `✅ Скопировано ${fullDeptLinesForCopy.length} строк!`);
+            });
+        }
+        
+        // Скрываем загрузку после того как всё отрисовалось
+        hideGlobalLoading();
+        
+        // Добавляем обработчик для кнопки управления тикетами
+        if (isEditor) {
+            const ticketsEditorBtn = document.getElementById('ticketsEditorFromNormBtn');
+            if (ticketsEditorBtn) {
+                ticketsEditorBtn.addEventListener('click', () => {
+                    renderTicketsEditor();
+                });
+            }
+        }
+    })();
+}
+        else if (tab === 'event_guide') {
     document.getElementById('eventDynamicContent').innerHTML = ` 
         <style>
             .methodology-container {
@@ -1668,11 +2019,16 @@ const errMsg = document.getElementById('errorMsg');
 const contBtn = document.getElementById('continueBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 
-// Функция показа/скрытия кнопки добавления участника
 function updateUIBasedOnRole() {
     const addMemberBtn = document.getElementById('addMemberNavBtn');
     if (addMemberBtn) {
         addMemberBtn.style.display = isEditor ? 'flex' : 'none';
+    }
+    
+    // Показываем кнопку управления тикетами только для создателя
+    const ticketsEditorBtn = document.getElementById('ticketsEditorBtn');
+    if (ticketsEditorBtn) {
+        ticketsEditorBtn.style.display = isEditor ? 'flex' : 'none';
     }
 }
 
@@ -2309,6 +2665,33 @@ function loadStatusesFromSheet() {
     });
 }
 
+async function loadAndApplyStatuses() {
+    const statuses = await loadStatusesFromSheet();
+    console.log('Загруженные статусы из таблицы:', statuses);
+    
+    if (statuses && statuses.length > 0) {
+        statuses.forEach(item => {
+            const eventId = parseInt(item['ID ивента']);
+            const statusFromSheet = item['Статус'];
+            
+            // Находим ивент в eventsData
+            const event = eventsData.find(e => e.id === eventId);
+            if (event && statusFromSheet) {
+                // Сохраняем статус как есть (с эмодзи)
+                let cleanStatus = statusFromSheet;
+                if (statusFromSheet === 'Одобрен') cleanStatus = '✅Одобрен';
+                else if (statusFromSheet === 'Отказано') cleanStatus = '🔴Отказано';
+                else if (statusFromSheet === 'Скоро') cleanStatus = '🟡Скоро';
+                
+                event.callStatus = cleanStatus;
+                console.log(`Применён статус для ивента ${eventId}: ${cleanStatus}`);
+            }
+        });
+        saveAllData();
+        renderEventsTable();
+    }
+}
+
 async function initStatuses() {
     await loadAndApplyStatuses();
     renderEventsTable();
@@ -2517,8 +2900,11 @@ if (saveEditBtn) {
             this.disabled = false;
             this.textContent = '💾 Сохранить';
         }
+
     });
 }
+
+
 
 (function() {
     const canvas = document.getElementById('particleCanvas');
@@ -2667,6 +3053,8 @@ if (saveEditBtn) {
 
     initParticles();
     animateParticles();
+
+    
 })();
 
 // ========== КАСТОМНЫЙ КУРСОР ==========
@@ -2676,7 +3064,6 @@ if (saveEditBtn) {
     
     if (!cursor || !cursorDot) return;
     
-    // Движение за мышкой
     document.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
@@ -2684,7 +3071,6 @@ if (saveEditBtn) {
         cursorDot.style.top = e.clientY + 'px';
     });
     
-    // При нажатии — кружок уменьшается, точка остаётся в центре
     document.addEventListener('mousedown', () => {
         cursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
         cursorDot.style.transform = 'translate(-50%, -50%) scale(1.2)';
@@ -2692,7 +3078,6 @@ if (saveEditBtn) {
         cursorDot.style.transition = 'transform 0.1s ease';
     });
     
-    // При отпускании — возвращаем
     document.addEventListener('mouseup', () => {
         cursor.style.transform = 'translate(-50%, -50%) scale(1)';
         cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
@@ -2700,7 +3085,6 @@ if (saveEditBtn) {
         cursorDot.style.transition = 'transform 0.15s ease-out';
     });
     
-    // При наведении на кликабельные элементы
     const clickables = document.querySelectorAll('a, button, .clickable-row, .clickable-card, .nav-item, .status-change-btn, .comment-send-btn, .continue-btn, .login-btn, .submit-btn, .close-modal, .settings-save, .logout-btn');
     
     clickables.forEach(el => {
@@ -2712,57 +3096,16 @@ if (saveEditBtn) {
         });
     });
     
-    // Скрываем стандартный курсор
     document.body.style.cursor = 'none';
-
-// ========== ГЛОБАЛЬНЫЙ ОБРАБОТЧИК КЛИКОВ ==========
-document.addEventListener('click', function(e) {
-    // Кнопка редактирования
-    const editBtn = e.target.closest('.edit-event-btn');
-    if (editBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-        const eventId = parseInt(editBtn.dataset.id);
-        console.log('Редактирование ивента:', eventId);
-        openEditEventModal(eventId);
-        return;
-    }
-    
-    // Кнопка удаления
-    const deleteBtn = e.target.closest('.delete-event-btn');
-    if (deleteBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-        const eventId = parseInt(deleteBtn.dataset.id);
-        console.log('Удаление ивента:', eventId);
-        deleteEventHandler(eventId);
-        return;
-    }
-    
-    // Кнопки статусов (только для создателя, И НЕ для кнопок редактирования/удаления)
-    const statusBtn = e.target.closest('.status-change-btn');
-    if (statusBtn && !statusBtn.classList.contains('edit-event-btn') && !statusBtn.classList.contains('delete-event-btn') && isEditor) {
-        e.preventDefault();
-        e.stopPropagation();
-        const eventId = parseInt(statusBtn.dataset.id);
-        const newStatus = statusBtn.dataset.status;
-        if (newStatus) {
-            changeEventStatus(eventId, newStatus);
-        }
-        return;
-    }
-});
 })();
 
+// ========== КНОПКА 67 ==========
 function play67Track() {
     const audio = new Audio();
     audio.src = 'https://videotourl.com/audio/1776950054502-7076b567-2429-4db8-8053-ece161ff38ac.mp3';
     audio.volume = 0.7;
-    
     showNotif('Вам конец, ребенок 67 взломал вас');
-
     audio.play().catch(e => console.log('Ошибка воспроизведения:', e));
-    
     setTimeout(() => {
         audio.pause();
         audio.currentTime = 0;
@@ -2773,4 +3116,15 @@ function play67Track() {
 const play67Btn = document.getElementById('play67FooterBtn');
 if (play67Btn) {
     play67Btn.addEventListener('click', play67Track);
+}
+
+// ========== КНОПКА УПРАВЛЕНИЯ ТИКЕТАМИ ==========
+const ticketsEditorBtn = document.getElementById('ticketsEditorBtn');
+if (ticketsEditorBtn) {
+    ticketsEditorBtn.addEventListener('click', () => {
+        console.log('Кнопка нажата!');
+        renderTicketsEditor();
+    });
+} else {
+    console.log('Кнопка ticketsEditorBtn НЕ НАЙДЕНА');
 }
