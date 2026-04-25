@@ -406,13 +406,14 @@ async function refreshEventsData() {
         const newEventsData = events.map(e => ({
             id: e.id,
             name: e.name,
-            platform: e.platform || e.organizer,
-            organizer: e.organizer,
+            platform: e.platform,
+            organizer: e.platform,        // ОРГАНИЗАТОР - берём из platform (колонка C)
+            helpers: e.organizer || 'Нет', // ПОМОЩНИКИ - берём из organizer (колонка D)
             date: e.date,
             status: e.status || 'Проведен',
             rating: e.rating,
             members: parseInt(e.members) || 0,
-            callStatus: '🟡Скоро',  // Временный статус
+            callStatus: '🟡Скоро',
             fullDetails: {
                 description: e.description || '',
                 tasks: '',
@@ -425,10 +426,10 @@ async function refreshEventsData() {
         newEventsData.sort((a, b) => a.id - b.id);
         eventsData = newEventsData;
         
-        console.log('ИТОГОВЫЕ ИВЕНТЫ:', eventsData.map(e => ({id: e.id, name: e.name})));
+        console.log('ИТОГОВЫЕ ИВЕНТЫ:', eventsData.map(e => ({id: e.id, name: e.name, organizer: e.organizer, helpers: e.helpers})));
         
         saveAllData();
-        await loadAndApplyStatuses();  // ← ЗАГРУЖАЕМ СТАТУСЫ ИЗ ОТДЕЛЬНОЙ ТАБЛИЦЫ
+        await loadAndApplyStatuses();
         renderEventsTable();
         showNotif('📊 Ивенты обновлены');
     }
@@ -888,8 +889,8 @@ function renderEventsTable() {
         row.setAttribute('data-type', 'event');
         row.setAttribute('data-id', event.id);
         row.insertCell(0).innerHTML = `<strong>${escapeHtml(event.name)}</strong>`;
-        row.insertCell(1).textContent = event.platform;
-        row.insertCell(2).textContent = event.organizer;
+        row.insertCell(1).textContent = event.organizer || event.platform;  // ОРГАНИЗАТОР (кто проводил)
+        row.insertCell(2).textContent = event.helpers;
         row.insertCell(3).textContent = event.date;
         row.insertCell(4).innerHTML = `<span class="status-badge status-active">${event.status}</span>`;
         row.insertCell(5).innerHTML = `<span class="rating-star">${event.rating}</span>`;
@@ -1933,9 +1934,9 @@ async function sendEventToDiscord() {
     
     const sheetResult = await addEventToSheet({
     name: name,
-    platform: organizer,     // platform - это организатор (отображается в колонке ОРГАНИЗАТОР)
-    organizer: organizer,    // organizer - тоже организатор (для проверки прав)
-    helpers: helpers,
+    platform: organizer,     // platform - организатор (кто проводил)
+    organizer: helpers,      // organizer - помощники (кто помогал)
+    helpers: helpers,        // helpers - тоже помощники
     date: date,
     status: 'Проведен',
     rating: rating,
@@ -2279,8 +2280,14 @@ function getUserStats() {
             if (!isNaN(num)) totalPrizes += num;
         }
     });
-    let firstEvent = eventsData.filter(e => e.platform === username).sort((a,b) => new Date(a.date) - new Date(b.date))[0];
-    let joinDate = firstEvent ? firstEvent.date.split(',')[0] : "15.03.2026";
+    
+    // Берем дату вступления из teamData
+    const userInfo = teamData.find(m => m.name === username);
+    let joinDate = "14.03.26";
+    if (userInfo && userInfo.joinDate) {
+        joinDate = userInfo.joinDate;
+    }
+    
     return { events: userEvents, prizes: totalPrizes, joinDate: joinDate };
 }
 
