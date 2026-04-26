@@ -2407,7 +2407,7 @@ if (settingsModal) {
         if (e.target === settingsModal) closeSettings();
     });
 }
-
+openEditEventModal
 loadSavedSettings();
 
 const salaryBtn = document.getElementById('salaryBtn');
@@ -2784,7 +2784,9 @@ function openEditEventModal(eventId) {
     document.getElementById('editEventDate').value = event.date || '';
     document.getElementById('editEventRating').value = event.rating || '';
     document.getElementById('editEventMembers').value = event.members || '';
-    document.getElementById('editEventHelpers').value = event.organizer || '';
+    
+    // ИСПРАВЛЕНО: helpers - это помощники, а organizer - это организатор
+    document.getElementById('editEventHelpers').value = event.helpers || '';  // ПОМОЩНИКИ
     
     // Показываем модалку
     modal.style.display = 'flex';
