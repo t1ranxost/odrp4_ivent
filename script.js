@@ -10,7 +10,6 @@ let teamData = [
     { id: 5, name: "Дмитрий Морозов", role: "Ивентер", discord: "859747626115006474", status: "Онлайн", eventsCount: "-", joinDate: "30.03.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199403370553", achievements: "11", notes: "" } },
     { id: 6, name: "Гофикал", role: "Ивентер", discord: "1135087142385754123", status: "Онлайн", eventsCount: "-", joinDate: "09.04.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199636555608", achievements: "0", notes: "" } },
     { id: 7, name: "Himas", role: "Ивентер", discord: "1467081827670954015", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199683531094", achievements: "0", notes: "" } },
-    { id: 8, name: "yaroslav1432", role: "Ивентер", discord: "1286725096278331565", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199775920153", achievements: "0", notes: "" } },
     { id: 9, name: "Foxy", role: "Ивентер", discord: "1344959502436532304", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Модератор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199775920153", achievements: "0", notes: "" } },
     { id: 10, name: "somcop", role: "Ивентер", discord: "76561199768219919", status: "Онлайн", eventsCount: "-", joinDate: "13.04.26", rating: "Модератор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } },
     { id: 11, name: "кусочек шаурмы", role: "Ивентер", discord: "636585910552756284", status: "Онлайн", eventsCount: "-", joinDate: "17.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } }
@@ -558,6 +557,7 @@ function saveTicketsToSheet(name, ticketsDone, ticketsGoal, eventsGoal) {
         document.body.appendChild(script);
     });
 }
+
 async function renderTicketsEditor() {
     console.log('renderTicketsEditor вызвана!');
     if (!isEditor) {
@@ -575,9 +575,9 @@ async function renderTicketsEditor() {
     modal.className = 'modal';
     modal.style.display = 'flex';
     modal.innerHTML = `
-        <div class="modal-card" style="max-width: 650px; width: 90%; max-height: 80vh; overflow-y: auto;">
+        <div class="modal-card" style="max-width: 500px; width: 90%;">
             <div class="modal-header">
-                <span>📊 Управление Нормой</span>
+                <span>📊 Управление тикетами</span>
                 <button class="close-modal" id="closeTicketsEditorBtn">
                     <svg class="icon"><use href="#ic-close"/></svg>
                 </button>
@@ -611,8 +611,7 @@ async function renderTicketsEditor() {
         ticketsData = {};
     }
     
-    // ========== ОСНОВНЫЕ СОТРУДНИКИ (можно редактировать тикеты + ивенты) ==========
-    const fullMembers = [
+    const members = [
         { name: "кусочек шаурмы", discordId: "636585910552756284", defaultEventsGoal: 4 },
         { name: "Himas", discordId: "1467081827670954015", defaultEventsGoal: 1 },
         { name: "Гофикал", discordId: "1135087142385754123", defaultEventsGoal: 1 },
@@ -620,319 +619,66 @@ async function renderTicketsEditor() {
         { name: "Foxy", discordId: "1344959502436532304", defaultEventsGoal: 7 }
     ];
     
-    // ========== ДРУГОЙ ОТДЕЛ (только ивенты) ==========
-    const otherMembers = [
-        { name: "somcop", discordId: "989919183036874772", defaultEventsGoal: 1 },
-        { name: "T1Ran", discordId: "1246076621484724320", defaultEventsGoal: 1 }
-    ];
+    let html = '<div style="display: flex; flex-direction: column; gap: 15px;">';
     
-    let html = `
-        <style>
-            .drag-section {
-                margin-bottom: 25px;
-            }
-            .drag-section-title {
-                font-size: 1rem;
-                font-weight: 700;
-                margin-bottom: 12px;
-                padding: 8px 12px;
-                border-radius: 12px;
-                background: var(--badge-bg);
-                border: 1px solid var(--card-border);
-                color: var(--text-primary);
-            }
-            .drag-list {
-                min-height: 150px;
-                background: var(--card-bg);
-                border-radius: 16px;
-                padding: 12px;
-                border: 1px solid var(--card-border);
-                transition: all 0.2s;
-            }
-            .drag-list.drag-over {
-                border-color: #888;
-                background: var(--badge-bg);
-            }
-            .drag-item {
-                background: var(--badge-bg);
-                border-radius: 14px;
-                padding: 12px;
-                margin-bottom: 10px;
-                border: 1px solid var(--card-border);
-                cursor: grab;
-                transition: all 0.2s;
-            }
-            .drag-item:active {
-                cursor: grabbing;
-            }
-            .drag-item.dragging {
-                opacity: 0.5;
-            }
-            .drag-item:hover {
-                border-color: #888;
-                transform: translateX(4px);
-            }
-            .drag-item-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-wrap: wrap;
-                margin-bottom: 10px;
-            }
-            .member-name-drag {
-                font-weight: 700;
-                font-size: 1rem;
-                color: var(--text-primary);
-            }
-            .member-stats-drag {
-                display: flex;
-                gap: 15px;
-                flex-wrap: wrap;
-                align-items: flex-end;
-            }
-            .stat-drag {
-                display: flex;
-                flex-direction: column;
-                gap: 3px;
-            }
-            .stat-drag label {
-                font-size: 0.6rem;
-                color: var(--text-muted);
-            }
-            .stat-drag input {
-                width: 90px;
-                padding: 5px 8px;
-                border-radius: 10px;
-                background: var(--input-bg);
-                border: 1px solid var(--input-border);
-                color: var(--text-primary);
-                font-size: 0.8rem;
-            }
-            .save-drag-btn {
-                background: linear-gradient(95deg, rgba(85,85,85,0.5), rgba(51,51,51,0.5));
-                border: none;
-                border-radius: 30px;
-                padding: 6px 16px;
-                color: white;
-                cursor: pointer;
-                font-size: 0.75rem;
-                margin-top: 5px;
-            }
-            .save-drag-btn:hover {
-                background: linear-gradient(95deg, rgba(100,100,100,0.6), rgba(70,70,70,0.6));
-            }
-            .events-done-display {
-                font-size: 0.8rem;
-                padding: 4px 10px;
-                background: var(--input-bg);
-                border-radius: 20px;
-                display: inline-block;
-            }
-            .drag-hint {
-                margin-bottom: 15px;
-                padding: 10px;
-                background: var(--badge-bg);
-                border-radius: 12px;
-                text-align: center;
-                font-size: 0.8rem;
-                color: var(--text-muted);
-                border: 1px solid var(--card-border);
-            }
-        </style>
-        
-        <div class="drag-hint">
-            💡 Перетащите сотрудника в другую категорию (зажмите левую кнопку мыши)
-        </div>
-    `;
-    
-    // Категория "Полноценно в отделе"
-    html += `
-        <div class="drag-section">
-            <div class="drag-section-title">🎯 Полноценно в отделе (тикеты + ивенты)</div>
-            <div class="drag-list" id="fullDeptList" data-category="full">
-                ${renderDragItemsSimple(fullMembers, ticketsData, 'full')}
+    for (const member of members) {
+        const current = ticketsData[member.name] || { done: 0, goal: 25, eventsGoal: member.defaultEventsGoal };
+        html += `
+            <div style="background: var(--badge-bg); border-radius: 20px; padding: 12px; border: 1px solid var(--card-border);">
+                <div style="font-weight: 700; margin-bottom: 8px;">${member.name}</div>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.7rem;">Выполнено тикетов</label>
+                        <input type="number" id="tickets_done_${member.name.replace(/\s/g, '_')}" value="${current.done}" class="tickets-input" style="width: 100%; padding: 6px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary);">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.7rem;">Нужно тикетов</label>
+                        <input type="number" id="tickets_goal_${member.name.replace(/\s/g, '_')}" value="${current.goal}" class="tickets-input" style="width: 100%; padding: 6px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary);">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.7rem;">Нужно ивентов</label>
+                        <input type="number" id="events_goal_${member.name.replace(/\s/g, '_')}" value="${current.eventsGoal || member.defaultEventsGoal}" class="events-input" style="width: 100%; padding: 6px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-primary);">
+                    </div>
+                    <button class="save-tickets-btn" data-name="${member.name}" style="background: linear-gradient(95deg, rgba(85,85,85,0.5), rgba(51,51,51,0.5)); border: none; border-radius: 40px; padding: 8px 16px; color: white; cursor: pointer;">💾 Сохранить</button>
+                </div>
             </div>
-        </div>
-    `;
+        `;
+    }
     
-    // Категория "В другом отделе"
-    html += `
-        <div class="drag-section">
-            <div class="drag-section-title">📌 В другом отделе (только ивенты)</div>
-            <div class="drag-list" id="otherDeptList" data-category="other">
-                ${renderDragItemsSimple(otherMembers, ticketsData, 'other')}
-            </div>
-        </div>
-    `;
-    
+    html += '</div>';
     document.getElementById('ticketsEditorBody').innerHTML = html;
     hideGlobalLoading();
     
-    // Сохранение для полноценного отдела (тикеты + ивенты)
-    document.querySelectorAll('.save-drag-btn[data-type="full"]').forEach(btn => {
+    document.querySelectorAll('.save-tickets-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
             const name = btn.dataset.name;
             const nameId = name.replace(/\s/g, '_');
+            const doneInput = document.getElementById(`tickets_done_${nameId}`);
+            const goalInput = document.getElementById(`tickets_goal_${nameId}`);
+            const eventsInput = document.getElementById(`events_goal_${nameId}`);
             
-            const ticketsDone = parseInt(document.getElementById(`tickets_done_${nameId}`)?.value) || 0;
-            const ticketsGoal = parseInt(document.getElementById(`tickets_goal_${nameId}`)?.value) || 25;
-            const eventsGoal = parseInt(document.getElementById(`events_goal_${nameId}`)?.value) || 1;
+            const done = parseInt(doneInput.value);
+            const goal = parseInt(goalInput.value);
+            const eventsGoal = parseInt(eventsInput.value);
+            
+            if (isNaN(done) || isNaN(goal) || isNaN(eventsGoal)) {
+                showNotif('❌ Введите корректные числа', true);
+                return;
+            }
             
             btn.disabled = true;
-            btn.textContent = '⏳...';
+            btn.textContent = '⏳ Сохранение...';
             
-            const result = await saveTicketsToSheet(name, ticketsDone, ticketsGoal, eventsGoal);
+            const result = await saveTicketsToSheet(name, done, goal, eventsGoal);
             
             if (result.success) {
                 showNotif(`✅ Данные для ${name} сохранены!`);
             } else {
-                showNotif(`❌ Ошибка: ${result.error}`, true);
+                showNotif(`❌ Ошибка сохранения: ${result.error || 'неизвестная ошибка'}`, true);
             }
             
             btn.disabled = false;
             btn.textContent = '💾 Сохранить';
-        });
-    });
-    
-    // Сохранение для другого отдела (только ивенты)
-    document.querySelectorAll('.save-drag-btn[data-type="other"]').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            const name = btn.dataset.name;
-            const nameId = name.replace(/\s/g, '_');
-            
-            const eventsGoal = parseInt(document.getElementById(`events_goal_${nameId}`)?.value) || 1;
-            
-            btn.disabled = true;
-            btn.textContent = '⏳...';
-            
-            const result = await saveTicketsToSheet(name, 0, 0, eventsGoal);
-            
-            if (result.success) {
-                showNotif(`✅ Норма ивентов для ${name} сохранена!`);
-            } else {
-                showNotif(`❌ Ошибка: ${result.error}`, true);
-            }
-            
-            btn.disabled = false;
-            btn.textContent = '💾 Сохранить';
-        });
-    });
-    
-    // Drag & Drop (просто перезагружаем модалку)
-    setupDragAndDropWithSave();
-}
-
-function renderDragItemsSimple(members, ticketsData, category) {
-    if (members.length === 0) {
-        return '<div style="text-align:center; padding:30px; color:var(--text-muted);">Нет сотрудников</div>';
-    }
-    
-    return members.map(member => {
-        const tickets = ticketsData[member.name] || { done: 0, goal: 25, eventsGoal: member.defaultEventsGoal };
-        const isFull = category === 'full';
-        const nameId = member.name.replace(/\s/g, '_');
-        
-        return `
-            <div class="drag-item" draggable="true" data-name="${member.name}" data-category="${category}">
-                <div class="drag-item-header">
-                    <span class="member-name-drag">${escapeHtml(member.name)}</span>
-                    <span class="events-done-display">🎮 Ивентов проведено: ${countEventsByPlatform()[member.name] || 0}</span>
-                </div>
-                <div class="member-stats-drag">
-                    ${isFull ? `
-                        <div class="stat-drag">
-                            <label>📊 Выполнено тикетов</label>
-                            <input type="number" id="tickets_done_${nameId}" value="${tickets.done}">
-                        </div>
-                        <div class="stat-drag">
-                            <label>📋 Нужно тикетов</label>
-                            <input type="number" id="tickets_goal_${nameId}" value="${tickets.goal}">
-                        </div>
-                    ` : ''}
-                    <div class="stat-drag">
-                        <label>🎯 Норма ивентов</label>
-                        <input type="number" id="events_goal_${nameId}" value="${tickets.eventsGoal || member.defaultEventsGoal}">
-                    </div>
-                    <button class="save-drag-btn" data-name="${member.name}" data-type="${isFull ? 'full' : 'other'}">💾 Сохранить</button>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-function setupDragAndDropWithSave() {
-    const dragItems = document.querySelectorAll('.drag-item');
-    const lists = document.querySelectorAll('.drag-list');
-    
-    dragItems.forEach(item => {
-        item.setAttribute('draggable', 'true');
-        
-        item.addEventListener('dragstart', (e) => {
-            item.classList.add('dragging');
-            e.dataTransfer.setData('text/plain', JSON.stringify({
-                name: item.dataset.name,
-                category: item.dataset.category
-            }));
-            e.dataTransfer.effectAllowed = 'move';
-        });
-        
-        item.addEventListener('dragend', (e) => {
-            item.classList.remove('dragging');
-        });
-    });
-    
-    lists.forEach(list => {
-        list.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            list.classList.add('drag-over');
-        });
-        
-        list.addEventListener('dragleave', (e) => {
-            list.classList.remove('drag-over');
-        });
-        
-        list.addEventListener('drop', async (e) => {
-            e.preventDefault();
-            list.classList.remove('drag-over');
-            
-            const targetCategory = list.dataset.category;
-            let data;
-            try {
-                data = JSON.parse(e.dataTransfer.getData('text/plain'));
-            } catch (err) {
-                return;
-            }
-            
-            if (data.category === targetCategory) {
-                return;
-            }
-            
-            const newCategory = targetCategory === 'full' ? 'Младший состав' : 'Другой отдел';
-            
-            try {
-                const result = await updateMemberCategoryInSheet(data.name, newCategory);
-                
-                if (result && result.success) {
-                    showNotif(`✅ ${data.name} перемещён в ${targetCategory === 'full' ? 'полноценный отдел' : 'другой отдел'}`);
-                    
-                    const member = teamData.find(m => m.name === data.name);
-                    if (member) {
-                        member.category = newCategory;
-                    }
-                    
-                    setTimeout(() => {
-                        renderTicketsEditor();
-                    }, 500);
-                } else {
-                    showNotif(`❌ Ошибка сохранения категории`, true);
-                }
-            } catch (err) {
-                console.error('Ошибка при перемещении:', err);
-                showNotif(`❌ Ошибка: ${err.message || 'неизвестная ошибка'}`, true);
-            }
         });
     });
 }
@@ -1402,26 +1148,28 @@ navs.forEach(n => {
                 eventCounts[organizer] = (eventCounts[organizer] || 0) + 1;
             }
         });
-        
+       
         // Данные по участникам (теперь берем eventsGoal из таблицы Тикеты)
         const membersStats = {
-            "yaroslav1432": { 
-                discordId: "1286725096278331565", 
-                eventsGoal: (ticketsFromSheet["yaroslav1432"] && ticketsFromSheet["yaroslav1432"].eventsGoal) || 1,
-                eventsDone: eventCounts["yaroslav1432"] || 0, 
-                inDepartment: false 
-            },
             "T1Ran": { 
                 discordId: "1246076621484724320", 
                 eventsGoal: (ticketsFromSheet["T1Ran"] && ticketsFromSheet["T1Ran"].eventsGoal) || 1,
                 eventsDone: eventCounts["T1Ran"] || 0, 
                 inDepartment: false 
             },
+            "somcop": { 
+                discordId: "1246076621484724320", 
+                eventsGoal: (ticketsFromSheet["somcop"] && ticketsFromSheet["somcop"].eventsGoal) || 1,
+                eventsDone: eventCounts["somcop"] || 0, 
+                inDepartment: false 
+            },
             "Дмитрий Морозов": { 
                 discordId: "859747626115006474", 
                 eventsGoal: (ticketsFromSheet["Дмитрий Морозов"] && ticketsFromSheet["Дмитрий Морозов"].eventsGoal) || 1,
                 eventsDone: eventCounts["Дмитрий Морозов"] || 0, 
-                inDepartment: false 
+                ticketsDone: (ticketsFromSheet["Дмитрий Морозов"] && ticketsFromSheet["Дмитрий Морозов"].done) || 0,
+                ticketsGoal: (ticketsFromSheet["Дмитрий Морозов"] && ticketsFromSheet["Дмитрий Морозов"].goal) || 25,
+                inDepartment: true 
             },
             "кусочек шаурмы": { 
                 discordId: "636585910552756284", 
@@ -1446,14 +1194,6 @@ navs.forEach(n => {
                 eventsDone: eventCounts["Гофикал"] || 0,
                 ticketsDone: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].done) || 0,
                 ticketsGoal: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].goal) || 25,
-                inDepartment: true 
-            },
-            "somcop": { 
-                discordId: "989919183036874772", 
-                eventsGoal: (ticketsFromSheet["somcop"] && ticketsFromSheet["somcop"].eventsGoal) || 1,
-                eventsDone: eventCounts["somcop"] || 0,
-                ticketsDone: (ticketsFromSheet["somcop"] && ticketsFromSheet["somcop"].done) || 0,
-                ticketsGoal: (ticketsFromSheet["somcop"] && ticketsFromSheet["somcop"].goal) || 35,
                 inDepartment: true 
             },
             "Foxy": { 
