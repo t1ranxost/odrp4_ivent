@@ -15,6 +15,8 @@ let teamData = [
     { id: 11, name: "кусочек шаурмы", role: "Ивентер", discord: "636585910552756284", status: "Онлайн", eventsCount: "-", joinDate: "17.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } }
 ];
 
+const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
+
 const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbybx0X49OjyjPwT-RzuLVkPSdF2zI-33RkFj1qJW9XESJMBjCvm598GSai44oIVXWGB/exec';
 
 const avatarMap = {
@@ -746,26 +748,6 @@ function loadAllData() {
 }
 
 let cachedConfig = null;
-
-async function loadConfig() {
-    if (cachedConfig) return cachedConfig;
-    
-    const GIST_URL = "https://gist.githubusercontent.com/t1ranxost/aa24e72a4a38ff01eae3b7ee4908cf43/raw/43fcf910b062abc6139a80944c91e9e57c3ea98c/config.json";
-    try {
-        const response = await fetch(GIST_URL);
-        const data = await response.json();
-        cachedConfig = data;
-        return data;
-    } catch(e) {
-        console.error('Ошибка загрузки конфига:', e);
-        return null;
-    }
-}
-
-async function getWebhookUrl() {
-    const config = await loadConfig();
-    return config ? config.webhook : null;
-}
 
 const VALID_LOGINS = [
     "кусочек шаурмы", "Foxy", "somcop", "T1Ran", "manisule",
@@ -1819,7 +1801,7 @@ navs.forEach(n => {
                 <div class="section-title pink">НОРМА</div>
                 <ul class="rule-list">
                     <li>Ивентер из другого отдела — кол-во тикетов из вашего отдела | 2 ивента в неделю</li>
-                    <li>Ивентер — 35 тикетов | 3 ивента в неделю</li>
+                    <li>Ивентер — 30 тикетов | 2 ивента в неделю</li>
                     <li>Ст. Ивентер — 25 тикетов</li>
                     <li>Зам. Главы Ивентологии — не имеет нормы</li>
                     <li>Глава Ивентологии — не имеет нормы</li>
@@ -1830,11 +1812,11 @@ navs.forEach(n => {
             <div class="section-block">
                 <div class="section-title orange">Норма после отпуска/заморозки/вступлении в отдел</div>
                 <div class="norm-grid">
-                    <div class="norm-card"><div class="norm-day">ПН</div><div class="norm-value">35 тикетов | 3 ивента</div></div>
-                    <div class="norm-card"><div class="norm-day">ВТ</div><div class="norm-value">35 тикетов | 3 ивента</div></div>
-                    <div class="norm-card"><div class="norm-day">СР</div><div class="norm-value">30 тикетов | 2 ивента</div></div>
-                    <div class="norm-card"><div class="norm-day">ЧТ</div><div class="norm-value">25 тикетов | 1 ивент</div></div>
-                    <div class="norm-card"><div class="norm-day">ПТ</div><div class="norm-value">20 тикетов | 1 ивент</div></div>
+                    <div class="norm-card"><div class="norm-day">ПН</div><div class="norm-value">30 тикетов | 3 ивента</div></div>
+                    <div class="norm-card"><div class="norm-day">ВТ</div><div class="norm-value">30 тикетов | 3 ивента</div></div>
+                    <div class="norm-card"><div class="norm-day">СР</div><div class="norm-value">25 тикетов | 2 ивента</div></div>
+                    <div class="norm-card"><div class="norm-day">ЧТ</div><div class="norm-value">20 тикетов | 1 ивент</div></div>
+                    <div class="norm-card"><div class="norm-day">ПТ</div><div class="norm-value">15 тикетов | 1 ивент</div></div>
                     <div class="norm-card"><div class="norm-day">СБ</div><div class="norm-value">10 тикетов | 1 ивент</div></div>
                     <div class="norm-card"><div class="norm-day">ВС</div><div class="norm-value">Освобождены от нормы</div></div>
                 </div>
@@ -1920,86 +1902,77 @@ async function sendEventToDiscord() {
     
     const sendBtn = document.getElementById('sendEventToDiscordBtn');
     sendBtn.disabled = true;
-    sendBtn.textContent = 'Отправка...';
+    sendBtn.textContent = '🔄 Отправка...';
     
-    const date = startTime + " - " + endTime;
-    const rating = (prizes !== 'Не было' ? prizes.replace(/[^0-9]/g, '') : '0') + '$';
-    
-    const sheetResult = await addEventToSheet({
-    name: name,
-    platform: organizer,     // platform - организатор (кто проводил)
-    organizer: helpers,      // organizer - помощники (кто помогал)
-    helpers: helpers,        // helpers - тоже помощники
-    date: date,
-    status: 'Проведен',
-    rating: rating,
-    members: members,
-    description: description
-});
-    
-    if (!sheetResult.success) {
-        showNotif('❌ Ошибка сохранения в таблицу', true);
+    try {
+        const date = startTime + " - " + endTime;
+        const rating = (prizes !== 'Не было' ? prizes.replace(/[^0-9]/g, '') : '0') + '$';
+        
+        // 1. Сохраняем в Google Sheets
+        const sheetResult = await addEventToSheet({
+            name: name,
+            platform: organizer,
+            organizer: helpers,
+            helpers: helpers,
+            date: date,
+            status: 'Проведен',
+            rating: rating,
+            members: members,
+            description: description
+        });
+        
+        if (!sheetResult.success) {
+            throw new Error('Ошибка сохранения в таблицу');
+        }
+        
+        // 2. Отправляем в Discord через Cloudflare Worker (вебхук скрыт!)
+        const discordResponse = await fetch(`${CLOUDFLARE_API}/api/send-event`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: name,
+                description: description,
+                date: date,
+                members: members,
+                prizes: prizes,
+                organizer: organizer,
+                helpers: helpers
+            })
+        });
+        
+        const discordResult = await discordResponse.json();
+        
+        if (!discordResult.success) {
+            console.warn('Discord warning:', discordResult.error);
+        }
+        
+        showNotif('✅ Ивент добавлен!');
+        
+        // Очищаем форму
+        document.getElementById('eventName').value = '';
+        document.getElementById('eventDescription').value = '';
+        document.getElementById('eventStartTime').value = '';
+        document.getElementById('eventEndTime').value = '';
+        document.getElementById('eventMembers').value = '';
+        document.getElementById('eventPrizes').value = '';
+        document.getElementById('eventOrganizer').value = '';
+        document.getElementById('eventHelpers').value = '';
+        
+        // Обновляем таблицу
+        await refreshEventsData();
+        renderEventsTable();
+        
+        // Активируем вкладку с таблицей
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.querySelector('[data-tab="events_table"]')?.classList.add('active');
+        
+    } catch (error) {
+        console.error('Send event error:', error);
+        showNotif('❌ Ошибка: ' + error.message, true);
+    } finally {
         sendBtn.disabled = false;
         sendBtn.textContent = '📤 Отправить в Discord';
-        return;
     }
-    
-    // 2. Отправляем в Discord
-    const webhookURL = await getWebhookUrl();
-    if (webhookURL) {
-        try {
-            await fetch(webhookURL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    content: `Появился новый ивент от ${organizer}!`,
-                    embeds: [{
-                        title: "📅 Новый ивент",
-                        color: 0x5865F2,
-                        fields: [
-                            { name: "📌 Название", value: name },
-                            { name: "📝 Описание", value: description.substring(0, 500) },
-                            { name: "⏰ Время", value: startTime + " - " + endTime, inline: true },
-                            { name: "👥 Участников", value: members.toString(), inline: true },
-                            { name: "🎁 Призы", value: prizes, inline: false },
-                            { name: "👤 Организатор", value: organizer, inline: true },
-                            { name: "🤝 Помощники", value: helpers, inline: true }
-                        ],
-                        footer: { text: "Ивент-отдел UnionTeam" },
-                        timestamp: new Date().toISOString()
-                    }],
-                    username: "Ивент-отдел UnionTeam",
-                    avatar_url: "https://i.ytimg.com/vi/_pMmC52HB2k/hqdefault.jpg"
-                })
-            });
-        } catch(e) {
-            console.error('Ошибка Discord:', e);
-        }
-    }
-    
-    showNotif('✅ Ивент добавлен!');
-    sendBtn.disabled = false;
-    sendBtn.textContent = '📤 Отправить в Discord';
-    
-    // Очищаем форму
-    document.getElementById('eventName').value = '';
-    document.getElementById('eventDescription').value = '';
-    document.getElementById('eventStartTime').value = '';
-    document.getElementById('eventEndTime').value = '';
-    document.getElementById('eventMembers').value = '';
-    document.getElementById('eventPrizes').value = '';
-    document.getElementById('eventOrganizer').value = '';
-    document.getElementById('eventHelpers').value = '';
-    
-    // ВАЖНО: Обновляем данные из Google Sheets
-    await refreshEventsData();
-    
-    // Показываем таблицу ивентов
-    renderEventsTable();
-    
-    // Активируем вкладку "Таблица ивентов" в меню
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    document.querySelector('[data-tab="events_table"]').classList.add('active');
 }
 
 // АВТОРИЗАЦИЯ
@@ -2081,28 +2054,6 @@ function checkAuth() {
 
 let cachedPasswords = null;
 
-async function loadPasswordsFromGist() {
-    if (cachedPasswords) return cachedPasswords;
-    
-
-    const PASSWORDS_URL = "https://gist.githubusercontent.com/t1ranxost/29a25573757446992fa647e2605af3c4/raw/1a62ddd601e74d4067a0e771b81cfe030c2c9478/password.json";
-    
-    try {
-        const response = await fetch(PASSWORDS_URL);
-        const data = await response.json();
-        cachedPasswords = data;
-        console.log('✅ Пароли загружены из Gist');
-        return data;
-    } catch(e) {
-        console.error('❌ Ошибка загрузки паролей:', e);
-        return {
-            users: {},
-            creator_password: "creator2026",
-            user_default_password: "user123"
-        };
-    }
-}
-
 async function doLogin() {
     const login = loginInput.value.trim();
     const pwd = passInput.value;
@@ -2114,66 +2065,49 @@ async function doLogin() {
         return;
     }
     
-    if (!VALID_LOGINS.includes(login)) {
-        errMsg.textContent = "❌ Пользователь не найден!";
+    loginBtn.disabled = true;
+    loginBtn.textContent = '⏳ Вход...';
+    
+    try {
+        const response = await fetch(`${CLOUDFLARE_API}/api/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ login, password: pwd })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            sessionStorage.setItem('user', data.user);
+            sessionStorage.setItem('isEditor', data.isEditor);
+            sessionStorage.setItem('continued', 'false');
+            
+            currentUser = data.user;
+            isEditor = data.isEditor;
+            
+            loginOverlay.style.display = 'none';
+            welcomeContainer.classList.remove('hidden');
+            mainDashboard.style.display = 'none';
+            
+            updateSidebarAvatar(login);
+            errMsg.classList.remove('show');
+            showNotif(`✅ Добро пожаловать, ${login}!`);
+            
+            refreshEventsData();
+        } else {
+            errMsg.textContent = `❌ ${data.error || "Неверный логин или пароль!"}`;
+            errMsg.classList.add('show');
+            setTimeout(() => errMsg.classList.remove('show'), 2000);
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        errMsg.textContent = "❌ Ошибка соединения с сервером!";
         errMsg.classList.add('show');
         setTimeout(() => errMsg.classList.remove('show'), 2000);
-        return;
+    } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Войти';
     }
-    
-    const passwords = await loadPasswordsFromGist();
-    
-    if (pwd === passwords.creator_password) {
-        sessionStorage.setItem('user', login);
-        sessionStorage.setItem('isEditor', 'true');
-        sessionStorage.removeItem('continued');
-        currentUser = login;
-        isEditor = true;
-        loginOverlay.style.display = 'none';
-        welcomeContainer.classList.remove('hidden');
-        mainDashboard.style.display = 'none';
-        updateSidebarAvatar(login);
-        errMsg.classList.remove('show');
-        showNotif(`👑 Добро пожаловать, создатель ${login}!`);
-        refreshEventsData();
-        return;
-    }
-    
-    if (passwords.users && passwords.users[login] === pwd) {
-        sessionStorage.setItem('user', login);
-        sessionStorage.setItem('isEditor', 'false');
-        sessionStorage.removeItem('continued');
-        currentUser = login;
-        isEditor = false;
-        loginOverlay.style.display = 'none';
-        welcomeContainer.classList.remove('hidden');
-        mainDashboard.style.display = 'none';
-        updateSidebarAvatar(login);
-        errMsg.classList.remove('show');
-        showNotif(`✅ Добро пожаловать, ${login}!`);
-        refreshEventsData();
-        return;
-    }
-    
-    if (passwords.user_default_password === pwd) {
-        sessionStorage.setItem('user', login);
-        sessionStorage.setItem('isEditor', 'false');
-        sessionStorage.removeItem('continued');
-        currentUser = login;
-        isEditor = false;
-        loginOverlay.style.display = 'none';
-        welcomeContainer.classList.remove('hidden');
-        mainDashboard.style.display = 'none';
-        updateSidebarAvatar(login);
-        errMsg.classList.remove('show');
-        showNotif(`✅ Добро пожаловать, ${login}!`);
-        refreshEventsData();
-        return;
-    }
-    
-    errMsg.textContent = "❌ Неверный пароль!";
-    errMsg.classList.add('show');
-    setTimeout(() => errMsg.classList.remove('show'), 2000);
 }
 
 function onContinue() {
