@@ -20,6 +20,7 @@ const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
 const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbybx0X49OjyjPwT-RzuLVkPSdF2zI-33RkFj1qJW9XESJMBjCvm598GSai44oIVXWGB/exec';
 
 const avatarMap = {
+    "ki-p": "https://avatars.akamai.steamstatic.com/7c0568b92eabda5703516fa7e03ba4676d8b03e5_full.jpg",
     "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
     "manisule": "https://avatars.akamai.steamstatic.com/3973c828510cfd75f32b6a4d09bffa642f6c975f_full.jpg",
     "Гербикс": "https://avatars.akamai.steamstatic.com/3acd2544afbc953feb4af6da64440fa4bf48618e_full.jpg",
@@ -974,6 +975,7 @@ function renderTeamTable() {
     
     // ПОЛУЧАЕМ АВАТАРКУ ПО ИМЕНИ
     const avatarMap = {
+        "ki-p": "https://avatars.akamai.steamstatic.com/7c0568b92eabda5703516fa7e03ba4676d8b03e5_full.jpg",
         "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
         "manisule": "https://avatars.akamai.steamstatic.com/3973c828510cfd75f32b6a4d09bffa642f6c975f_full.jpg",
         "Гербикс": "https://avatars.akamai.steamstatic.com/3acd2544afbc953feb4af6da64440fa4bf48618e_full.jpg",
@@ -2110,7 +2112,12 @@ async function doLogin() {
     }
 }
 
+
+
 function onContinue() {
+    // Показываем сообщение о багах
+    showBugReportMessage();
+
     sessionStorage.setItem('continued', 'true');
     welcomeContainer.classList.add('hidden');
     mainDashboard.style.display = 'block';
@@ -2760,6 +2767,18 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// ========== ПОКАЗ СООБЩЕНИЯ О БАГАХ ПОСЛЕ КНОПКИ "ПРОДОЛЖИТЬ" ==========
+let bugMessageActive = false;
+
+// Функция для принудительного скрытия сообщения (если нужно)
+function hideBugReportMessage() {
+    const messageDiv = document.getElementById('bugMessageBlock');
+    if (messageDiv) {
+        messageDiv.remove();
+        bugMessageActive = false;
+    }
+}
+
 // Закрытие модалки редактирования
 const closeEditModalBtn = document.getElementById('closeEditEventModal');
 if (closeEditModalBtn) {
@@ -3063,4 +3082,92 @@ if (ticketsEditorBtn) {
     });
 } else {
     console.log('Кнопка ticketsEditorBtn НЕ НАЙДЕНА');
+}
+
+function showBugReportMessage() {
+    console.log('🟢 Показываем сообщение о багах');
+    
+    // Если сообщение уже показано - не создаём новое
+    if (bugMessageActive) {
+        console.log('⚠️ Сообщение уже показано');
+        return;
+    }
+    
+    const welcomeCard = document.querySelector('.welcome-card');
+    if (!welcomeCard) {
+        console.log('❌ welcome-card не найден');
+        return;
+    }
+    
+    // Удаляем старое сообщение, если есть
+    const oldMessage = document.getElementById('bugMessageBlock');
+    if (oldMessage) oldMessage.remove();
+    
+    // Создаем блок с сообщением
+    const messageDiv = document.createElement('div');
+    messageDiv.id = 'bugMessageBlock';
+    messageDiv.style.cssText = `
+        margin: 20px 0 15px 0;
+        padding: 20px 16px;
+        background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3));
+        border-radius: 24px;
+        border: 1px solid rgba(255,170,68,0.4);
+        text-align: center;
+        animation: fadeInUp 0.4s ease;
+        backdrop-filter: blur(8px);
+    `;
+    
+    messageDiv.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 12px;">
+            <svg class="icon" style="fill:#c9a0ff; width: 55px; height: 55px;">
+                <use href="#ic-eagle"/>
+            </svg>
+        </div>
+        <div style="font-size: 0.95rem; color: #ffd6aa; margin-bottom: 8px;">
+            ⚠️ Если нашли баг или ошибку
+        </div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 15px;">
+            Пишите <span style="color: #ffaa44; text-decoration: underline;">T1Ran</span> в Discord ➜ 🎫
+        </div>
+        <button id="closeBugMessageBtn" style="
+            background: linear-gradient(95deg, rgba(85,85,85,0.6), rgba(51,51,51,0.6));
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 40px;
+            padding: 8px 24px;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            backdrop-filter: blur(8px);
+        ">✕ Понятно, закрыть</button>
+    `;
+    
+    // Находим кнопку "Продолжить" и вставляем ПЕРЕД НЕЙ
+    const continueBtn = document.getElementById('continueBtn');
+    if (continueBtn) {
+        welcomeCard.insertBefore(messageDiv, continueBtn);
+        console.log('✅ Сообщение вставлено перед кнопкой');
+    } else {
+        welcomeCard.appendChild(messageDiv);
+        console.log('✅ Сообщение вставлено в конец');
+    }
+    
+    bugMessageActive = true;
+    
+    // Обработчик для кнопки закрытия
+    const closeBtn = document.getElementById('closeBugMessageBtn');
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            messageDiv.style.opacity = '0';
+            messageDiv.style.transform = 'translateY(-15px)';
+            setTimeout(() => {
+                if (messageDiv && messageDiv.parentNode) {
+                    messageDiv.remove();
+                    bugMessageActive = false;
+                }
+            }, 300);
+        };
+    }
 }
