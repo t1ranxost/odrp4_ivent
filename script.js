@@ -340,7 +340,7 @@ async function renderCommentsSection(eventId, container) {
 }
 
 // ========== ЖУРНАЛ АУДИТА В DISCORD ==========
-const WEBHOOK_URL = 'https://discord.com/api/webhooks/1500199936136970302/emo2xxUq-wS_E5c4N_8qvi4MtSXKQ2e3nNOvIuBGUIStArBezX7Gdo3giPOQpyjREDfJ';
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1500214327612018698/KtnVb0diLx1J6aoDmOe-EjaAIgHDfldiHhxg21xypQh3SJTGAASaE-iDj_DKd3UOUPY7';
 
 async function sendAuditLog(action, details, oldData = null, newData = null) {
     const username = currentUser || sessionStorage.getItem('user') || 'Неизвестный';
