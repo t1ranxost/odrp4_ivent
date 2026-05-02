@@ -1,14 +1,4 @@
-/* Запрещаем появление стандартного курсора при наведении на любые элементы */
-* {
-    cursor: none !important;
-}
 
-/* Для интерактивных элементов (кнопки, ссылки) можно оставить кастомный курсор */
-button, a, .clickable-row, .clickable-card, .nav-item, .status-change-btn, 
-.comment-send-btn, .continue-btn, .login-btn, .submit-btn, .close-modal, 
-.settings-save, .logout-btn, .edit-event-btn, .delete-event-btn {
-    cursor: none !important;
-}
 
 *{margin:0;padding:0;box-sizing:border-box}
 
@@ -1613,43 +1603,6 @@ button{font-family:inherit}
     flex: 1;
 }
 
-/* ========== КАСТОМНЫЙ КУРСОР-КРУЖОК ========== */
-
-/* Скрываем стандартный курсор */
-* {
-    cursor: none !important;
-}
-
-#customCursor {
-    position: fixed;
-    width: 17px;
-    height: 17px;
-    border: 2px solid #f0f0f0;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 99999;
-    transform: translate(-50%, -50%);
-}
-
-#customCursorDot {
-    position: fixed;
-    width: 4px;
-    height: 4px;
-    background: #bbb8c0;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 100000;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0 10px #89888a;
-}
-
-#customCursor.hover {
-    width: 23px;
-    height: 23px;
-    border-color: #fff;
-    background: rgba(201, 195, 207, 0.15);
-}
-
 .edit-event-btn, .delete-event-btn {
     padding: 4px 8px !important;
     font-size: 1rem !important;
@@ -1797,3 +1750,45 @@ button{font-family:inherit}
     transform: scale(0.95);
 }
 
+@keyframes thinking {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
+    }
+    30% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+}
+
+@keyframes progressPulse {
+    0% {
+        width: 0%;
+        margin-left: 0%;
+    }
+    50% {
+        width: 70%;
+        margin-left: 15%;
+    }
+    100% {
+        width: 0%;
+        margin-left: 100%;
+    }
+}
+
+/* Лёгкое покачивание орла */
+#globalLoadingOverlay img {
+    animation: eagleFloat 3s ease-in-out infinite;
+}
+
+@keyframes eagleFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-5px) rotate(-2deg);
+    }
+    75% {
+        transform: translateY(3px) rotate(1deg);
+    }
+}
