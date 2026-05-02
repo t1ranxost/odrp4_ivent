@@ -339,6 +339,157 @@ async function renderCommentsSection(eventId, container) {
     }
 }
 
+// ========== ЖУРНАЛ АУДИТА В DISCORD ==========
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1500199936136970302/emo2xxUq-wS_E5c4N_8qvi4MtSXKQ2e3nNOvIuBGUIStArBezX7Gdo3giPOQpyjREDfJ';
+
+async function sendAuditLog(action, details, oldData = null, newData = null) {
+    const username = currentUser || sessionStorage.getItem('user') || 'Неизвестный';
+    const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
+    
+    let description = '';
+    let color = 0x00ff00; // Зелёный по умолчанию (добавление)
+    
+    switch(action) {
+        case 'ADD_EVENT':
+            description = `**➕ Добавлен новый ивент**\n\n`;
+            description += `**Название:** ${details.name}\n`;
+            description += `**Организатор:** ${details.organizer}\n`;
+            description += `**Помощники:** ${details.helpers || 'Нет'}\n`;
+            description += `**Дата:** ${details.date}\n`;
+            description += `**Призовые:** ${details.rating}\n`;
+            description += `**Участников:** ${details.members}\n`;
+            description += `**Описание:** ${details.description.substring(0, 200)}${details.description.length > 200 ? '...' : ''}`;
+            color = 0x00ff00;
+            break;
+            
+        case 'EDIT_EVENT':
+            description = `**✏️ Изменён ивент**\n\n`;
+            description += `**ID ивента:** ${details.eventId}\n`;
+            description += `**Название:** ${details.name}\n\n`;
+            description += `**Изменения:**\n`;
+            if (oldData && newData) {
+                if (oldData.name !== newData.name) description += `• Название: "${oldData.name}" → "${newData.name}"\n`;
+                if (oldData.description !== newData.description) description += `• Описание: изменено\n`;
+                if (oldData.date !== newData.date) description += `• Дата: "${oldData.date}" → "${newData.date}"\n`;
+                if (oldData.rating !== newData.rating) description += `• Призовые: "${oldData.rating}" → "${newData.rating}"\n`;
+                if (oldData.members !== newData.members) description += `• Участников: ${oldData.members} → ${newData.members}\n`;
+                if (oldData.helpers !== newData.helpers) description += `• Помощники: "${oldData.helpers}" → "${newData.helpers}"\n`;
+            }
+            color = 0xffaa00;
+            break;
+            
+        case 'DELETE_EVENT':
+            description = `**🗑️ Удалён ивент**\n\n`;
+            description += `**ID ивента:** ${details.eventId}\n`;
+            description += `**Название:** ${details.name}\n`;
+            description += `**Организатор:** ${details.organizer}\n`;
+            description += `**Дата:** ${details.date}\n`;
+            description += `**Призовые:** ${details.rating}`;
+            color = 0xff4444;
+            break;
+            
+        case 'CHANGE_STATUS':
+            description = `**🔄 Изменён статус ивента**\n\n`;
+            description += `**ID ивента:** ${details.eventId}\n`;
+            description += `**Название:** ${details.eventName}\n`;
+            description += `**Статус:** ${details.oldStatus} → ${details.newStatus}`;
+            color = 0x44aaff;
+            break;
+            
+        case 'ADD_MEMBER':
+            description = `**👥 Добавлен новый участник команды**\n\n`;
+            description += `**Никнейм:** ${details.name}\n`;
+            description += `**Роль:** ${details.role}\n`;
+            description += `**Ранг:** ${details.rating}\n`;
+            description += `**Категория:** ${details.category}`;
+            color = 0xaa44ff;
+            break;
+            
+        case 'EDIT_MEMBER':
+            description = `**✏️ Изменён участник команды**\n\n`;
+            description += `**Никнейм:** ${details.name}\n`;
+            description += `**Изменения:** ${details.changes}`;
+            color = 0xffaa44;
+            break;
+            
+        case 'DELETE_MEMBER':
+            description = `**🗑️ Удалён участник команды**\n\n`;
+            description += `**Никнейм:** ${details.name}\n`;
+            description += `**Роль:** ${details.role}`;
+            color = 0xff6666;
+            break;
+            
+        case 'LOGIN':
+            description = `**🔓 Вход в систему**\n\n`;
+            description += `Пользователь **${username}** вошёл в панель управления`;
+            color = 0x44ff44;
+            break;
+            
+        case 'LOGOUT':
+            description = `**🔒 Выход из системы**\n\n`;
+            description += `Пользователь **${username}** вышел из панели управления`;
+            color = 0xffaa44;
+            break;
+    }
+    
+    const embed = {
+        title: `📋 Журнал аудита`,
+        description: description,
+        color: color,
+        timestamp: new Date().toISOString(),
+        footer: {
+            text: `Действие: ${username} | IP: скрыто • ${timestamp}`
+        },
+        fields: [
+            {
+                name: "👤 Кто выполнил",
+                value: username,
+                inline: true
+            },
+            {
+                name: "🕐 Время",
+                value: timestamp,
+                inline: true
+            },
+            {
+                name: "📝 Тип действия",
+                value: action.replace(/_/g, ' '),
+                inline: true
+            }
+        ]
+    };
+    
+    // Добавляем иконку в зависимости от действия
+    let iconUrl = '';
+    switch(action) {
+        case 'ADD_EVENT': iconUrl = 'https://cdn-icons-png.flaticon.com/512/1828/1828817.png'; break;
+        case 'EDIT_EVENT': iconUrl = 'https://cdn-icons-png.flaticon.com/512/1159/1159633.png'; break;
+        case 'DELETE_EVENT': iconUrl = 'https://cdn-icons-png.flaticon.com/512/1214/1214428.png'; break;
+        case 'CHANGE_STATUS': iconUrl = 'https://cdn-icons-png.flaticon.com/512/190/190411.png'; break;
+        default: iconUrl = 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png';
+    }
+    
+    try {
+        const response = await fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: 'Журнал аудита | Ивент-отдел',
+                avatar_url: 'https://i.ibb.co/nNbX53Lx/i-7.webp',
+                embeds: [embed]
+            })
+        });
+        
+        if (!response.ok) {
+            console.error('Ошибка отправки аудит-лога:', response.status);
+        }
+    } catch (error) {
+        console.error('Ошибка отправки в Discord Webhook:', error);
+    }
+}
+
 const commentsCache = {};
 
 const EVENTS_API_URL = COMMENTS_API_URL;
@@ -822,7 +973,7 @@ function changeEventStatus(eventId, newStatus) {
         return false;
     }
     
-    // Сохраняем старый статус на случай ошибки
+    // Сохраняем старый статус
     const oldStatus = event.callStatus;
     
     // Обновляем локально
@@ -830,14 +981,21 @@ function changeEventStatus(eventId, newStatus) {
     renderEventsTable();
     showNotif(`🔄 Статус изменён на "${newStatus}", синхронизация...`);
     
+    // ========== ДОБАВЬ ЛОГИРОВАНИЕ СТАТУСА ==========
+    sendAuditLog('CHANGE_STATUS', {
+        eventId: eventId,
+        eventName: event.name,
+        oldStatus: oldStatus,
+        newStatus: newStatus
+    }).catch(err => console.error('Ошибка отправки лога статуса:', err));
+    // =================================================
+    
     // Отправляем в Google Sheets
     syncStatusToSheet(eventId, newStatus, currentUser).then(result => {
         if (result.success) {
             showNotif(`✅ Статус успешно изменён на "${newStatus}"`);
-            // Принудительно обновляем данные из таблицы
             refreshEventsData();
         } else {
-            // Если ошибка - возвращаем старый статус
             event.callStatus = oldStatus;
             renderEventsTable();
             showNotif(`❌ Ошибка синхронизации статуса`, true);
@@ -1950,6 +2108,16 @@ async function sendEventToDiscord() {
         
         showNotif('✅ Ивент добавлен!');
         
+        await sendAuditLog('ADD_EVENT', {
+    name: name,
+    organizer: organizer,
+    helpers: helpers,
+    date: date,
+    rating: rating,
+    members: members,
+    description: description
+});
+
         // Очищаем форму
         document.getElementById('eventName').value = '';
         document.getElementById('eventDescription').value = '';
@@ -2036,6 +2204,16 @@ function checkAuth() {
         isEditor = savedIsEditor === 'true';
         loginOverlay.style.display = 'none';
         updateUIBasedOnRole();
+        
+        // ========== ДОБАВЬ ЛОГ ВОССТАНОВЛЕНИЯ СЕССИИ ==========
+        if (continued === 'true') {
+            // Пользователь уже был в системе, лог не отправляем, чтобы не спамить
+        } else {
+            // Сессия восстановлена после перезагрузки
+            sendAuditLog('LOGIN', { session: 'restored' }).catch(err => console.error(err));
+        }
+        // ====================================================
+        
         if (continued === 'true') {
             welcomeContainer.classList.add('hidden');
             mainDashboard.style.display = 'block';
@@ -2087,6 +2265,11 @@ async function doLogin() {
             currentUser = data.user;
             isEditor = data.isEditor;
             
+            // ========== ДОБАВЬ ЭТОТ БЛОК ==========
+            // Отправляем лог о входе (ждём, но не блокируем)
+            sendAuditLog('LOGIN', {}).catch(err => console.error('Ошибка отправки лога входа:', err));
+            // =====================================
+            
             loginOverlay.style.display = 'none';
             welcomeContainer.classList.remove('hidden');
             mainDashboard.style.display = 'none';
@@ -2131,6 +2314,10 @@ function onContinue() {
 }
 
 function logout() {
+    if (currentUser) {
+        sendAuditLog('LOGOUT', {}).catch(err => console.error('Ошибка отправки лога выхода:', err));
+    }
+    
     sessionStorage.removeItem('user');
     sessionStorage.removeItem('isEditor');
     sessionStorage.removeItem('continued');
@@ -2726,17 +2913,34 @@ function openEditEventModal(eventId) {
     modal.style.display = 'flex';
 }
 
-// Функция для удаления ивента
 async function deleteEventHandler(eventId) {
     if (!confirm('🗑️ Удалить ивент навсегда? Это действие нельзя отменить!')) {
         return;
     }
     
+    // ========== СОХРАНЯЕМ ДАННЫЕ ДО УДАЛЕНИЯ ==========
+    const eventToDelete = eventsData.find(e => e.id === eventId);
+    if (!eventToDelete) {
+        showNotif('❌ Ивент не найден', true);
+        return;
+    }
+    // =================================================
+    
     const result = await deleteEventFromSheet(eventId);
     if (result.success) {
+        // ========== ОТПРАВЛЯЕМ ЛОГ ПОСЛЕ УСПЕШНОГО УДАЛЕНИЯ ==========
+        await sendAuditLog('DELETE_EVENT', {
+            eventId: eventId,
+            name: eventToDelete.name,
+            organizer: eventToDelete.organizer || eventToDelete.platform,
+            date: eventToDelete.date,
+            rating: eventToDelete.rating
+        });
+        // ============================================================
+        
         showNotif('✅ Ивент удалён');
-        await refreshEventsData(); // Обновляем таблицу
-        renderEventsTable(); // Перерисовываем
+        await refreshEventsData();
+        renderEventsTable();
     } else {
         showNotif('❌ Ошибка удаления: ' + (result.error || 'неизвестная ошибка'), true);
     }
@@ -2814,6 +3018,30 @@ if (saveEditBtn) {
             return;
         }
         
+        // Внутри обработчика сохранения, до обновления:
+const oldEvent = eventsData.find(e => e.id === eventId);
+
+// После успешного обновления:
+await sendAuditLog('EDIT_EVENT', 
+    { eventId: eventId, name: name },
+    { 
+        name: oldEvent.name,
+        description: oldEvent.fullDetails?.description,
+        date: oldEvent.date,
+        rating: oldEvent.rating,
+        members: oldEvent.members,
+        helpers: oldEvent.helpers
+    },
+    {
+        name: name,
+        description: description,
+        date: date,
+        rating: rating,
+        members: members,
+        helpers: helpers
+    }
+);
+
         // Блокируем кнопку
         this.disabled = true;
         this.textContent = '💾 Сохранение...';
