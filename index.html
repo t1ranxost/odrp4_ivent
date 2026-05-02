@@ -454,51 +454,6 @@
     </div>
 </div>
 
-<style>
-@keyframes thinking {
-    0%, 60%, 100% {
-        transform: translateY(0);
-        opacity: 0.4;
-    }
-    30% {
-        transform: translateY(-10px);
-        opacity: 1;
-    }
-}
-
-@keyframes progressPulse {
-    0% {
-        width: 0%;
-        margin-left: 0%;
-    }
-    50% {
-        width: 70%;
-        margin-left: 15%;
-    }
-    100% {
-        width: 0%;
-        margin-left: 100%;
-    }
-}
-
-/* Лёгкое покачивание орла */
-#globalLoadingOverlay img {
-    animation: eagleFloat 3s ease-in-out infinite;
-}
-
-@keyframes eagleFloat {
-    0%, 100% {
-        transform: translateY(0) rotate(0deg);
-    }
-    25% {
-        transform: translateY(-5px) rotate(-2deg);
-    }
-    75% {
-        transform: translateY(3px) rotate(1deg);
-    }
-}
-</style>
-
 <!-- Модальное окно редактирования ивента -->
 <div id="editEventModal" class="modal" style="display:none;">
     <div class="modal-card" style="max-width:600px;">
@@ -539,10 +494,6 @@
     </div>
 </div>
 
-<!-- Кастомный курсор-кружок -->
-<div id="customCursor"></div>
-<div id="customCursorDot"></div>
-
 <script src="script.js"></script>
 </body>
-</html>>
+</html>
