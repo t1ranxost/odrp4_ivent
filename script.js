@@ -4,20 +4,19 @@ let eventsData = [
 
 let teamData = [
     { id: 1, name: "manisule", role: "Глава ивент-отдела", discord: "565584233981280270", status: "Онлайн", eventsCount: "Нет нормы", joinDate: "21.01.26", rating: "Судо-Куратор", category: "Старший состав", fullDetails: { responsibilities: "Имеет полное владение над отделом Ивентологии, может самостоятельно изменять состав отдела Ивентологии и их норму/правила.", contacts: "https://admin.unionteams.ru/4/admin/76561198386405573", achievements: "0", notes: "" } },
-    { id: 2, name: "Гербикс", role: "Зам.Главы ивент-отдела", discord: "694286975158583317", status: "Онлайн", eventsCount: "Нет нормы", joinDate: "21.01.26", rating: "Ассистент", category: "Старший состав", fullDetails: { responsibilities: "Имеет все полномочия нижестоящих рангов, а также имеет право набирать новых кадров в отдел, определять курс развития отдела и изменять норму и правила с разрешения/уведомления об этом Главы Ивентологии.", contacts: "https://admin.unionteams.ru/4/admin/76561199196300974", achievements: "0", notes: "" } },
-    { id: 3, name: "Arbuz Madrazo", role: "Ст.Ивентер", discord: "1066705962972495922", status: "Онлайн", eventsCount: "Нет нормы", joinDate: "07.02.26", rating: "Ст.Администратор", category: "Старший состав", fullDetails: { responsibilities: "Имеет все полномочия Ивентера, а также имеет право корректировать работу Ивентеров и давать рекомендации по поводу ивентов, выдавать наказания за их ошибки, а также одобрять отчётности.", contacts: "https://admin.unionteams.ru/4/admin/76561199236074729", achievements: "1", notes: "" } },
-    { id: 4, name: "T1Ran", role: "Ивентер", discord: "1246076621484724320", status: "Онлайн", eventsCount: "-", joinDate: "14.03.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Отвечает за таблицу ТАКЖЕ: Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199705616791", achievements: "11", notes: "" } },
-    { id: 5, name: "Дмитрий Морозов", role: "Ивентер", discord: "859747626115006474", status: "Онлайн", eventsCount: "-", joinDate: "30.03.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199403370553", achievements: "11", notes: "" } },
-    { id: 6, name: "Гофикал", role: "Ивентер", discord: "1135087142385754123", status: "Онлайн", eventsCount: "-", joinDate: "09.04.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199636555608", achievements: "0", notes: "" } },
-    { id: 7, name: "Himas", role: "Ивентер", discord: "1467081827670954015", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199683531094", achievements: "0", notes: "" } },
-    { id: 9, name: "Foxy", role: "Ивентер", discord: "1344959502436532304", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199775920153", achievements: "0", notes: "" } },
-    { id: 10, name: "somcop", role: "Ивентер", discord: "76561199768219919", status: "Онлайн", eventsCount: "-", joinDate: "13.04.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } },
-    { id: 11, name: "кусочек шаурмы", role: "Ивентер", discord: "636585910552756284", status: "Онлайн", eventsCount: "-", joinDate: "17.04.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } }
+    // { id: 2, name: "Гербикс", role: "Зам.Главы ивент-отдела", discord: "694286975158583317", status: "Онлайн", eventsCount: "Нет нормы", joinDate: "21.01.26", rating: "Ассистент", category: "Старший состав", fullDetails: { responsibilities: "Имеет все полномочия нижестоящих рангов, а также имеет право набирать новых кадров в отдел, определять курс развития отдела и изменять норму и правила с разрешения/уведомления об этом Главы Ивентологии.", contacts: "https://admin.unionteams.ru/4/admin/76561199196300974", achievements: "0", notes: "" } },
+    // { id: 3, name: "Arbuz Madrazo", role: "Ст.Ивентер", discord: "1066705962972495922", status: "Онлайн", eventsCount: "Нет нормы", joinDate: "07.02.26", rating: "Ст.Администратор", category: "Старший состав", fullDetails: { responsibilities: "Имеет все полномочия Ивентера, а также имеет право корректировать работу Ивентеров и давать рекомендации по поводу ивентов, выдавать наказания за их ошибки, а также одобрять отчётности.", contacts: "https://admin.unionteams.ru/4/admin/76561199236074729", achievements: "1", notes: "" } },
+    // { id: 4, name: "T1Ran", role: "Ивентер", discord: "1246076621484724320", status: "Онлайн", eventsCount: "-", joinDate: "14.03.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Отвечает за таблицу ТАКЖЕ: Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199705616791", achievements: "11", notes: "" } },
+    // { id: 5, name: "Дмитрий Морозов", role: "Ивентер", discord: "859747626115006474", status: "Онлайн", eventsCount: "-", joinDate: "30.03.26", rating: "Администратор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199403370553", achievements: "11", notes: "" } },
+    // { id: 6, name: "Гофикал", role: "Ивентер", discord: "1135087142385754123", status: "Онлайн", eventsCount: "-", joinDate: "09.04.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199636555608", achievements: "0", notes: "" } },
+    // { id: 7, name: "Himas", role: "Ивентер", discord: "1467081827670954015", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199683531094", achievements: "0", notes: "" } },
+    // { id: 8, name: "Foxy", role: "Ивентер", discord: "1344959502436532304", status: "Онлайн", eventsCount: "-", joinDate: "10.04.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199775920153", achievements: "0", notes: "" } },
+    // { id: 9, name: "somcop", role: "Ивентер", discord: "76561199768219919", status: "Онлайн", eventsCount: "-", joinDate: "13.04.26", rating: "Оператор", category: "Младший состав", fullDetails: { responsibilities: "Имеет право проводить ивенты без разрешения со стороны Ст. Ивентера, но обязуется подчиняться всем адекватным приказам со стороны старших представителей отдела и брать во внимание всю обоснованную критику с их стороны. Может игнорировать завал в случае, если ивент начался до завала, но обязуется брать участие в его разборе, если идёт подготовка к ивенту.", contacts: "https://admin.unionteams.ru/4/admin/76561199768219919", achievements: "0", notes: "" } },
 ];
 
 const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
 
-const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbybx0X49OjyjPwT-RzuLVkPSdF2zI-33RkFj1qJW9XESJMBjCvm598GSai44oIVXWGB/exec';
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbxprh0w5WCTLmBnMpOflazAAzpaAdoC-lwztzMNFEZO9rEk9_Ah4vJFL_zWspjyK7hl/exec';
 
 const avatarMap = {
     "ki-p": "https://avatars.akamai.steamstatic.com/7c0568b92eabda5703516fa7e03ba4676d8b03e5_full.jpg",
@@ -37,6 +36,31 @@ const avatarMap = {
 
 function getAvatarUrl(username) {
     return avatarMap[username] || "https://i.imgur.com/IAIJe65.png";
+}
+
+// ========== ФУНКЦИЯ ФОРМАТИРОВАНИЯ ДАТЫ ==========
+function formatDate(dateString) {
+    if (!dateString) return 'Дата не указана';
+    
+    // Если дата уже в нормальном формате (ДД.ММ.ГГ)
+    if (dateString.match(/^\d{2}\.\d{2}\.\d{2}/)) {
+        return dateString;
+    }
+    
+    // Пробуем распарсить ISO формат (2026-02-06T21:00:00.000Z)
+    try {
+        const date = new Date(dateString);
+        if (!isNaN(date.getTime())) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = String(date.getFullYear()).slice(-2);
+            return `${day}.${month}.${year}`;
+        }
+    } catch(e) {
+        console.error('Ошибка парсинга даты:', e);
+    }
+    
+    return dateString;
 }
 
 function loadComments(eventId) {
@@ -560,9 +584,9 @@ async function refreshEventsData() {
             id: e.id,
             name: e.name,
             platform: e.platform,
-            organizer: e.platform,        // ОРГАНИЗАТОР - берём из platform (колонка C)
-            helpers: e.organizer || 'Нет', // ПОМОЩНИКИ - берём из organizer (колонка D)
-            date: e.date,
+            organizer: e.platform,
+            helpers: e.organizer || 'Нет',
+            date: formatDate(e.date),  // 👈 ПРИМЕНИ ФУНКЦИЮ ЗДЕСЬ
             status: e.status || 'Проведен',
             rating: e.rating,
             members: parseInt(e.members) || 0,
@@ -578,8 +602,6 @@ async function refreshEventsData() {
         
         newEventsData.sort((a, b) => a.id - b.id);
         eventsData = newEventsData;
-        
-        console.log('ИТОГОВЫЕ ИВЕНТЫ:', eventsData.map(e => ({id: e.id, name: e.name, organizer: e.organizer, helpers: e.helpers})));
         
         saveAllData();
         await loadAndApplyStatuses();
@@ -650,6 +672,125 @@ function updateEventInSheet(eventData) {
     });
 }   
 
+// ========== ФУНКЦИИ ДЛЯ РАБОТЫ С КОМАНДОЙ ==========
+
+// Загрузка команды из Google Sheets
+function loadTeamFromSheet() {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_team_load_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            console.log('Загруженные данные команды:', data);
+            resolve(data || []);
+        };
+        
+        script.src = `${COMMENTS_API_URL}?action=getTeam&callback=${callbackName}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve([]);
+        };
+        document.body.appendChild(script);
+    });
+}
+
+// Добавление участника в Google Sheets
+function addMemberToSheet(memberData) {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_add_member_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            console.log('Ответ сервера при добавлении участника:', data);
+            resolve(data);
+        };
+        
+        const params = new URLSearchParams({
+            action: 'addMember',
+            name: memberData.name,
+            role: memberData.role,
+            discord: memberData.discord,
+            avatar: memberData.avatar,
+            joinDate: memberData.joinDate,
+            rating: memberData.rating,
+            category: memberData.category,
+            status: memberData.status || 'Онлайн',
+            callback: callbackName
+        });
+        
+        script.src = `${COMMENTS_API_URL}?${params.toString()}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve({ success: false, error: 'Network error' });
+        };
+        document.body.appendChild(script);
+    });
+}
+
+async function refreshTeamData() {
+    const members = await loadTeamFromSheet();
+    if (members && members.length > 0) {
+        const newTeamData = members.map((m, index) => ({
+            id: index + 1,
+            name: m.name,
+            role: m.role,
+            discord: m.discord,
+            status: m.status || 'Онлайн',
+            eventsCount: m.eventsCount || '-',
+            joinDate: m.joinDate,
+            rating: m.rating,
+            category: m.category,
+            fullDetails: {
+                responsibilities: "",
+                contacts: "",
+                achievements: "0",
+                notes: ""
+            }
+        }));
+        
+        teamData = newTeamData;
+        saveTeamToLocalStorage();  // 👈 Сохраняем в localStorage
+        renderTeamTable();         // 👈 Обновляем отображение, только если вкладка активна
+        
+        // Проверяем, открыта ли сейчас вкладка команды
+        const activeTab = document.querySelector('.nav-item.active');
+        if (activeTab && activeTab.dataset.tab === 'team_table') {
+            renderTeamTable();
+        }
+        
+        showNotif('👥 Команда обновлена');
+    }
+}
+
+// Сохранение команды в localStorage
+function saveTeamToLocalStorage() {
+    localStorage.setItem('unionTeamData', JSON.stringify(teamData));
+}
+
+function saveTeamToLocalStorage() {
+    localStorage.setItem('unionTeamData', JSON.stringify(teamData));
+}
+
+function loadTeamFromLocalStorage() {
+    const saved = localStorage.getItem('unionTeamData');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            if (parsed && parsed.length > 0) {
+                teamData = parsed;
+                console.log('Команда загружена из localStorage:', teamData.length, 'участников');
+            }
+        } catch(e) {
+            console.error('Ошибка загрузки команды из localStorage:', e);
+        }
+    }
+}
 
 // ========== ФУНКЦИИ ДЛЯ РАБОТЫ С ТИКЕТАМИ ==========
 
@@ -1110,87 +1251,181 @@ function renderTeamTable() {
     const juniorMembers = teamData.filter(m => m.category === "Младший состав");
     
     function renderMemberCard(m, type) {
-    let eventsCount = eventCounts[m.name] || 0;
-    if (m.eventsCount !== "-" && m.eventsCount !== "Нет нормы" && m.eventsCount !== "Отпуск" && !isNaN(parseInt(m.eventsCount))) {
-        eventsCount = m.eventsCount;
-    } else if (m.eventsCount === "Нет нормы" || m.eventsCount === "Отпуск") {
-        eventsCount = m.eventsCount;
-    }
-    const cardClass = type === 'senior' ? 'senior' : 'junior';
-    const ratingValue = parseFloat(m.rating);
-    let starsHtml = '';
-    if (!isNaN(ratingValue)) {
-        const fullStars = Math.floor(ratingValue);
-        const hasHalf = ratingValue % 1 >= 0.5;
-        for(let i = 0; i < fullStars; i++) starsHtml += '<span class="rating-star">★</span>';
-        if(hasHalf) starsHtml += '<span class="rating-star">½</span>';
-        const empty = 5 - fullStars - (hasHalf ? 1 : 0);
-        for(let i = 0; i < empty; i++) starsHtml += '<span class="rating-star empty">☆</span>';
-    } else {
-        starsHtml = `<span class="rating-star">${m.rating}</span>`;
-    }
-    const statusHtml = m.status === "Онлайн" ? '<span class="team-status online">🟢 Онлайн</span>' : '<span class="team-status offline">🔴 ' + m.status + '</span>';
-    
-    // ПОЛУЧАЕМ АВАТАРКУ ПО ИМЕНИ
-    const avatarMap = {
-        "ki-p": "https://avatars.akamai.steamstatic.com/7c0568b92eabda5703516fa7e03ba4676d8b03e5_full.jpg",
-        "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
-        "manisule": "https://avatars.akamai.steamstatic.com/3973c828510cfd75f32b6a4d09bffa642f6c975f_full.jpg",
-        "Гербикс": "https://avatars.akamai.steamstatic.com/3acd2544afbc953feb4af6da64440fa4bf48618e_full.jpg",
-        "Arbuz Madrazo": "https://avatars.akamai.steamstatic.com/60c2b352131f11a8bcbd08f452decd9dfea10a32_full.jpg",
-        "somcop": "https://avatars.akamai.steamstatic.com/181420ae4a4f46eabd79c3b6b56e5e5e70aa4b91_full.jpg",
-        "Foxy": "https://avatars.akamai.steamstatic.com/e2ae91fee516fc12a05fbfe995f52891db03c63f_full.jpg",
-        "Дмитрий Морозов": "https://avatars.akamai.steamstatic.com/5a54395d65879aed3fc59787f1d9eaf21a839ff5_full.jpg",
-        "Гофикал": "https://avatars.akamai.steamstatic.com/ed77d818ec20ca4aad3417f5033647f79229c92a_full.jpg",
-        "Himas": "https://avatars.akamai.steamstatic.com/40ddf358c9028e084e617b8edecfdc620e5c12c9_full.jpg",
-        "yaroslav1432": "https://shared.akamai.steamstatic.com/community_assets/images/items/1313140/4ae9f2b8739631ea806a9508785f0445557e9bff.gif",
-        "кусочек шаурмы": "https://avatars.akamai.steamstatic.com/a350434d0216c11358393f13cf8a95bfcf1509db_full.jpg",
-        "gans7824": "https://avatars.akamai.steamstatic.com/7ccb0ac2e182c765a7ddf35bb64dde75e26ddfc2_full.jpg",
-    };
-    
-    const avatarUrl = avatarMap[m.name] || "https://i.imgur.com/IAIJe65.png";
-    
-    return `
-        <div class="team-card ${cardClass} clickable-card" data-type="team" data-id="${m.id}">
-            <div class="team-card-header">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <img src="${avatarUrl}" class="team-avatar" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,215,0,0.5);">
-                    <div>
-                        <div class="team-name">${escapeHtml(m.name)}</div>
-                        <div class="team-role">${escapeHtml(m.role)}</div>
+        let eventsCount = eventCounts[m.name] || 0;
+        if (m.eventsCount !== "-" && m.eventsCount !== "Нет нормы" && m.eventsCount !== "Отпуск" && !isNaN(parseInt(m.eventsCount))) {
+            eventsCount = m.eventsCount;
+        } else if (m.eventsCount === "Нет нормы" || m.eventsCount === "Отпуск") {
+            eventsCount = m.eventsCount;
+        }
+        
+        const cardClass = type === 'senior' ? 'senior' : 'junior';
+        const ratingValue = parseFloat(m.rating);
+        let starsHtml = '';
+        
+        if (!isNaN(ratingValue)) {
+            const fullStars = Math.floor(ratingValue);
+            const hasHalf = ratingValue % 1 >= 0.5;
+            for(let i = 0; i < fullStars; i++) starsHtml += '<span class="rating-star">★</span>';
+            if(hasHalf) starsHtml += '<span class="rating-star">½</span>';
+            const empty = 5 - fullStars - (hasHalf ? 1 : 0);
+            for(let i = 0; i < empty; i++) starsHtml += '<span class="rating-star empty">☆</span>';
+        } else {
+            starsHtml = `<span class="rating-star">${m.rating}</span>`;
+        }
+        
+        const statusHtml = m.status === "Онлайн" ? '<span class="team-status online">🟢 Онлайн</span>' : '<span class="team-status offline">🔴 ' + m.status + '</span>';
+        
+        // Аватарки
+        const avatarMapLocal = {
+            "ki-p": "https://avatars.akamai.steamstatic.com/7c0568b92eabda5703516fa7e03ba4676d8b03e5_full.jpg",
+            "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
+            "manisule": "https://avatars.akamai.steamstatic.com/3973c828510cfd75f32b6a4d09bffa642f6c975f_full.jpg",
+            "Гербикс": "https://avatars.akamai.steamstatic.com/3acd2544afbc953feb4af6da64440fa4bf48618e_full.jpg",
+            "Arbuz Madrazo": "https://avatars.akamai.steamstatic.com/60c2b352131f11a8bcbd08f452decd9dfea10a32_full.jpg",
+            "somcop": "https://avatars.akamai.steamstatic.com/181420ae4a4f46eabd79c3b6b56e5e5e70aa4b91_full.jpg",
+            "Foxy": "https://avatars.akamai.steamstatic.com/e2ae91fee516fc12a05fbfe995f52891db03c63f_full.jpg",
+            "Дмитрий Морозов": "https://avatars.akamai.steamstatic.com/5a54395d65879aed3fc59787f1d9eaf21a839ff5_full.jpg",
+            "Гофикал": "https://avatars.akamai.steamstatic.com/ed77d818ec20ca4aad3417f5033647f79229c92a_full.jpg",
+            "Himas": "https://avatars.akamai.steamstatic.com/40ddf358c9028e084e617b8edecfdc620e5c12c9_full.jpg",
+            "yaroslav1432": "https://shared.akamai.steamstatic.com/community_assets/images/items/1313140/4ae9f2b8739631ea806a9508785f0445557e9bff.gif",
+            "кусочек шаурмы": "https://avatars.akamai.steamstatic.com/a350434d0216c11358393f13cf8a95bfcf1509db_full.jpg",
+            "gans7824": "https://avatars.akamai.steamstatic.com/7ccb0ac2e182c765a7ddf35bb64dde75e26ddfc2_full.jpg",
+        };
+        
+        const avatarUrl = avatarMapLocal[m.name] || avatarMap[m.name] || "https://i.imgur.com/IAIJe65.png";
+        
+        // Форматируем дату вступления
+        const formattedJoinDate = formatDate(m.joinDate);
+        
+        // Кнопка редактирования (только для редакторов)
+        const editButton = isEditor ? `
+            <button class="edit-member-btn" data-id="${m.id}" style="position: absolute; top: 10px; right: 10px; background: rgba(76, 175, 80, 0.3); border: none; border-radius: 20px; padding: 4px 8px; color: #4caf50; cursor: pointer; font-size: 11px; z-index: 10; transition: all 0.2s;">
+                ✏️
+            </button>
+        ` : '';
+        
+        return `
+            <div class="team-card ${cardClass} clickable-card" data-type="team" data-id="${m.id}" style="position: relative;">
+                ${editButton}
+                <div class="team-card-header">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <img src="${avatarUrl}" class="team-avatar" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,215,0,0.5);">
+                        <div>
+                            <div class="team-name">${escapeHtml(m.name)}</div>
+                            <div class="team-role">${escapeHtml(m.role)}</div>
+                        </div>
+                    </div>
+                    ${statusHtml}
+                </div>
+                <div class="team-card-body">
+                    <div class="team-info-item">
+                        <div class="team-info-label">DISCORD</div>
+                        <div class="team-info-value">${m.discord}</div>
+                    </div>
+                    <div class="team-info-item">
+                        <div class="team-info-label">ИВЕНТОВ</div>
+                        <div class="team-info-value">${eventsCount}</div>
+                    </div>
+                    <div class="team-info-item">
+                        <div class="team-info-label">ВСТУПИЛ</div>
+                        <div class="team-info-value">${formattedJoinDate}</div>
                     </div>
                 </div>
-                ${statusHtml}
+                <div class="team-card-footer">
+                    <span class="team-badge ${type === 'senior' ? 'senior-badge' : 'junior-badge'}">
+                        ${type === 'senior' ? '👑' : '🌟'} ${type === 'senior' ? 'Старший' : 'Младший'} состав
+                    </span>
+                    <div class="team-rating">${starsHtml}</div>
+                </div>
             </div>
-            <div class="team-card-body">
-                <div class="team-info-item"><div class="team-info-label">DISCORD</div><div class="team-info-value">${m.discord}</div></div>
-                <div class="team-info-item"><div class="team-info-label">ИВЕНТОВ</div><div class="team-info-value">${eventsCount}</div></div>
-                <div class="team-info-item"><div class="team-info-label">ВСТУПИЛ</div><div class="team-info-value">${m.joinDate}</div></div>
-            </div>
-            <div class="team-card-footer">
-                <span class="team-badge ${type === 'senior' ? 'senior-badge' : 'junior-badge'}">${type === 'senior' ? '👑' : '🌟'} ${type === 'senior' ? 'Старший' : 'Младший'} состав</span>
-                <div class="team-rating">${starsHtml}</div>
-            </div>
-        </div>
-    `;
-}
+        `;
+    }
     
     let seniorHtml = '', juniorHtml = '';
     seniorMembers.forEach(m => { seniorHtml += renderMemberCard(m, 'senior'); });
     juniorMembers.forEach(m => { juniorHtml += renderMemberCard(m, 'junior'); });
     
     container.innerHTML = `
-        <div class="page-header"><h2>👥 Команда ивент-отдела</h2></div>
-    
-        <div class="team-section"><div class="section-header senior"><span class="section-icon">👑</span><span class="section-title senior">Старший состав</span><span class="section-count">${seniorMembers.length} чел</span></div><div class="team-grid">${seniorHtml || '<div style="text-align:center; padding:2rem;">Нет участников</div>'}</div></div>
-        <div class="team-section"><div class="section-header junior"><span class="section-icon">🌟</span><span class="section-title junior">Младший состав</span><span class="section-count">${juniorMembers.length} чел</span></div><div class="team-grid">${juniorHtml || '<div style="text-align:center; padding:2rem;">Нет участников</div>'}</div></div>
+        <div class="page-header">
+            <h2>👥 Команда ивент-отдела</h2>
+            ${isEditor ? `
+            <button id="manageTeamFromTableBtn" class="add-btn" style="background: linear-gradient(95deg, rgba(85,85,85,0.5), rgba(51,51,51,0.5));">
+                <svg class="icon" style="fill:#fff; width:16px; height:16px;"><use href="#ic-plus"/></svg>
+                Управление командой
+            </button>
+            ` : ''}
+        </div>
+        
+        <div class="team-section">
+            <div class="section-header senior">
+                <span class="section-icon">👑</span>
+                <span class="section-title senior">Старший состав</span>
+                <span class="section-count">${seniorMembers.length} чел</span>
+            </div>
+            <div class="team-grid">
+                ${seniorHtml || '<div style="text-align:center; padding:2rem;">Нет участников</div>'}
+            </div>
+        </div>
+        
+        <div class="team-section">
+            <div class="section-header junior">
+                <span class="section-icon">🌟</span>
+                <span class="section-title junior">Младший состав</span>
+                <span class="section-count">${juniorMembers.length} чел</span>
+            </div>
+            <div class="team-grid">
+                ${juniorHtml || '<div style="text-align:center; padding:2rem;">Нет участников</div>'}
+            </div>
+        </div>
     `;
+
+    // Добавляем обработчик для кнопки управления командой (добавление)
+    const manageBtn = document.getElementById('manageTeamFromTableBtn');
+    if (manageBtn) {
+        manageBtn.addEventListener('click', () => {
+            if (addTeamMemberModal) {
+                document.getElementById('teamMemberName').value = '';
+                document.getElementById('teamMemberRole').value = '';
+                document.getElementById('teamMemberDiscord').value = '';
+                document.getElementById('teamMemberAvatar').value = '';
+                document.getElementById('teamMemberJoinDate').value = '';
+                document.getElementById('teamMemberRating').value = '';
+                document.getElementById('teamMemberCategory').value = 'Младший состав';
+                document.getElementById('teamMemberStatus').value = 'Онлайн';
+                addTeamMemberModal.style.display = 'flex';
+            }
+        });
+    }
+    
+    // Добавляем обработчики для кнопок редактирования участников
+    document.querySelectorAll('.edit-member-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const memberId = parseInt(btn.dataset.id);
+            if (typeof openEditMemberModal === 'function') {
+                openEditMemberModal(memberId);
+            } else {
+                console.error('openEditMemberModal не определена');
+                showNotif('❌ Ошибка: функция редактирования не загружена', true);
+            }
+        });
+    });
+    
+    // Добавляем обработчики кликов по карточкам (просмотр информации)
     document.querySelectorAll('.clickable-card').forEach(card => {
-        card.addEventListener('click', () => {
+        // Удаляем старый обработчик, чтобы не было дублей
+        const oldHandler = card._clickHandler;
+        if (oldHandler) {
+            card.removeEventListener('click', oldHandler);
+        }
+        
+        const handler = () => {
             const id = parseInt(card.dataset.id);
             const member = teamData.find(m => m.id === id);
             if (member) openTeamModal(member);
-        });
+        };
+        card._clickHandler = handler;
+        card.addEventListener('click', handler);
     });
 }
 
@@ -1219,11 +1454,13 @@ function openEventModal(ev) {
         Детали ивента
     `;
     
+    const formattedDate = formatDate(ev.date);  // 👈 ФОРМАТИРУЕМ
+    
     const modalBody = document.getElementById('modalBody');
     modalBody.innerHTML = `
         <div class="detail-row"><span class="detail-label">Название:</span><span>${escapeHtml(ev.name)}</span></div>
         <div class="detail-row"><span class="detail-label">Организатор:</span><span>${ev.platform}</span></div>
-        <div class="detail-row"><span class="detail-label">Дата:</span><span>${ev.date}</span></div>
+        <div class="detail-row"><span class="detail-label">Дата:</span><span>${formattedDate}</span></div>  <!-- 👈 ЗДЕСЬ -->
         <div class="detail-row"><span class="detail-label">Категория:</span><span>${ev.callStatus}</span></div>
         <div style="margin-top:12px; background:var(--card-bg); padding:12px; border-radius:24px;">
             <b>Описание:</b><br>${ev.fullDetails.description}
@@ -1235,7 +1472,7 @@ function openEventModal(ev) {
     renderCommentsSection(ev.id, commentsContainer);
     
     document.getElementById('infoModal').style.display = 'flex';
-}
+}   
 
 function openTeamModal(m) {
     document.getElementById('modalTitle').innerHTML = '👤 Информация о сотруднике';
@@ -2162,11 +2399,16 @@ function updateUIBasedOnRole() {
         addMemberBtn.style.display = isEditor ? 'flex' : 'none';
     }
     
-    // Показываем кнопку управления тикетами только для создателя
     const ticketsEditorBtn = document.getElementById('ticketsEditorBtn');
     if (ticketsEditorBtn) {
         ticketsEditorBtn.style.display = isEditor ? 'flex' : 'none';
     }
+    
+    const manageTeamBtn = document.getElementById('manageTeamBtn');
+    if (manageTeamBtn) {
+        manageTeamBtn.style.display = isEditor ? 'flex' : 'none';
+    }
+
 }
 
 // Инициализация модального окна добавления участника
@@ -2205,20 +2447,23 @@ function checkAuth() {
         loginOverlay.style.display = 'none';
         updateUIBasedOnRole();
         
-        // ========== ДОБАВЬ ЛОГ ВОССТАНОВЛЕНИЯ СЕССИИ ==========
-        if (continued === 'true') {
-            // Пользователь уже был в системе, лог не отправляем, чтобы не спамить
-        } else {
-            // Сессия восстановлена после перезагрузки
-            sendAuditLog('LOGIN', { session: 'restored' }).catch(err => console.error(err));
-        }
-        // ====================================================
-        
         if (continued === 'true') {
             welcomeContainer.classList.add('hidden');
             mainDashboard.style.display = 'block';
             renderEventsTable();
+            
+            // ========== ДОБАВЬ ЗАГРУЗКУ КОМАНДЫ ==========
+            refreshTeamData();  // 👈 Асинхронно загружаем команду
+            // ============================================
+            
             refreshEventsData();
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            const eventsTab = document.querySelector('[data-tab="events_table"]');
+            if (eventsTab) {
+                eventsTab.classList.add('active');
+            }
         } else {
             welcomeContainer.classList.remove('hidden');
             mainDashboard.style.display = 'none';
@@ -2295,10 +2540,7 @@ async function doLogin() {
     }
 }
 
-
-
-function onContinue() {
-    // Показываем сообщение о багах
+async function onContinue() {
     showBugReportMessage();
 
     sessionStorage.setItem('continued', 'true');
@@ -2306,11 +2548,17 @@ function onContinue() {
     mainDashboard.style.display = 'block';
     renderEventsTable();
     
-    // Загрузка ТОЛЬКО здесь
     showGlobalLoading();
-    refreshEventsData().finally(() => {
-        hideGlobalLoading();
-    });
+    await refreshEventsData();
+    await refreshTeamData();  // 👈 ДОБАВЬ ЭТУ СТРОКУ
+    hideGlobalLoading();
+    
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+    const eventsTab = document.querySelector('[data-tab="events_table"]');
+    if (eventsTab) {
+        eventsTab.classList.add('active');
+    }
 }
 
 function logout() {
@@ -2390,6 +2638,33 @@ const userEventsCountSpan = document.getElementById('userEventsCount');
 const userPrizesCountSpan = document.getElementById('userPrizesCount');
 const userJoinDateSpan = document.getElementById('userJoinDate');
 
+// Функция форматирования даты (убедись, что она есть в начале файла)
+function formatDate(dateString) {
+    if (!dateString) return 'Дата не указана';
+    
+    // Если дата уже в нормальном формате (ДД.ММ.ГГ)
+    if (dateString.match(/^\d{2}\.\d{2}\.\d{2}/)) {
+        return dateString;
+    }
+    
+    // Пробуем распарсить ISO формат (2026-03-13T21:00:00.000Z)
+    try {
+        const date = new Date(dateString);
+        if (!isNaN(date.getTime())) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = String(date.getFullYear()).slice(-2);
+            return `${day}.${month}.${year}`;
+        }
+    } catch(e) {
+        console.error('Ошибка парсинга даты:', e);
+    }
+    
+    // Если ничего не помогло, возвращаем как есть
+    return dateString;
+}
+
+// Функция получения статистики пользователя (ИСПРАВЛЕННАЯ)
 function getUserStats() {
     const username = currentUser || sessionStorage.getItem('user') || 'Гость';
     let userEvents = eventsData.filter(e => e.platform === username).length;
@@ -2406,10 +2681,19 @@ function getUserStats() {
     const userInfo = teamData.find(m => m.name === username);
     let joinDate = "14.03.26";
     if (userInfo && userInfo.joinDate) {
-        joinDate = userInfo.joinDate;
+        // ПРИМЕНЯЕМ ФОРМАТИРОВАНИЕ ДАТЫ ЗДЕСЬ!
+        joinDate = formatDate(userInfo.joinDate);
     }
     
     return { events: userEvents, prizes: totalPrizes, joinDate: joinDate };
+}
+
+// Функция обновления отображения статистики
+function updateStatsDisplay() {
+    const stats = getUserStats();
+    if (userEventsCountSpan) userEventsCountSpan.textContent = stats.events;
+    if (userPrizesCountSpan) userPrizesCountSpan.textContent = stats.prizes.toLocaleString() + '$';
+    if (userJoinDateSpan) userJoinDateSpan.textContent = stats.joinDate;
 }
 
 function updateStatsDisplay() {
@@ -3310,6 +3594,405 @@ if (ticketsEditorBtn) {
     });
 } else {
     console.log('Кнопка ticketsEditorBtn НЕ НАЙДЕНА');
+}
+
+// ========== УПРАВЛЕНИЕ КОМАНДОЙ ==========
+const manageTeamBtn = document.getElementById('manageTeamBtn');
+const addTeamMemberModal = document.getElementById('addTeamMemberModal');
+const closeTeamMemberModal = document.getElementById('closeTeamMemberModal');
+const saveTeamMemberBtn = document.getElementById('saveTeamMemberBtn');
+
+// Открытие модального окна добавления участника
+if (manageTeamBtn) {
+    manageTeamBtn.addEventListener('click', () => {
+        if (!isEditor) {
+            showNotif('❌ Нет прав для управления командой', true);
+            return;
+        }
+        // Очищаем поля
+        document.getElementById('teamMemberName').value = '';
+        document.getElementById('teamMemberRole').value = '';
+        document.getElementById('teamMemberDiscord').value = '';
+        document.getElementById('teamMemberAvatar').value = '';
+        document.getElementById('teamMemberJoinDate').value = '';
+        document.getElementById('teamMemberRating').value = '';
+        document.getElementById('teamMemberCategory').value = 'Младший состав';
+        document.getElementById('teamMemberStatus').value = 'Онлайн';
+        addTeamMemberModal.style.display = 'flex';
+    });
+}
+
+// Закрытие модального окна
+if (closeTeamMemberModal) {
+    closeTeamMemberModal.addEventListener('click', () => {
+        addTeamMemberModal.style.display = 'none';
+    });
+}
+
+// Закрытие по клику на фон
+if (addTeamMemberModal) {
+    addTeamMemberModal.addEventListener('click', (e) => {
+        if (e.target === addTeamMemberModal) {
+            addTeamMemberModal.style.display = 'none';
+        }
+    });
+}
+
+// Сохранение нового участника
+if (saveTeamMemberBtn) {
+    saveTeamMemberBtn.addEventListener('click', async () => {
+        const name = document.getElementById('teamMemberName').value.trim();
+        const role = document.getElementById('teamMemberRole').value.trim();
+        const discord = document.getElementById('teamMemberDiscord').value.trim();
+        let avatar = document.getElementById('teamMemberAvatar').value.trim();
+        const joinDate = document.getElementById('teamMemberJoinDate').value.trim();
+        const rating = document.getElementById('teamMemberRating').value.trim();
+        const category = document.getElementById('teamMemberCategory').value;
+        const status = document.getElementById('teamMemberStatus').value;
+        
+        // Валидация
+        if (!name) {
+            showNotif('❌ Введите никнейм!', true);
+            return;
+        }
+        if (!role) {
+            showNotif('❌ Введите роль!', true);
+            return;
+        }
+        if (!discord) {
+            showNotif('❌ Введите Discord ID!', true);
+            return;
+        }
+        if (!joinDate) {
+            showNotif('❌ Введите дату вступления!', true);
+            return;
+        }
+        if (!rating) {
+            showNotif('❌ Введите ранг!', true);
+            return;
+        }
+        
+        // Если аватарка не указана, используем дефолтную
+        if (!avatar) {
+            avatar = "https://i.imgur.com/IAIJe65.png";
+        }
+        
+        // Добавляем аватарку в avatarMap
+        avatarMap[name] = avatar;
+        
+        saveTeamMemberBtn.disabled = true;
+        saveTeamMemberBtn.textContent = '⏳ Добавление...';
+        
+        try {
+            const result = await addMemberToSheet({
+                name: name,
+                role: role,
+                discord: discord,
+                avatar: avatar,
+                joinDate: joinDate,
+                rating: rating,
+                category: category,
+                status: status
+            });
+            
+            if (result.success) {
+                showNotif(`✅ Участник ${name} добавлен в команду!`);
+                
+                // Отправляем лог в аудит
+                await sendAuditLog('ADD_MEMBER', {
+                    name: name,
+                    role: role,
+                    rating: rating,
+                    category: category
+                });
+                
+                // Закрываем модалку
+                addTeamMemberModal.style.display = 'none';
+                
+                // Обновляем данные команды
+                await refreshTeamData();
+                
+                // Обновляем отображение
+                renderTeamTable();
+            } else {
+                showNotif(`❌ Ошибка: ${result.error || 'неизвестная ошибка'}`, true);
+            }
+        } catch (error) {
+            console.error('Ошибка добавления участника:', error);
+            showNotif('❌ Ошибка соединения с сервером', true);
+        } finally {
+            saveTeamMemberBtn.disabled = false;
+            saveTeamMemberBtn.textContent = '➕ Добавить участника';
+        }
+    });
+}
+
+// ========== ФУНКЦИИ ДЛЯ РЕДАКТИРОВАНИЯ И УДАЛЕНИЯ УЧАСТНИКОВ ==========
+
+// Обновление участника в Google Sheets
+function updateMemberInSheet(memberData) {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_update_member_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            console.log('Ответ сервера при обновлении участника:', data);
+            resolve(data);
+        };
+        
+        const params = new URLSearchParams({
+            action: 'updateMember',
+            id: memberData.id,
+            name: memberData.name,
+            role: memberData.role,
+            discord: memberData.discord,
+            avatar: memberData.avatar,
+            joinDate: memberData.joinDate,
+            rating: memberData.rating,
+            category: memberData.category,
+            status: memberData.status,
+            callback: callbackName
+        });
+        
+        script.src = `${COMMENTS_API_URL}?${params.toString()}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve({ success: false, error: 'Network error' });
+        };
+        document.body.appendChild(script);
+    });
+}
+
+// Удаление участника из Google Sheets
+function deleteMemberFromSheet(memberId, memberName) {
+    return new Promise((resolve) => {
+        const callbackName = 'jsonp_delete_member_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            console.log('Ответ сервера при удалении участника:', data);
+            resolve(data);
+        };
+        
+        const params = new URLSearchParams({
+            action: 'deleteMember',
+            id: memberId,
+            name: memberName,
+            callback: callbackName
+        });
+        
+        script.src = `${COMMENTS_API_URL}?${params.toString()}`;
+        script.onerror = () => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve({ success: false, error: 'Network error' });
+        };
+        document.body.appendChild(script);
+    });
+}
+
+// ========== МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ УЧАСТНИКА ==========
+const editTeamMemberModal = document.getElementById('editTeamMemberModal');
+const closeEditTeamMemberModal = document.getElementById('closeEditTeamMemberModal');
+const saveEditMemberBtn = document.getElementById('saveEditMemberBtn');
+const deleteMemberBtn = document.getElementById('deleteMemberBtn');
+
+// Функция открытия модалки редактирования
+async function openEditMemberModal(memberId) {
+    const member = teamData.find(m => m.id === memberId);
+    if (!member) {
+        showNotif('❌ Участник не найден', true);
+        return;
+    }
+    
+    // Заполняем поля
+    document.getElementById('editMemberId').value = member.id;
+    document.getElementById('editMemberName').value = member.name;
+    document.getElementById('editMemberRole').value = member.role;
+    document.getElementById('editMemberDiscord').value = member.discord;
+    document.getElementById('editMemberAvatar').value = avatarMap[member.name] || '';
+    document.getElementById('editMemberJoinDate').value = member.joinDate;
+    document.getElementById('editMemberRating').value = member.rating;
+    document.getElementById('editMemberCategory').value = member.category;
+    document.getElementById('editMemberStatus').value = member.status;
+    
+    editTeamMemberModal.style.display = 'flex';
+}
+
+// Закрытие модалки редактирования
+if (closeEditTeamMemberModal) {
+    closeEditTeamMemberModal.addEventListener('click', () => {
+        editTeamMemberModal.style.display = 'none';
+    });
+}
+
+// Закрытие по клику на фон
+if (editTeamMemberModal) {
+    editTeamMemberModal.addEventListener('click', (e) => {
+        if (e.target === editTeamMemberModal) {
+            editTeamMemberModal.style.display = 'none';
+        }
+    });
+}
+
+// Сохранение изменений участника
+if (saveEditMemberBtn) {
+    saveEditMemberBtn.addEventListener('click', async () => {
+        const memberId = parseInt(document.getElementById('editMemberId').value);
+        const oldMember = teamData.find(m => m.id === memberId);
+        
+        const name = document.getElementById('editMemberName').value.trim();
+        const role = document.getElementById('editMemberRole').value.trim();
+        const discord = document.getElementById('editMemberDiscord').value.trim();
+        let avatar = document.getElementById('editMemberAvatar').value.trim();
+        const joinDate = document.getElementById('editMemberJoinDate').value.trim();
+        const rating = document.getElementById('editMemberRating').value.trim();
+        const category = document.getElementById('editMemberCategory').value;
+        const status = document.getElementById('editMemberStatus').value;
+        
+        // Валидация
+        if (!name) {
+            showNotif('❌ Введите никнейм!', true);
+            return;
+        }
+        if (!role) {
+            showNotif('❌ Введите роль!', true);
+            return;
+        }
+        if (!discord) {
+            showNotif('❌ Введите Discord ID!', true);
+            return;
+        }
+        if (!joinDate) {
+            showNotif('❌ Введите дату вступления!', true);
+            return;
+        }
+        if (!rating) {
+            showNotif('❌ Введите ранг!', true);
+            return;
+        }
+        
+        // Если аватарка не указана, используем дефолтную
+        if (!avatar) {
+            avatar = "https://i.imgur.com/IAIJe65.png";
+        }
+        
+        // Обновляем аватарку в avatarMap
+        if (oldMember && oldMember.name !== name) {
+            delete avatarMap[oldMember.name];
+        }
+        avatarMap[name] = avatar;
+        
+        saveEditMemberBtn.disabled = true;
+        saveEditMemberBtn.textContent = '⏳ Сохранение...';
+        
+        // Формируем список изменений для лога
+        let changesList = [];
+        if (oldMember.name !== name) changesList.push(`Имя: "${oldMember.name}" → "${name}"`);
+        if (oldMember.role !== role) changesList.push(`Роль: "${oldMember.role}" → "${role}"`);
+        if (oldMember.discord !== discord) changesList.push(`Discord: ${oldMember.discord} → ${discord}`);
+        if (oldMember.joinDate !== joinDate) changesList.push(`Дата: ${oldMember.joinDate} → ${joinDate}`);
+        if (oldMember.rating !== rating) changesList.push(`Ранг: "${oldMember.rating}" → "${rating}"`);
+        if (oldMember.category !== category) changesList.push(`Категория: ${oldMember.category === 'Старший состав' ? '👑' : '🌟'} → ${category === 'Старший состав' ? '👑' : '🌟'}`);
+        if (oldMember.status !== status) changesList.push(`Статус: ${oldMember.status} → ${status}`);
+        
+        try {
+            const result = await updateMemberInSheet({
+                id: memberId,
+                name: name,
+                role: role,
+                discord: discord,
+                avatar: avatar,
+                joinDate: joinDate,
+                rating: rating,
+                category: category,
+                status: status
+            });
+            
+            if (result.success) {
+                showNotif(`✅ Данные участника ${name} обновлены!`);
+                
+                // Отправляем лог в аудит
+                if (changesList.length > 0) {
+                    await sendAuditLog('EDIT_MEMBER', {
+                        name: name,
+                        changes: changesList.join('; ')
+                    });
+                }
+                
+                // Закрываем модалку
+                editTeamMemberModal.style.display = 'none';
+                
+                // Обновляем данные команды
+                await refreshTeamData();
+                
+                // Обновляем отображение
+                renderTeamTable();
+            } else {
+                showNotif(`❌ Ошибка: ${result.error || 'неизвестная ошибка'}`, true);
+            }
+        } catch (error) {
+            console.error('Ошибка обновления участника:', error);
+            showNotif('❌ Ошибка соединения с сервером', true);
+        } finally {
+            saveEditMemberBtn.disabled = false;
+            saveEditMemberBtn.textContent = '💾 Сохранить изменения';
+        }
+    });
+}
+
+// Удаление участника
+if (deleteMemberBtn) {
+    deleteMemberBtn.addEventListener('click', async () => {
+        const memberId = parseInt(document.getElementById('editMemberId').value);
+        const memberName = document.getElementById('editMemberName').value.trim();
+        
+        if (!confirm(`🗑️ Вы уверены, что хотите удалить участника "${memberName}" из команды? Это действие нельзя отменить!`)) {
+            return;
+        }
+        
+        deleteMemberBtn.disabled = true;
+        deleteMemberBtn.textContent = '⏳ Удаление...';
+        
+        try {
+            const result = await deleteMemberFromSheet(memberId, memberName);
+            
+            if (result.success) {
+                showNotif(`✅ Участник ${memberName} удалён из команды!`);
+                
+                // Отправляем лог в аудит
+                await sendAuditLog('DELETE_MEMBER', {
+                    name: memberName,
+                    role: 'участник команды'
+                });
+                
+                // Удаляем аватарку из avatarMap
+                delete avatarMap[memberName];
+                
+                // Закрываем модалку
+                editTeamMemberModal.style.display = 'none';
+                
+                // Обновляем данные команды
+                await refreshTeamData();
+                
+                // Обновляем отображение
+                renderTeamTable();
+            } else {
+                showNotif(`❌ Ошибка удаления: ${result.error || 'неизвестная ошибка'}`, true);
+            }
+        } catch (error) {
+            console.error('Ошибка удаления участника:', error);
+            showNotif('❌ Ошибка соединения с сервером', true);
+        } finally {
+            deleteMemberBtn.disabled = false;
+            deleteMemberBtn.textContent = '🗑️ Удалить';
+        }
+    });
 }
 
 function showBugReportMessage() {
