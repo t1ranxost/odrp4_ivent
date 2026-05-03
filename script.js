@@ -3,7 +3,7 @@ let eventsData = [
 ];
 
 let teamData = [
-    { id: 1, name: "manisule", role: "Глава ивент-отдела", discord: "565584233981280270", status: "Онлайн", eventsCount: "Нет нормы", joinDate: "21.01.26", rating: "Судо-Куратор", category: "Старший состав", fullDetails: { responsibilities: "Имеет полное владение над отделом Ивентологии, может самостоятельно изменять состав отдела Ивентологии и их норму/правила.", contacts: "https://admin.unionteams.ru/4/admin/76561198386405573", achievements: "0", notes: "" } },
+    { id: 1, name: "Ждите загрузки...", role: "Ивент-отдел UnionTeam", discord: "-", status: "Онлайн", eventsCount: "-", joinDate: "-", rating: "-", category: "Старший состав", fullDetails: { responsibilities: "Имеет полное владение над отделом Ивентологии, может самостоятельно изменять состав отдела Ивентологии и их норму/правила.", contacts: "https://admin.unionteams.ru/4/admin/76561198386405573", achievements: "0", notes: "" } },
 ];
 
 const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
@@ -1535,43 +1535,43 @@ navs.forEach(n => {
             },
             "Дмитрий Морозов": { 
                 discordId: "859747626115006474", 
-                eventsGoal: (ticketsFromSheet["Дмитрий Морозов"] && ticketsFromSheet["Дмитрий Морозов"].eventsGoal) || 1,
+                eventsGoal: (ticketsFromSheet["Дмитрий Морозов"] && ticketsFromSheet["Дмитрий Морозов"].eventsGoal) || 0,
                 eventsDone: eventCounts["Дмитрий Морозов"] || 0, 
                 ticketsDone: (ticketsFromSheet["Дмитрий Морозов"] && ticketsFromSheet["Дмитрий Морозов"].done) || 0,
-                ticketsGoal: (ticketsFromSheet["Дмитрий Морозов"] && ticketsFromSheet["Дмитрий Морозов"].goal) || 25,
+                ticketsGoal: (ticketsFromSheet["Дмитрий Морозов"] && ticketsFromSheet["Дмитрий Морозов"].goal) || 0,
                 inDepartment: true 
             },
             "кусочек шаурмы": { 
                 discordId: "636585910552756284", 
-                eventsGoal: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].eventsGoal) || 4,
+                eventsGoal: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].eventsGoal) || 0,
                 eventsDone: eventCounts["кусочек шаурмы"] || 0,
                 ticketsDone: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].done) || 0,
-                ticketsGoal: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].goal) || 25,
+                ticketsGoal: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].goal) || 0,
                 inDepartment: true 
             },
             "Himas": { 
                 discordId: "1467081827670954015", 
-                eventsGoal: (ticketsFromSheet["Himas"] && ticketsFromSheet["Himas"].eventsGoal) || 1,
+                eventsGoal: (ticketsFromSheet["Himas"] && ticketsFromSheet["Himas"].eventsGoal) || 0,
                 eventsDone: eventCounts["Himas"] || 0,
                 ticketsDone: (ticketsFromSheet["Himas"] && ticketsFromSheet["Himas"].done) || 0,
-                ticketsGoal: (ticketsFromSheet["Himas"] && ticketsFromSheet["Himas"].goal) || 25,
+                ticketsGoal: (ticketsFromSheet["Himas"] && ticketsFromSheet["Himas"].goal) || 0,
                 reason: "Есть причина", 
                 inDepartment: true 
             },
             "Гофикал": { 
                 discordId: "1135087142385754123", 
-                eventsGoal: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].eventsGoal) || 1,
+                eventsGoal: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].eventsGoal) || 0,
                 eventsDone: eventCounts["Гофикал"] || 0,
                 ticketsDone: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].done) || 0,
-                ticketsGoal: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].goal) || 25,
+                ticketsGoal: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].goal) || 0,
                 inDepartment: true 
             },
             "Foxy": { 
                 discordId: "1344959502436532304", 
-                eventsGoal: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].eventsGoal) || 7,
+                eventsGoal: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].eventsGoal) || 0,
                 eventsDone: eventCounts["Foxy"] || 0,
                 ticketsDone: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].done) || 0,
-                ticketsGoal: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].goal) || 25,
+                ticketsGoal: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].goal) || 0,
                 inDepartment: true 
             }
         };
