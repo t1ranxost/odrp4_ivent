@@ -30,6 +30,213 @@ function getAvatarUrl(username) {
     return avatarMap[username] || "https://i.imgur.com/IAIJe65.png";
 }
 
+// ========== ИМПОРТ ТИКЕТОВ ИЗ CSV ==========
+async function importTicketsFromCSV(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        
+        reader.onload = async function(e) {
+            const content = e.target.result;
+            const lines = content.split('\n');
+            const headers = lines[0].split(',');
+            
+            // Находим индексы нужных колонок
+            const steamIdIndex = headers.findIndex(h => h === 'SteamID');
+            const weekAmountIndex = headers.findIndex(h => h === 'WeekAmount');
+            const nameIndex = headers.findIndex(h => h === 'Name');
+            
+            if (steamIdIndex === -1) {
+                reject(new Error('Не найдена колонка SteamID в файле'));
+                return;
+            }
+            
+            if (weekAmountIndex === -1) {
+                reject(new Error('Не найдена колонка WeekAmount в файле'));
+                return;
+            }
+            
+            // Парсим данные
+            const ticketsData = {};
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                const values = line.split(',');
+                const steamId = values[steamIdIndex]?.trim();
+                const weekAmount = parseInt(values[weekAmountIndex]) || 0;
+                const name = values[nameIndex]?.trim();
+                
+                if (steamId && weekAmount > 0) {
+                    ticketsData[steamId] = {
+                        weekAmount: weekAmount,
+                        name: name
+                    };
+                }
+            }
+            
+            console.log('Найдено записей для обновления:', Object.keys(ticketsData).length);
+            resolve(ticketsData);
+        };
+        
+        reader.onerror = () => reject(new Error('Ошибка чтения файла'));
+        reader.readAsText(file, 'UTF-8');
+    });
+}
+
+// Обновление тикетов через Google Sheets API
+async function updateTicketsFromImport(ticketsData) {
+    showGlobalLoading();
+    
+    let successCount = 0;
+    let failCount = 0;
+    const errors = [];
+    
+    for (const [steamId, data] of Object.entries(ticketsData)) {
+        try {
+            // Сначала находим пользователя по Steam ID в команде
+            const member = teamData.find(m => m.steamId === steamId);
+            
+            if (!member) {
+                console.log(`Steam ID ${steamId} не найден в команде (${data.name})`);
+                failCount++;
+                errors.push(`${data.name || steamId}: не найден в команде`);
+                continue;
+            }
+            
+            // Обновляем тикеты через существующую функцию
+            const result = await saveTicketsToSheet(member.name, data.weekAmount, 25, 1);
+            
+            if (result.success) {
+                successCount++;
+                showNotif(`✅ ${member.name}: ${data.weekAmount} тикетов`);
+            } else {
+                failCount++;
+                errors.push(`${member.name}: ошибка сохранения`);
+            }
+            
+            // Небольшая задержка между запросами
+            await new Promise(r => setTimeout(r, 500));
+            
+        } catch (error) {
+            console.error(`Ошибка обновления для ${steamId}:`, error);
+            failCount++;
+            errors.push(`${data.name || steamId}: ${error.message}`);
+        }
+    }
+    
+    hideGlobalLoading();
+    
+    // Показываем результат
+    let message = `✅ Импорт завершён!\nУспешно: ${successCount}\nОшибок: ${failCount}`;
+    if (errors.length > 0 && errors.length <= 5) {
+        message += `\n\nОшибки:\n${errors.join('\n')}`;
+    } else if (errors.length > 5) {
+        message += `\n\nОшибки: ${errors.length} (первые 5):\n${errors.slice(0, 5).join('\n')}`;
+    }
+    
+    alert(message);
+    
+    // Обновляем данные
+    await refreshTeamData();
+    await renderTicketsEditor();
+}
+
+// Создание модального окна для загрузки файла
+function createImportModal() {
+    const modal = document.createElement('div');
+    modal.id = 'importTicketsModal';
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+        <div class="modal-card" style="max-width: 500px;">
+            <div class="modal-header">
+                <span>📁 Импорт тикетов из CSV</span>
+                <button class="close-modal" id="closeImportModal">
+                    <svg class="icon"><use href="#ic-close"/></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <svg class="icon" style="width: 48px; height: 48px; fill: #c9a0ff;">
+                        <use href="#ic-chart"/>
+                    </svg>
+                </div>
+                <p style="margin-bottom: 15px; text-align: center;">
+                    Загрузите CSV файл с данными о тикетах.<br>
+                    Файл должен содержать колонки: <strong>SteamID</strong> и <strong>WeekAmount</strong>
+                </p>
+                <div class="form-group">
+                    <label>Выберите CSV файл</label>
+                    <input type="file" id="ticketsFileInput" accept=".csv" style="padding: 10px;">
+                </div>
+                <button class="submit-btn" id="processImportBtn" style="margin-top: 10px;">
+                    📤 Начать импорт
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Закрытие
+    document.getElementById('closeImportModal').addEventListener('click', () => {
+        modal.remove();
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+    });
+    
+    // Обработка файла
+    document.getElementById('processImportBtn').addEventListener('click', async () => {
+        const fileInput = document.getElementById('ticketsFileInput');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            showNotif('❌ Выберите файл!', true);
+            return;
+        }
+        
+        const processBtn = document.getElementById('processImportBtn');
+        processBtn.disabled = true;
+        processBtn.textContent = '⏳ Обработка...';
+        
+        try {
+            const ticketsData = await importTicketsFromCSV(file);
+            await updateTicketsFromImport(ticketsData);
+            modal.remove();
+        } catch (error) {
+            console.error('Ошибка импорта:', error);
+            showNotif(`❌ Ошибка: ${error.message}`, true);
+        } finally {
+            processBtn.disabled = false;
+            processBtn.textContent = '📤 Начать импорт';
+        }
+    });
+}
+
+// Показываем кнопку для креаторов
+function showImportButton() {
+    const importBtn = document.getElementById('importTicketsBtn');
+    if (importBtn) {
+        importBtn.style.display = isEditor ? 'flex' : 'none';
+    }
+}
+
+// Добавляем обработчик для кнопки
+function initImportButton() {
+    const importBtn = document.getElementById('importTicketsBtn');
+    if (importBtn) {
+        importBtn.addEventListener('click', () => {
+            if (!isEditor) {
+                showNotif('❌ Нет доступа', true);
+                return;
+            }
+            createImportModal();
+        });
+    }
+}
+
 // ========== ФУНКЦИЯ ФОРМАТИРОВАНИЯ ДАТЫ ==========
 function formatDate(dateString) {
     if (!dateString) return 'Дата не указана';
@@ -2409,7 +2616,12 @@ function updateUIBasedOnRole() {
     if (manageTeamBtn) {
         manageTeamBtn.style.display = isEditor ? 'flex' : 'none';
     }
-
+    
+    // Добавляем кнопку импорта тикетов
+    const importTicketsBtn = document.getElementById('importTicketsBtn');
+    if (importTicketsBtn) {
+        importTicketsBtn.style.display = isEditor ? 'flex' : 'none';
+    }
 }
 
 // Инициализация модального окна добавления участника
@@ -3163,6 +3375,9 @@ function refreshStatusesFromSheet() {
         document.body.appendChild(script);
     });
 }
+
+showImportButton();
+initImportButton();
 
 setInterval(() => {
     refreshStatusesFromSheet();
