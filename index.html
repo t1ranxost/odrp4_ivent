@@ -494,6 +494,119 @@
     </div>
 </div>
 
+<!-- Модальное окно добавления участника команды -->
+<div id="addTeamMemberModal" class="modal" style="display:none;">
+    <div class="modal-card" style="max-width: 550px;">
+        <div class="modal-header">
+            <span>👥 Добавить участника команды</span>
+            <button class="close-modal" id="closeTeamMemberModal">
+                <svg class="icon"><use href="#ic-close"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Никнейм *</label>
+                <input type="text" id="teamMemberName" placeholder="Введите никнейм">
+            </div>
+            <div class="form-group">
+                <label>Роль *</label>
+                <input type="text" id="teamMemberRole" placeholder="Например: Ивентер">
+            </div>
+            <div class="form-group">
+                <label>Discord ID *</label>
+                <input type="text" id="teamMemberDiscord" placeholder="Например: 1246076621484724320">
+                <small style="color: var(--text-muted);">ID пользователя Discord (число)</small>
+            </div>
+            <div class="form-group">
+                <label>Ссылка на аватарку</label>
+                <input type="text" id="teamMemberAvatar" placeholder="https://...">
+                <small style="color: var(--text-muted);">Прямая ссылка на изображение аватарки</small>
+            </div>
+            <div class="form-group">
+                <label>Дата вступления *</label>
+                <input type="text" id="teamMemberJoinDate" placeholder="Например: 01.05.26">
+            </div>
+            <div class="form-group">
+                <label>Ранг *</label>
+                <input type="text" id="teamMemberRating" placeholder="Например: Администратор">
+            </div>
+            <div class="form-group">
+                <label>Категория *</label>
+                <select id="teamMemberCategory">
+                    <option value="Старший состав">👑 Старший состав</option>
+                    <option value="Младший состав">🌟 Младший состав</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Статус</label>
+                <select id="teamMemberStatus">
+                    <option value="Онлайн">🟢 Онлайн</option>
+                    <option value="Заморозка">⏸️ Заморозка</option>
+                    <option value="Отпуск">🏖️ Отпуск</option>
+                </select>
+            </div>
+            <button class="submit-btn" id="saveTeamMemberBtn">➕ Добавить участника</button>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно редактирования участника команды -->
+<div id="editTeamMemberModal" class="modal" style="display:none;">
+    <div class="modal-card" style="max-width: 550px;">
+        <div class="modal-header">
+            <span>✏️ Редактировать участника</span>
+            <button class="close-modal" id="closeEditTeamMemberModal">
+                <svg class="icon"><use href="#ic-close"/></svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editMemberId">
+            <div class="form-group">
+                <label>Никнейм *</label>
+                <input type="text" id="editMemberName" placeholder="Введите никнейм">
+            </div>
+            <div class="form-group">
+                <label>Роль *</label>
+                <input type="text" id="editMemberRole" placeholder="Например: Ивентер">
+            </div>
+            <div class="form-group">
+                <label>Discord ID *</label>
+                <input type="text" id="editMemberDiscord" placeholder="Например: 1246076621484724320">
+            </div>
+            <div class="form-group">
+                <label>Ссылка на аватарку</label>
+                <input type="text" id="editMemberAvatar" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Дата вступления *</label>
+                <input type="text" id="editMemberJoinDate" placeholder="Например: 01.05.26">
+            </div>
+            <div class="form-group">
+                <label>Ранг *</label>
+                <input type="text" id="editMemberRating" placeholder="Например: Администратор">
+            </div>
+            <div class="form-group">
+                <label>Категория *</label>
+                <select id="editMemberCategory">
+                    <option value="Старший состав">👑 Старший состав</option>
+                    <option value="Младший состав">🌟 Младший состав</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Статус</label>
+                <select id="editMemberStatus">
+                    <option value="Онлайн">🟢 Онлайн</option>
+                    <option value="Заморозка">⏸️ Заморозка</option>
+                    <option value="Отпуск">🏖️ Отпуск</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="submit-btn" id="saveEditMemberBtn" style="flex: 2;">💾 Сохранить изменения</button>
+                <button class="submit-btn" id="deleteMemberBtn" style="flex: 1; background: linear-gradient(95deg, rgba(200,60,60,0.5), rgba(150,40,40,0.5));">🗑️ Удалить</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="script.js"></script>
 </body>
 </html>
