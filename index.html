@@ -224,10 +224,6 @@
                     <svg class="icon"><use href="#ic-team"/></svg>
                     <span>Управление командой</span>
                 </div>
-            <div class="nav-item" id="importTicketsBtn" style="display: none;">
-                <svg class="icon"><use href="#ic-chart"/></svg>
-                <span>Импорт тикетов</span>
-            </div>
         </div>
     </div>
 
@@ -364,6 +360,7 @@
                         <span>Элитный Район</span>
                     </div>
                 </div>
+
             </div>
         </div>
         
@@ -498,6 +495,8 @@
     </div>
 </div>
 
+
+
 <!-- Модальное окно добавления участника команды -->
 <div id="addTeamMemberModal" class="modal" style="display:none;">
     <div class="modal-card" style="max-width: 550px;">
@@ -576,6 +575,11 @@
             <div class="form-group">
                 <label>Discord ID *</label>
                 <input type="text" id="editMemberDiscord" placeholder="Например: 1246076621484724320">
+            </div>
+            <div class="form-group">
+                <label>Steam ID (64)</label>
+                <input type="text" id="editMemberSteamId" placeholder="Например: 76561199705616791">
+                <small style="color: var(--text-muted);">64-битный Steam ID</small>
             </div>
             <div class="form-group">
                 <label>Ссылка на аватарку</label>
