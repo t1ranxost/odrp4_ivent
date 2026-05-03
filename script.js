@@ -8,7 +8,7 @@ let teamData = [
 
 const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
 
-const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbxprh0w5WCTLmBnMpOflazAAzpaAdoC-lwztzMNFEZO9rEk9_Ah4vJFL_zWspjyK7hl/exec';
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbz7EJ9SycgG5Wx9yADfgEeO0gkVv_QDgycrssGrq5Nqmbbu4_LhYzHeW2Dqn9f7nDIe/exec';
 
 const avatarMap = {
     "ki-p": "https://avatars.akamai.steamstatic.com/7c0568b92eabda5703516fa7e03ba4676d8b03e5_full.jpg",
@@ -689,7 +689,6 @@ function loadTeamFromSheet() {
     });
 }
 
-// Добавление участника в Google Sheets
 function addMemberToSheet(memberData) {
     return new Promise((resolve) => {
         const callbackName = 'jsonp_add_member_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
@@ -707,6 +706,7 @@ function addMemberToSheet(memberData) {
             name: memberData.name,
             role: memberData.role,
             discord: memberData.discord,
+            steamId: memberData.steamId || '',  // 👈 ДОБАВЬ
             avatar: memberData.avatar,
             joinDate: memberData.joinDate,
             rating: memberData.rating,
@@ -733,6 +733,7 @@ async function refreshTeamData() {
             name: m.name,
             role: m.role,
             discord: m.discord,
+            steamId: m.steamId || '',  // 👈 ДОБАВЬ ЭТУ СТРОКУ
             status: m.status || 'Онлайн',
             eventsCount: m.eventsCount || '-',
             joinDate: m.joinDate,
@@ -747,10 +748,8 @@ async function refreshTeamData() {
         }));
         
         teamData = newTeamData;
-        saveTeamToLocalStorage();  // 👈 Сохраняем в localStorage
-        renderTeamTable();         // 👈 Обновляем отображение, только если вкладка активна
+        saveTeamToLocalStorage();
         
-        // Проверяем, открыта ли сейчас вкладка команды
         const activeTab = document.querySelector('.nav-item.active');
         if (activeTab && activeTab.dataset.tab === 'team_table') {
             renderTeamTable();
@@ -1253,7 +1252,7 @@ function renderTeamTable() {
         const cardClass = type === 'senior' ? 'senior' : 'junior';
         const ratingValue = parseFloat(m.rating);
         let starsHtml = '';
-        
+
         if (!isNaN(ratingValue)) {
             const fullStars = Math.floor(ratingValue);
             const hasHalf = ratingValue % 1 >= 0.5;
@@ -1309,20 +1308,24 @@ function renderTeamTable() {
                     </div>
                     ${statusHtml}
                 </div>
-                <div class="team-card-body">
-                    <div class="team-info-item">
-                        <div class="team-info-label">DISCORD</div>
-                        <div class="team-info-value">${m.discord}</div>
-                    </div>
-                    <div class="team-info-item">
-                        <div class="team-info-label">ИВЕНТОВ</div>
-                        <div class="team-info-value">${eventsCount}</div>
-                    </div>
-                    <div class="team-info-item">
-                        <div class="team-info-label">ВСТУПИЛ</div>
-                        <div class="team-info-value">${formattedJoinDate}</div>
-                    </div>
+            <div class="team-card-body">
+                <div class="team-info-item">
+                    <div class="team-info-label">DISCORD</div>
+                    <div class="team-info-value">${m.discord}</div>
                 </div>
+                <div class="team-info-item">
+                    <div class="team-info-label">STEAM ID</div>
+                    <div class="team-info-value">${m.steamId || 'Не указан'}</div>
+                </div>
+                <div class="team-info-item">
+                    <div class="team-info-label">ИВЕНТОВ</div>
+                    <div class="team-info-value">${eventsCount}</div>
+                </div>
+                <div class="team-info-item">
+                    <div class="team-info-label">ВСТУПИЛ</div>
+                    <div class="team-info-value">${formattedJoinDate}</div>
+                </div>
+            </div>
                 <div class="team-card-footer">
                     <span class="team-badge ${type === 'senior' ? 'senior-badge' : 'junior-badge'}">
                         ${type === 'senior' ? '👑' : '🌟'} ${type === 'senior' ? 'Старший' : 'Младший'} состав
@@ -1471,6 +1474,13 @@ function openTeamModal(m) {
     document.getElementById('modalBody').innerHTML = `
         <div class="detail-row"><span class="detail-label">Имя:</span><span><strong>${escapeHtml(m.name)}</strong></span></div>
         <div class="detail-row"><span class="detail-label">Роль:</span><span>${m.role}</span></div>
+        <div class="detail-row"><span class="detail-label">Discord ID:</span><span>${m.discord}</span></div>
+        <div class="detail-row"><span class="detail-label">Steam ID:</span><span>${m.steamId || 'Не указан'}</span></div>
+        <div class="detail-row"><span class="detail-label">Статус:</span><span>${m.status}</span></div>
+        <div class="detail-row"><span class="detail-label">Ранг:</span><span>${m.rating}</span></div>
+        <div class="detail-row"><span class="detail-label">В отделе с:</span><span>${formatDate(m.joinDate)}</span></div>
+        <div class="detail-row"><span class="detail-label">Категория:</span><span>${m.category === 'Старший состав' ? '👑 Старший состав' : '🌟 Младший состав'}</span></div>
+        <div class="detail-row"><span class="detail-label">Обязанности:</span><span>${m.fullDetails?.responsibilities || 'Не указаны'}</span></div>
     `;
     document.getElementById('infoModal').style.display = 'flex';
 }
@@ -1607,7 +1617,7 @@ navs.forEach(n => {
                 const isEventsCompleted = stats.eventsDone >= stats.eventsGoal;
                 const eventsIcon = isEventsCompleted ? '✅' : '❌';
                 
-                const isTicketsCompleted = (stats.ticketsDone || 0) >= (stats.ticketsGoal || 25);
+                const isTicketsCompleted = (stats.ticketsDone || 0) >= (stats.ticketsGoal || 0);
                 const ticketsIcon = isTicketsCompleted ? '✅' : '❌';
                 
                 // Строка для копирования (с Discord ID)
@@ -3675,10 +3685,13 @@ if (saveTeamMemberBtn) {
         saveTeamMemberBtn.textContent = '⏳ Добавление...';
         
         try {
+            const steamId = document.getElementById('teamMemberSteamId').value.trim();  
+
             const result = await addMemberToSheet({
                 name: name,
                 role: role,
                 discord: discord,
+                steamId: steamId,
                 avatar: avatar,
                 joinDate: joinDate,
                 rating: rating,
@@ -3718,9 +3731,6 @@ if (saveTeamMemberBtn) {
     });
 }
 
-// ========== ФУНКЦИИ ДЛЯ РЕДАКТИРОВАНИЯ И УДАЛЕНИЯ УЧАСТНИКОВ ==========
-
-// Обновление участника в Google Sheets
 function updateMemberInSheet(memberData) {
     return new Promise((resolve) => {
         const callbackName = 'jsonp_update_member_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
@@ -3739,6 +3749,7 @@ function updateMemberInSheet(memberData) {
             name: memberData.name,
             role: memberData.role,
             discord: memberData.discord,
+            steamId: memberData.steamId || '',  // 👈 ДОБАВЬ
             avatar: memberData.avatar,
             joinDate: memberData.joinDate,
             rating: memberData.rating,
@@ -3793,7 +3804,6 @@ const closeEditTeamMemberModal = document.getElementById('closeEditTeamMemberMod
 const saveEditMemberBtn = document.getElementById('saveEditMemberBtn');
 const deleteMemberBtn = document.getElementById('deleteMemberBtn');
 
-// Функция открытия модалки редактирования
 async function openEditMemberModal(memberId) {
     const member = teamData.find(m => m.id === memberId);
     if (!member) {
@@ -3801,11 +3811,11 @@ async function openEditMemberModal(memberId) {
         return;
     }
     
-    // Заполняем поля
     document.getElementById('editMemberId').value = member.id;
     document.getElementById('editMemberName').value = member.name;
     document.getElementById('editMemberRole').value = member.role;
     document.getElementById('editMemberDiscord').value = member.discord;
+    document.getElementById('editMemberSteamId').value = member.steamId || '';  // 👈 ДОБАВЬ
     document.getElementById('editMemberAvatar').value = avatarMap[member.name] || '';
     document.getElementById('editMemberJoinDate').value = member.joinDate;
     document.getElementById('editMemberRating').value = member.rating;
@@ -3813,7 +3823,7 @@ async function openEditMemberModal(memberId) {
     document.getElementById('editMemberStatus').value = member.status;
     
     editTeamMemberModal.style.display = 'flex';
-}
+} 
 
 // Закрытие модалки редактирования
 if (closeEditTeamMemberModal) {
@@ -3893,11 +3903,15 @@ if (saveEditMemberBtn) {
         if (oldMember.status !== status) changesList.push(`Статус: ${oldMember.status} → ${status}`);
         
         try {
+            const steamId = document.getElementById('editMemberSteamId').value.trim();  // 👈 ДОБАВЬ
+
+            // Потом в объект для отправки:
             const result = await updateMemberInSheet({
                 id: memberId,
                 name: name,
                 role: role,
                 discord: discord,
+                steamId: steamId,  // 👈 ДОБАВЬ
                 avatar: avatar,
                 joinDate: joinDate,
                 rating: rating,
