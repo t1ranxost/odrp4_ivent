@@ -1105,11 +1105,9 @@ async function renderTicketsEditor() {
     }
     
     const members = [
-        { name: "кусочек шаурмы", discordId: "636585910552756284", defaultEventsGoal: 4 },
         { name: "Himas", discordId: "1467081827670954015", defaultEventsGoal: 1 },
         { name: "Гофикал", discordId: "1135087142385754123", defaultEventsGoal: 1 },
         { name: "Дмитрий Морозов", discordId: "859747626115006474", defaultEventsGoal: 1 },
-        { name: "Foxy", discordId: "1344959502436532304", defaultEventsGoal: 7 }
     ];
     
     let html = '<div style="display: flex; flex-direction: column; gap: 15px;">';
@@ -1758,14 +1756,6 @@ navs.forEach(n => {
                 ticketsGoal: (ticketsFromSheet["Дмитрий Морозов"] && ticketsFromSheet["Дмитрий Морозов"].goal) || 0,
                 inDepartment: true 
             },
-            "кусочек шаурмы": { 
-                discordId: "636585910552756284", 
-                eventsGoal: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].eventsGoal) || 0,
-                eventsDone: eventCounts["кусочек шаурмы"] || 0,
-                ticketsDone: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].done) || 0,
-                ticketsGoal: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].goal) || 0,
-                inDepartment: true 
-            },
             "Himas": { 
                 discordId: "1467081827670954015", 
                 eventsGoal: (ticketsFromSheet["Himas"] && ticketsFromSheet["Himas"].eventsGoal) || 0,
@@ -1783,14 +1773,6 @@ navs.forEach(n => {
                 ticketsGoal: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].goal) || 0,
                 inDepartment: true 
             },
-            "Foxy": { 
-                discordId: "1344959502436532304", 
-                eventsGoal: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].eventsGoal) || 0,
-                eventsDone: eventCounts["Foxy"] || 0,
-                ticketsDone: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].done) || 0,
-                ticketsGoal: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].goal) || 0,
-                inDepartment: true 
-            }
         };
         
         // СОБИРАЕМ СТРОКИ ДЛЯ КОПИРОВАНИЯ (ДРУГОЙ ОТДЕЛ)
