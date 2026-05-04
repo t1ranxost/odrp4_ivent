@@ -6,8 +6,19 @@ let teamData = [
     { id: 1, name: "Ждите загрузки...", role: "Ивент-отдел UnionTeam", discord: "-", status: "Онлайн", eventsCount: "-", joinDate: "-", rating: "-", category: "Старший состав", fullDetails: { responsibilities: "Имеет полное владение над отделом Ивентологии, может самостоятельно изменять состав отдела Ивентологии и их норму/правила.", contacts: "https://admin.unionteams.ru/4/admin/76561198386405573", achievements: "0", notes: "" } },
 ];
 
-const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
+// ========== ПРОСТАЯ ЗАЩИТА (ТОЛЬКО ОЧИСТКА КОНСОЛИ) ==========
+// Очищаем консоль каждые 5 секунд
+setInterval(() => {
+    console.clear();
+}, 5000);
 
+// ========== ОБЫЧНЫЕ ПЕРЕМЕННЫЕ (БЕЗ ЗАЩИТЫ) ==========
+let currentUser = null;
+let isEditor = false;
+
+// ВСЁ! Никаких Object.defineProperty, никаких дополнительных блоков!
+
+const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
 const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbz7EJ9SycgG5Wx9yADfgEeO0gkVv_QDgycrssGrq5Nqmbbu4_LhYzHeW2Dqn9f7nDIe/exec';
 
 const avatarMap = {
@@ -563,14 +574,15 @@ async function renderCommentsSection(eventId, container) {
 }
 
 // ========== ЖУРНАЛ АУДИТА В DISCORD ==========
-const WEBHOOK_URL = 'https://discord.com/api/webhooks/1500214327612018698/KtnVb0diLx1J6aoDmOe-EjaAIgHDfldiHhxg21xypQh3SJTGAASaE-iDj_DKd3UOUPY7';
 
+
+// ========== ЖУРНАЛ АУДИТА В DISCORD ==========
 async function sendAuditLog(action, details, oldData = null, newData = null) {
     const username = currentUser || sessionStorage.getItem('user') || 'Неизвестный';
     const timestamp = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
     
     let description = '';
-    let color = 0x00ff00; // Зелёный по умолчанию (добавление)
+    let color = 0x00ff00;
     
     switch(action) {
         case 'ADD_EVENT':
@@ -581,7 +593,7 @@ async function sendAuditLog(action, details, oldData = null, newData = null) {
             description += `**Дата:** ${details.date}\n`;
             description += `**Призовые:** ${details.rating}\n`;
             description += `**Участников:** ${details.members}\n`;
-            description += `**Описание:** ${details.description.substring(0, 200)}${details.description.length > 200 ? '...' : ''}`;
+            description += `**Описание:** ${details.description?.substring(0, 200) || ''}${details.description?.length > 200 ? '...' : ''}`;
             color = 0x00ff00;
             break;
             
@@ -661,7 +673,7 @@ async function sendAuditLog(action, details, oldData = null, newData = null) {
         color: color,
         timestamp: new Date().toISOString(),
         footer: {
-            text: `Действие: ${username} | IP: скрыто • ${timestamp}`
+            text: `Действие: ${username} • ${timestamp}`
         },
         fields: [
             {
@@ -682,21 +694,12 @@ async function sendAuditLog(action, details, oldData = null, newData = null) {
         ]
     };
     
-    // Добавляем иконку в зависимости от действия
-    let iconUrl = '';
-    switch(action) {
-        case 'ADD_EVENT': iconUrl = 'https://cdn-icons-png.flaticon.com/512/1828/1828817.png'; break;
-        case 'EDIT_EVENT': iconUrl = 'https://cdn-icons-png.flaticon.com/512/1159/1159633.png'; break;
-        case 'DELETE_EVENT': iconUrl = 'https://cdn-icons-png.flaticon.com/512/1214/1214428.png'; break;
-        case 'CHANGE_STATUS': iconUrl = 'https://cdn-icons-png.flaticon.com/512/190/190411.png'; break;
-        default: iconUrl = 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png';
-    }
-    
     try {
-        const response = await fetch(WEBHOOK_URL, {
+        const response = await fetch(`${CLOUDFLARE_API}/api/audit`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-Auth-Key': 'unionteam_audit_secret_2025_7x9k2m4n' // Тот же ключ, что в Worker
             },
             body: JSON.stringify({
                 username: 'Журнал аудита | Ивент-отдел',
@@ -712,6 +715,8 @@ async function sendAuditLog(action, details, oldData = null, newData = null) {
         console.error('Ошибка отправки в Discord Webhook:', error);
     }
 }
+
+
 
 const commentsCache = {};
 
@@ -1105,9 +1110,11 @@ async function renderTicketsEditor() {
     }
     
     const members = [
+        { name: "кусочек шаурмы", discordId: "636585910552756284", defaultEventsGoal: 4 },
         { name: "Himas", discordId: "1467081827670954015", defaultEventsGoal: 1 },
         { name: "Гофикал", discordId: "1135087142385754123", defaultEventsGoal: 1 },
         { name: "Дмитрий Морозов", discordId: "859747626115006474", defaultEventsGoal: 1 },
+        { name: "Foxy", discordId: "1344959502436532304", defaultEventsGoal: 7 }
     ];
     
     let html = '<div style="display: flex; flex-direction: column; gap: 15px;">';
@@ -1243,8 +1250,6 @@ const VALID_LOGINS = [
     "Гербикс", "Arbuz madrazo", "Дмитрий Морозов", "Гофикал", "Himas", "yaroslav1432", "gans7824"
 ];
 
-let currentUser = null;
-let isEditor = false;
 
 function showNotif(msg, isErr = false) {
     const d = document.createElement('div');
@@ -1297,6 +1302,8 @@ function escapeHtml(s) {
     if(!s) return ''; 
     return s.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); 
 }
+
+
 
 function changeEventStatus(eventId, newStatus) {
     if (!isEditor) {
@@ -1629,6 +1636,16 @@ function renderTeamTable() {
     });
 }
 
+function showNotif(msg, isErr = false) {
+    const d = document.createElement('div');
+    d.style.cssText = `position:fixed;bottom:20px;right:20px;background:${isErr ? '#c2410c' : '#2e7d32'};color:white;padding:12px 20px;border-radius:30px;z-index:9999;font-weight:bold;`;
+    d.innerHTML = msg;
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 3000);
+}
+
+
+
 function attachRowClicks() {
     document.querySelectorAll('.clickable-row').forEach(row => {
         row.removeEventListener('click', row._h);
@@ -1756,6 +1773,14 @@ navs.forEach(n => {
                 ticketsGoal: (ticketsFromSheet["Дмитрий Морозов"] && ticketsFromSheet["Дмитрий Морозов"].goal) || 0,
                 inDepartment: true 
             },
+            "кусочек шаурмы": { 
+                discordId: "636585910552756284", 
+                eventsGoal: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].eventsGoal) || 0,
+                eventsDone: eventCounts["кусочек шаурмы"] || 0,
+                ticketsDone: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].done) || 0,
+                ticketsGoal: (ticketsFromSheet["кусочек шаурмы"] && ticketsFromSheet["кусочек шаурмы"].goal) || 0,
+                inDepartment: true 
+            },
             "Himas": { 
                 discordId: "1467081827670954015", 
                 eventsGoal: (ticketsFromSheet["Himas"] && ticketsFromSheet["Himas"].eventsGoal) || 0,
@@ -1773,6 +1798,14 @@ navs.forEach(n => {
                 ticketsGoal: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].goal) || 0,
                 inDepartment: true 
             },
+            "Foxy": { 
+                discordId: "1344959502436532304", 
+                eventsGoal: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].eventsGoal) || 0,
+                eventsDone: eventCounts["Foxy"] || 0,
+                ticketsDone: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].done) || 0,
+                ticketsGoal: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].goal) || 0,
+                inDepartment: true 
+            }
         };
         
         // СОБИРАЕМ СТРОКИ ДЛЯ КОПИРОВАНИЯ (ДРУГОЙ ОТДЕЛ)
