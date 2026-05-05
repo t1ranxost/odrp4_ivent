@@ -103,14 +103,6 @@
     </svg>
 </head>
 <body>
-    <script>
-if (window.location.search.includes('clear=1')) {
-    localStorage.clear();
-    sessionStorage.clear();
-    alert('✅ Кэш очищен! Страница перезагрузится.');
-    window.location.href = window.location.pathname;
-}
-    </script>
 <canvas id="particleCanvas"></canvas>
 
 <div id="moving-bg"></div>
@@ -265,7 +257,6 @@ if (window.location.search.includes('clear=1')) {
     <footer>
         UnionTeam · Ивент-отдел #4 — Полезная информация про ивент отдел 4 сервера Обычного Дарк РП
         <br>
-        
         <button id="play67FooterBtn" style="background: linear-gradient(135deg, #353333, #0e0c0c); border: none; border-radius: 12px; padding: 5px 15px; margin-top: 10px; margin: 10px; color: white; font-weight: bold; cursor: pointer;">
             НЕ НАЖИМАЙ | 67
         </button>
@@ -291,7 +282,7 @@ if (window.location.search.includes('clear=1')) {
     </div>
 </div>
 
-<div id="salaryModal" class="salary-modal-oerlay">
+<div id="salaryModal" class="salary-modal-overlay">
     <div class="salary-modal">
         <div class="salary-modal-header">
             <h3>💸 ИДЕТ ПОВЫШЕНИЕ 💸</h3>
@@ -630,4 +621,4 @@ if (window.location.search.includes('clear=1')) {
 </div>
 <script src="script.js"></script>
 </body>
-</html>>
+</html>>>>
