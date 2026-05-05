@@ -22,6 +22,9 @@ const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
 const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbz7EJ9SycgG5Wx9yADfgEeO0gkVv_QDgycrssGrq5Nqmbbu4_LhYzHeW2Dqn9f7nDIe/exec';
 
 const avatarMap = {
+    "Zoffi" : "https://avatars.akamai.steamstatic.com/b65685aae297d33e2263633211872decb95191b6_full.jpg",
+    "Артур П" : "https://avatars.akamai.steamstatic.com/613bc9ebf037ac39219ed8f1240f6d2c8d85518b_full.jpg",
+    "Тявкобай" : "https://avatars.akamai.steamstatic.com/61ab70962972708287fbe01bbf30a073e02557fb_full.jpg",
     "ki-p": "https://avatars.akamai.steamstatic.com/7c0568b92eabda5703516fa7e03ba4676d8b03e5_full.jpg",
     "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
     "manisule": "https://avatars.akamai.steamstatic.com/3973c828510cfd75f32b6a4d09bffa642f6c975f_full.jpg",
@@ -34,6 +37,7 @@ const avatarMap = {
     "Himas": "https://avatars.akamai.steamstatic.com/40ddf358c9028e084e617b8edecfdc620e5c12c9_full.jpg",
     "yaroslav1432": "https://shared.akamai.steamstatic.com/community_assets/images/items/1313140/4ae9f2b8739631ea806a9508785f0445557e9bff.gif",
     "кусочек шаурмы": "https://avatars.akamai.steamstatic.com/a350434d0216c11358393f13cf8a95bfcf1509db_full.jpg",
+    "Гарик Харламовв" : "https://avatars.akamai.steamstatic.com/9dd518738e6c1db81cf5184e3ae43c2ac5150ada_full.jpg",
     "gans7824": "https://avatars.akamai.steamstatic.com/7ccb0ac2e182c765a7ddf35bb64dde75e26ddfc2_full.jpg"
 };
 
@@ -1110,6 +1114,9 @@ async function renderTicketsEditor() {
     }
     
     const members = [
+        { name: "Zoffi", discordId: "1364620438600159262", defaultEventsGoal: 1 },   
+        { name: "Артур П", discordId: "1207948847670890526", defaultEventsGoal: 1 },   
+        { name: "Тявкобай", discordId: "859747626115006474", defaultEventsGoal: 1 },    
         { name: "кусочек шаурмы", discordId: "636585910552756284", defaultEventsGoal: 4 },
         { name: "Himas", discordId: "1467081827670954015", defaultEventsGoal: 1 },
         { name: "Гофикал", discordId: "1135087142385754123", defaultEventsGoal: 1 },
@@ -1478,29 +1485,11 @@ function renderTeamTable() {
         
         const statusHtml = m.status === "Онлайн" ? '<span class="team-status online">🟢 Онлайн</span>' : '<span class="team-status offline">🔴 ' + m.status + '</span>';
         
-        // Аватарки
-        const avatarMapLocal = {
-            "ki-p": "https://avatars.akamai.steamstatic.com/7c0568b92eabda5703516fa7e03ba4676d8b03e5_full.jpg",
-            "T1Ran": "https://avatars.akamai.steamstatic.com/57dac1d4d44de03338708c08310198b23192ab51_full.jpg",
-            "manisule": "https://avatars.akamai.steamstatic.com/3973c828510cfd75f32b6a4d09bffa642f6c975f_full.jpg",
-            "Гербикс": "https://avatars.akamai.steamstatic.com/3acd2544afbc953feb4af6da64440fa4bf48618e_full.jpg",
-            "Arbuz Madrazo": "https://avatars.akamai.steamstatic.com/60c2b352131f11a8bcbd08f452decd9dfea10a32_full.jpg",
-            "somcop": "https://avatars.akamai.steamstatic.com/181420ae4a4f46eabd79c3b6b56e5e5e70aa4b91_full.jpg",
-            "Foxy": "https://avatars.akamai.steamstatic.com/e2ae91fee516fc12a05fbfe995f52891db03c63f_full.jpg",
-            "Дмитрий Морозов": "https://avatars.akamai.steamstatic.com/5a54395d65879aed3fc59787f1d9eaf21a839ff5_full.jpg",
-            "Гофикал": "https://avatars.akamai.steamstatic.com/ed77d818ec20ca4aad3417f5033647f79229c92a_full.jpg",
-            "Himas": "https://avatars.akamai.steamstatic.com/40ddf358c9028e084e617b8edecfdc620e5c12c9_full.jpg",
-            "yaroslav1432": "https://shared.akamai.steamstatic.com/community_assets/images/items/1313140/4ae9f2b8739631ea806a9508785f0445557e9bff.gif",
-            "кусочек шаурмы": "https://avatars.akamai.steamstatic.com/a350434d0216c11358393f13cf8a95bfcf1509db_full.jpg",
-            "gans7824": "https://avatars.akamai.steamstatic.com/7ccb0ac2e182c765a7ddf35bb64dde75e26ddfc2_full.jpg",
-        };
+        // Используем глобальный объект avatarMap
+        const avatarUrl = avatarMap[m.name] || "https://i.imgur.com/IAIJe65.png";
         
-        const avatarUrl = avatarMapLocal[m.name] || avatarMap[m.name] || "https://i.imgur.com/IAIJe65.png";
-        
-        // Форматируем дату вступления
         const formattedJoinDate = formatDate(m.joinDate);
         
-        // Кнопка редактирования (только для редакторов)
         const editButton = isEditor ? `
             <button class="edit-member-btn" data-id="${m.id}" style="position: absolute; top: 10px; right: 10px; background: rgba(76, 175, 80, 0.3); border: none; border-radius: 20px; padding: 4px 8px; color: #4caf50; cursor: pointer; font-size: 11px; z-index: 10; transition: all 0.2s;">
                 ✏️
@@ -1520,24 +1509,24 @@ function renderTeamTable() {
                     </div>
                     ${statusHtml}
                 </div>
-            <div class="team-card-body">
-                <div class="team-info-item">
-                    <div class="team-info-label">DISCORD</div>
-                    <div class="team-info-value">${m.discord}</div>
+                <div class="team-card-body">
+                    <div class="team-info-item">
+                        <div class="team-info-label">DISCORD</div>
+                        <div class="team-info-value">${m.discord}</div>
+                    </div>
+                    <div class="team-info-item">
+                        <div class="team-info-label">STEAM ID</div>
+                        <div class="team-info-value">${m.steamId || 'Не указан'}</div>
+                    </div>
+                    <div class="team-info-item">
+                        <div class="team-info-label">ИВЕНТОВ</div>
+                        <div class="team-info-value">${eventsCount}</div>
+                    </div>
+                    <div class="team-info-item">
+                        <div class="team-info-label">ВСТУПИЛ</div>
+                        <div class="team-info-value">${formattedJoinDate}</div>
+                    </div>
                 </div>
-                <div class="team-info-item">
-                    <div class="team-info-label">STEAM ID</div>
-                    <div class="team-info-value">${m.steamId || 'Не указан'}</div>
-                </div>
-                <div class="team-info-item">
-                    <div class="team-info-label">ИВЕНТОВ</div>
-                    <div class="team-info-value">${eventsCount}</div>
-                </div>
-                <div class="team-info-item">
-                    <div class="team-info-label">ВСТУПИЛ</div>
-                    <div class="team-info-value">${formattedJoinDate}</div>
-                </div>
-            </div>
                 <div class="team-card-footer">
                     <span class="team-badge ${type === 'senior' ? 'senior-badge' : 'junior-badge'}">
                         ${type === 'senior' ? '👑' : '🌟'} ${type === 'senior' ? 'Старший' : 'Младший'} состав
@@ -1764,6 +1753,36 @@ navs.forEach(n => {
                 eventsGoal: (ticketsFromSheet["somcop"] && ticketsFromSheet["somcop"].eventsGoal) || 1,
                 eventsDone: eventCounts["somcop"] || 0, 
                 inDepartment: false 
+            },
+            "Гарик Халамовв": { 
+                discordId: "1064190272789041293", 
+                eventsGoal: (ticketsFromSheet["Гарик Халамовв"] && ticketsFromSheet["Гарик Халамовв"].eventsGoal) || 1,
+                eventsDone: eventCounts["Гарик Халамовв"] || 0, 
+                inDepartment: false 
+            },
+            "Zoffi": { 
+                discordId: "1364620438600159262", 
+                eventsGoal: (ticketsFromSheet["Zoffi"] && ticketsFromSheet["Zoffi"].eventsGoal) || 0,
+                eventsDone: eventCounts["Zoffi"] || 0, 
+                ticketsDone: (ticketsFromSheet["Zoffi"] && ticketsFromSheet["Zoffi"].done) || 0,
+                ticketsGoal: (ticketsFromSheet["Zoffi"] && ticketsFromSheet["Zoffi"].goal) || 0,
+                inDepartment: true 
+            },
+            "Артур П": { 
+                discordId: "1207948847670890526", 
+                eventsGoal: (ticketsFromSheet["Артур П"] && ticketsFromSheet["Артур П"].eventsGoal) || 0,
+                eventsDone: eventCounts["Артур П"] || 0, 
+                ticketsDone: (ticketsFromSheet["Артур П"] && ticketsFromSheet["Артур П"].done) || 0,
+                ticketsGoal: (ticketsFromSheet["Артур П"] && ticketsFromSheet["Артур П"].goal) || 0,
+                inDepartment: true 
+            },
+            "Тявкобай": { 
+                discordId: "859747626115006474", 
+                eventsGoal: (ticketsFromSheet["Тявкобай"] && ticketsFromSheet["Тявкобай"].eventsGoal) || 0,
+                eventsDone: eventCounts["Тявкобай"] || 0, 
+                ticketsDone: (ticketsFromSheet["Тявкобай"] && ticketsFromSheet["Тявкобай"].done) || 0,
+                ticketsGoal: (ticketsFromSheet["Тявкобай"] && ticketsFromSheet["Тявкобай"].goal) || 0,
+                inDepartment: true 
             },
             "Дмитрий Морозов": { 
                 discordId: "859747626115006474", 
@@ -2724,7 +2743,9 @@ async function doLogin() {
     try {
         const response = await fetch(`${CLOUDFLARE_API}/api/login`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json'  // 👈 ЭТОТ ЗАГОЛОВОК ВАЖЕН!
+            },
             body: JSON.stringify({ login, password: pwd })
         });
         
@@ -2738,10 +2759,7 @@ async function doLogin() {
             currentUser = data.user;
             isEditor = data.isEditor;
             
-            // ========== ДОБАВЬ ЭТОТ БЛОК ==========
-            // Отправляем лог о входе (ждём, но не блокируем)
             sendAuditLog('LOGIN', {}).catch(err => console.error('Ошибка отправки лога входа:', err));
-            // =====================================
             
             loginOverlay.style.display = 'none';
             welcomeContainer.classList.remove('hidden');
