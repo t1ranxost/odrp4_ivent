@@ -45,6 +45,59 @@ function getAvatarUrl(username) {
     return avatarMap[username] || "https://i.imgur.com/IAIJe65.png";
 }
 
+// ФОРСИРОВАННАЯ ЗАГРУЗКА ВСЕХ УЧАСТНИКОВ ИЗ ТАБЛИЦЫ
+async function forceLoadAllTeam() {
+    console.log('🔥 ПРИНУДИТЕЛЬНАЯ ЗАГРУЗКА КОМАНДЫ');
+    
+    // Очищаем localStorage
+    localStorage.removeItem('unionTeamData');
+    
+    // Загружаем напрямую из Google Sheets
+    const callbackName = 'force_load_' + Date.now();
+    const script = document.createElement('script');
+    
+    window[callbackName] = (data) => {
+        delete window[callbackName];
+        document.body.removeChild(script);
+        
+        if (data && data.length > 0) {
+            // Преобразуем данные
+            teamData = data.map((m, idx) => ({
+                id: idx + 1,
+                name: m.name,
+                role: m.role,
+                discord: m.discord,
+                steamId: m.steamId || '',
+                status: m.status || 'Онлайн',
+                eventsCount: '-',
+                joinDate: m.joinDate,
+                rating: m.rating,
+                category: m.category || 'Старший состав',
+                fullDetails: { responsibilities: "", contacts: "", achievements: "0", notes: "" }
+            }));
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('unionTeamData', JSON.stringify(teamData));
+            
+            console.log(`✅ ЗАГРУЖЕНО ${teamData.length} УЧАСТНИКОВ:`, teamData.map(m => m.name));
+            
+            // Обновляем таблицу
+            renderTeamTable();
+            showNotif(`✅ Загружено ${teamData.length} участников!`);
+        } else {
+            console.error('❌ Нет данных из таблицы');
+            showNotif('❌ Ошибка загрузки данных', true);
+        }
+    };
+    
+    script.src = `${COMMENTS_API_URL}?action=getTeam&_=${Date.now()}&callback=${callbackName}`;
+    script.onerror = () => {
+        delete window[callbackName];
+        showNotif('❌ Ошибка соединения с сервером', true);
+    };
+    document.body.appendChild(script);
+}
+
 // ========== ИМПОРТ ТИКЕТОВ ИЗ CSV ==========
 async function importTicketsFromCSV(file) {
     return new Promise((resolve, reject) => {
