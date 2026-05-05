@@ -21,7 +21,7 @@ let isEditor = false;
 // ВСЁ! Никаких Object.defineProperty, никаких дополнительных блоков!
 
 const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
-const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbxySZyEFoOV1_ftY6FLvcuUXce0H-hAqdbh_y4eT9Mr86PYz7zdajVJ4euznaZdy727/exec';
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbytY1J7avZRpEM6Ks2X_kU6EBC6gL7wLqyLCxr3sXfRj_YaiXFH_e-5xUwChz8gvTKM4Q/exec';
 
 const avatarMap = {
     "Zoffi" : "https://avatars.akamai.steamstatic.com/b65685aae297d33e2263633211872decb95191b6_full.jpg",
@@ -907,85 +907,106 @@ function loadTeamFromSheet() {
     });
 }
 
-// ВРЕМЕННО - сохранение в localStorage вместо Google Sheets
+// ========== ДОБАВЛЕНИЕ УЧАСТНИКА ==========
 async function addMemberToSheet(memberData) {
+    console.log('🔵 addMemberToSheet вызвана с данными:', memberData);
+    
     return new Promise((resolve) => {
-        try {
-            // Создаём нового участника
-            const newId = teamData.length > 0 ? Math.max(...teamData.map(m => m.id)) + 1 : 1;
-            
-            const newMember = {
-                id: newId,
-                name: memberData.name,
-                role: memberData.role,
-                discord: memberData.discord,
-                steamId: memberData.steamId || '',
-                status: memberData.status || 'Онлайн',
-                eventsCount: '-',
-                joinDate: memberData.joinDate,
-                rating: memberData.rating,
-                category: memberData.category || 'Младший состав',
-                fullDetails: {
-                    responsibilities: "",
-                    contacts: "",
-                    achievements: "0",
-                    notes: ""
+        const callbackName = 'jsonp_add_member_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const script = document.createElement('script');
+        
+        window[callbackName] = (data) => {
+            console.log('🟢 Ответ от сервера:', data);
+            delete window[callbackName];
+            if (script.parentNode) document.body.removeChild(script);
+            resolve(data || { success: true });
+        };
+        
+        // Форматируем дату
+        let formattedJoinDate = memberData.joinDate;
+        if (formattedJoinDate && formattedJoinDate.includes('.')) {
+            const parts = formattedJoinDate.split('.');
+            if (parts.length === 3) {
+                if (parts[2].length === 2) {
+                    formattedJoinDate = `20${parts[2]}-${parts[1]}-${parts[0]}T00:00:00.000Z`;
+                } else {
+                    formattedJoinDate = `${parts[2]}-${parts[1]}-${parts[0]}T00:00:00.000Z`;
                 }
-            };
-            
-            // Добавляем в массив
-            teamData.push(newMember);
-            
-            // Сохраняем в localStorage
-            localStorage.setItem('unionTeamData', JSON.stringify(teamData));
-            
-            // Добавляем аватарку
-            if (memberData.avatar) {
-                avatarMap[memberData.name] = memberData.avatar;
             }
-            
-            console.log('✅ Участник добавлен локально:', newMember);
-            resolve({ success: true, id: newId });
-            
-        } catch (error) {
-            console.error('❌ Ошибка при добавлении:', error);
-            resolve({ success: false, error: error.message });
         }
+        
+        const params = new URLSearchParams({
+            action: 'addMember',
+            name: memberData.name,
+            role: memberData.role,
+            discord: memberData.discord,
+            steamId: memberData.steamId || '',
+            avatar: memberData.avatar || '',
+            status: memberData.status || 'Онлайн',
+            joinDate: formattedJoinDate,
+            rating: memberData.rating || '3',
+            category: memberData.category || 'Младший состав',
+            callback: callbackName
+        });
+        
+        const url = `${COMMENTS_API_URL}?${params.toString()}`;
+        console.log('📤 Отправка запроса:', url);
+        
+        script.src = url;
+        script.onerror = (e) => {
+            console.error('🔴 Ошибка загрузки скрипта:', e);
+            delete window[callbackName];
+            if (script.parentNode) document.body.removeChild(script);
+            resolve({ success: false, error: 'Network error' });
+        };
+        
+        // Таймаут 15 секунд
+        setTimeout(() => {
+            if (window[callbackName]) {
+                console.error('🔴 Таймаут запроса');
+                delete window[callbackName];
+                if (script.parentNode) document.body.removeChild(script);
+                resolve({ success: false, error: 'Timeout' });
+            }
+        }, 15000);
+        
+        document.body.appendChild(script);
     });
 }
 
 async function refreshTeamData() {
-    const members = await loadTeamFromSheet();
-    if (members && members.length > 0) {
-        const newTeamData = members.map((m, index) => ({
-            id: index + 1,
-            name: m.name,
-            role: m.role,
-            discord: m.discord,
-            steamId: m.steamId || '',  // 👈 ДОБАВЬ ЭТУ СТРОКУ
-            status: m.status || 'Онлайн',
-            eventsCount: m.eventsCount || '-',
-            joinDate: m.joinDate,
-            rating: m.rating,
-            category: m.category,
-            fullDetails: {
-                responsibilities: "",
-                contacts: "",
-                achievements: "0",
-                notes: ""
-            }
-        }));
+    showGlobalLoading();
+    
+    try {
+        const members = await loadTeamFromSheet();
+        console.log('📥 Загружено из Google Sheets:', members);
         
-        teamData = newTeamData;
-        saveTeamToLocalStorage();
-        
-        const activeTab = document.querySelector('.nav-item.active');
-        if (activeTab && activeTab.dataset.tab === 'team_table') {
+        if (members && members.length > 0) {
+            teamData = members.map((m, index) => ({
+                id: index + 1,
+                name: m.name,
+                role: m.role,
+                discord: m.discord,
+                steamId: m.steamId || '',
+                status: m.status || 'Онлайн',
+                eventsCount: '-',
+                joinDate: m.joinDate,
+                rating: m.rating || '3',
+                category: m.category || 'Младший состав'
+            }));
+            
+            console.log('✅ Команда обновлена, участников:', teamData.length);
+            
+            // ПРИНУДИТЕЛЬНО ОБНОВЛЯЕМ ОТОБРАЖЕНИЕ
             renderTeamTable();
+        } else {
+            console.log('⚠️ Нет данных из Google Sheets');
         }
-        
-        showNotif('👥 Команда обновлена');
+    } catch(e) {
+        console.error('❌ Ошибка загрузки:', e);
     }
+    
+    hideGlobalLoading();
 }
 
 // Сохранение команды в localStorage
@@ -997,7 +1018,6 @@ function saveTeamToLocalStorage() {
     localStorage.setItem('unionTeamData', JSON.stringify(teamData));
 }
 
-// Загрузка команды из localStorage при старте
 function loadTeamFromLocalStorage() {
     const saved = localStorage.getItem('unionTeamData');
     if (saved) {
@@ -1006,11 +1026,23 @@ function loadTeamFromLocalStorage() {
             if (parsed && parsed.length > 0) {
                 teamData = parsed;
                 console.log('✅ Команда загружена из localStorage:', teamData.length, 'участников');
+                return true;
             }
         } catch(e) {
-            console.error('Ошибка загрузки команды из localStorage:', e);
+            console.error('Ошибка загрузки команды:', e);
         }
     }
+    
+    // Данные по умолчанию, если ничего нет
+    if (!teamData.length) {
+        teamData = [
+            { id: 1, name: "T1Ran", role: "Глава отдела", discord: "1246076621484724320", steamId: "", status: "Онлайн", joinDate: "01.01.24", rating: "5", category: "Старший состав" },
+            { id: 2, name: "manisule", role: "Зам. Главы", discord: "565584233981280270", steamId: "", status: "Онлайн", joinDate: "01.01.24", rating: "4.5", category: "Старший состав" },
+            { id: 3, name: "кусочек шаурмы", role: "Ст. Ивентер", discord: "636585910552756284", steamId: "", status: "Онлайн", joinDate: "15.01.24", rating: "4", category: "Старший состав" }
+        ];
+        saveTeamToLocalStorage();
+    }
+    return false;
 }
 
 // Вызови эту функцию при загрузке страницы (добавь в конец checkAuth или onContinue)
@@ -3906,15 +3938,24 @@ if (addTeamMemberModal) {
 
 // Сохранение нового участника
 if (saveTeamMemberBtn) {
-    saveTeamMemberBtn.addEventListener('click', async () => {
-        const name = document.getElementById('teamMemberName').value.trim();
-        const role = document.getElementById('teamMemberRole').value.trim();
-        const discord = document.getElementById('teamMemberDiscord').value.trim();
-        let avatar = document.getElementById('teamMemberAvatar').value.trim();
-        const joinDate = document.getElementById('teamMemberJoinDate').value.trim();
-        const rating = document.getElementById('teamMemberRating').value.trim();
-        const category = document.getElementById('teamMemberCategory').value;
-        const status = document.getElementById('teamMemberStatus').value;
+    // Удаляем старые обработчики
+    const newSaveBtn = saveTeamMemberBtn.cloneNode(true);
+    saveTeamMemberBtn.parentNode.replaceChild(newSaveBtn, saveTeamMemberBtn);
+    
+    newSaveBtn.addEventListener('click', async () => {
+        console.log('🔵 Кнопка "Добавить участника" нажата');
+        
+        const name = document.getElementById('teamMemberName')?.value.trim();
+        const role = document.getElementById('teamMemberRole')?.value.trim();
+        const discord = document.getElementById('teamMemberDiscord')?.value.trim();
+        let avatar = document.getElementById('teamMemberAvatar')?.value.trim();
+        const joinDate = document.getElementById('teamMemberJoinDate')?.value.trim();
+        const rating = document.getElementById('teamMemberRating')?.value.trim();
+        const category = document.getElementById('teamMemberCategory')?.value;
+        const status = document.getElementById('teamMemberStatus')?.value;
+        const steamId = document.getElementById('teamMemberSteamId')?.value.trim();
+        
+        console.log('📝 Данные из формы:', { name, role, discord, steamId, avatar, joinDate, rating, category, status });
         
         // Валидация
         if (!name) {
@@ -3938,25 +3979,21 @@ if (saveTeamMemberBtn) {
             return;
         }
         
-        // Если аватарка не указана, используем дефолтную
         if (!avatar) {
             avatar = "https://i.imgur.com/IAIJe65.png";
         }
         
-        // Добавляем аватарку в avatarMap
         avatarMap[name] = avatar;
         
-        saveTeamMemberBtn.disabled = true;
-        saveTeamMemberBtn.textContent = '⏳ Добавление...';
+        newSaveBtn.disabled = true;
+        newSaveBtn.textContent = '⏳ Добавление...';
         
         try {
-            const steamId = document.getElementById('teamMemberSteamId').value.trim();  
-
             const result = await addMemberToSheet({
                 name: name,
                 role: role,
                 discord: discord,
-                steamId: steamId,
+                steamId: steamId || '',
                 avatar: avatar,
                 joinDate: joinDate,
                 rating: rating,
@@ -3964,10 +4001,11 @@ if (saveTeamMemberBtn) {
                 status: status
             });
             
-            if (result.success) {
-                showNotif(`✅ Участник ${name} добавлен в команду!`);
+            console.log('📥 Результат:', result);
+            
+            if (result && result.success) {
+                showNotif(`✅ Участник ${name} добавлен!`);
                 
-                // Отправляем лог в аудит
                 await sendAuditLog('ADD_MEMBER', {
                     name: name,
                     role: role,
@@ -3975,23 +4013,30 @@ if (saveTeamMemberBtn) {
                     category: category
                 });
                 
-                // Закрываем модалку
                 addTeamMemberModal.style.display = 'none';
                 
-                // Обновляем данные команды
-                await refreshTeamData();
+                // Очищаем форму
+                document.getElementById('teamMemberName').value = '';
+                document.getElementById('teamMemberRole').value = '';
+                document.getElementById('teamMemberDiscord').value = '';
+                document.getElementById('teamMemberAvatar').value = '';
+                document.getElementById('teamMemberJoinDate').value = '';
+                document.getElementById('teamMemberRating').value = '';
+                document.getElementById('teamMemberSteamId').value = '';
                 
                 // Обновляем отображение
+                await refreshTeamData();
                 renderTeamTable();
             } else {
-                showNotif(`❌ Ошибка: ${result.error || 'неизвестная ошибка'}`, true);
+                const errorMsg = result?.error || 'неизвестная ошибка';
+                showNotif(`❌ Ошибка: ${errorMsg}`, true);
             }
         } catch (error) {
-            console.error('Ошибка добавления участника:', error);
-            showNotif('❌ Ошибка соединения с сервером', true);
+            console.error('❌ Исключение:', error);
+            showNotif(`❌ Ошибка: ${error.message}`, true);
         } finally {
-            saveTeamMemberBtn.disabled = false;
-            saveTeamMemberBtn.textContent = '➕ Добавить участника';
+            newSaveBtn.disabled = false;
+            newSaveBtn.textContent = '➕ Добавить участника';
         }
     });
 }
