@@ -21,7 +21,7 @@ let isEditor = false;
 // ВСЁ! Никаких Object.defineProperty, никаких дополнительных блоков!
 
 const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
-const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbytY1J7avZRpEM6Ks2X_kU6EBC6gL7wLqyLCxr3sXfRj_YaiXFH_e-5xUwChz8gvTKM4Q/exec';
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycby9adWhQ0tCOAQ-p-6j8aEp0PNAoEdESPD2o9db42dDE9_H8Yu-HjiXJ4YB1gbG4Cl-9g/exec';
 
 const avatarMap = {
     "Zoffi" : "https://avatars.akamai.steamstatic.com/b65685aae297d33e2263633211872decb95191b6_full.jpg",
@@ -740,18 +740,18 @@ function addEventToSheet(eventData) {
         };
         
         const params = new URLSearchParams({
-            action: 'addEvent',
-            name: eventData.name,
-            platform: eventData.platform,
-            organizer: eventData.organizer,
-            helpers: eventData.helpers,
-            date: eventData.date,
-            status: eventData.status,
-            rating: eventData.rating,
-            members: eventData.members,
-            description: eventData.description,
-            callback: callbackName
-        });
+    action: 'addEvent',
+    name: eventData.name,
+    platform: eventData.platform,
+    organizer: eventData.organizer,    // ← ОРГАНИЗАТОР
+    helpers: eventData.helpers,        // ← ПОМОЩНИКИ
+    date: eventData.date,
+    status: eventData.status,
+    rating: eventData.rating,
+    members: eventData.members,
+    description: eventData.description,
+    callback: callbackName
+});
         
         script.src = `${EVENTS_API_URL}?${params.toString()}`;
         script.onerror = () => {
@@ -765,20 +765,19 @@ function addEventToSheet(eventData) {
 
 function loadEventsFromSheet() {
     return new Promise((resolve) => {
-        const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const callbackName = 'jsonp_events_' + Date.now();
         const script = document.createElement('script');
         
         window[callbackName] = (data) => {
             delete window[callbackName];
             document.body.removeChild(script);
+            console.log('📊 Ивенты из таблицы:', data);
             resolve(Array.isArray(data) ? data : []);
         };
         
-        // Используем правильный URL для ивентов
-        script.src = `https://script.google.com/macros/s/AKfycbybx0X49OjyjPwT-RzuLVkPSdF2zI-33RkFj1qJW9XESJMBjCvm598GSai44oIVXWGB/exec?action=getEvents&callback=${callbackName}`;
+        script.src = `${COMMENTS_API_URL}?action=getEvents&callback=${callbackName}`;
         script.onerror = () => {
             delete window[callbackName];
-            document.body.removeChild(script);
             resolve([]);
         };
         document.body.appendChild(script);
@@ -789,34 +788,25 @@ async function refreshEventsData() {
     const events = await loadEventsFromSheet();
     console.log('Загружено ивентов из таблицы:', events);
     
-    if (events.length > 0) {
-        const newEventsData = events.map(e => ({
+    if (events && events.length > 0) {
+        eventsData = events.map(e => ({
             id: e.id,
-            name: e.name,
-            platform: e.platform,
-            organizer: e.platform,
-            helpers: e.organizer || 'Нет',
-            date: formatDate(e.date),  // 👈 ПРИМЕНИ ФУНКЦИЮ ЗДЕСЬ
+            name: e.name || 'Без названия',
+            platform: e.organizer || e.platform || 'Неизвестно',
+            organizer: e.organizer || e.platform || 'Неизвестно',
+            helpers: e.helpers || 'Нет',
+            date: e.date || 'Дата не указана',
             status: e.status || 'Проведен',
-            rating: e.rating,
+            rating: e.rating || '0$',
             members: parseInt(e.members) || 0,
-            callStatus: '🟡Скоро',
-            fullDetails: {
-                description: e.description || '',
-                tasks: '',
-                feedback: '',
-                rewards: '',
-                extra: ''
-            }
+            callStatus: e.callStatus || '🟡Скоро',
+            fullDetails: { description: e.description || '' }
         }));
         
-        newEventsData.sort((a, b) => a.id - b.id);
-        eventsData = newEventsData;
-        
-        saveAllData();
-        await loadAndApplyStatuses();
         renderEventsTable();
         showNotif('📊 Ивенты обновлены');
+    } else {
+        console.log('Нет ивентов в таблице');
     }
 }
 
@@ -2597,17 +2587,17 @@ async function sendEventToDiscord() {
         const rating = (prizes !== 'Не было' ? prizes.replace(/[^0-9]/g, '') : '0') + '$';
         
         // 1. Сохраняем в Google Sheets
-        const sheetResult = await addEventToSheet({
-            name: name,
-            platform: organizer,
-            organizer: helpers,
-            helpers: helpers,
-            date: date,
-            status: 'Проведен',
-            rating: rating,
-            members: members,
-            description: description
-        });
+const sheetResult = await addEventToSheet({
+    name: name,
+    platform: organizer,
+    organizer: organizer,        // ← ОРГАНИЗАТОР (кто проводит)
+    helpers: helpers,            // ← ПОМОЩНИКИ
+    date: date,
+    status: 'Проведен',
+    rating: rating,
+    members: members,
+    description: description
+});
         
         if (!sheetResult.success) {
             throw new Error('Ошибка сохранения в таблицу');
