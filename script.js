@@ -6,6 +6,8 @@ let teamData = [
     { id: 1, name: "Ждите загрузки...", role: "Ивент-отдел UnionTeam", discord: "-", status: "Онлайн", eventsCount: "-", joinDate: "-", rating: "-", category: "Старший состав", fullDetails: { responsibilities: "Имеет полное владение над отделом Ивентологии, может самостоятельно изменять состав отдела Ивентологии и их норму/правила.", contacts: "https://admin.unionteams.ru/4/admin/76561198386405573", achievements: "0", notes: "" } },
 ];
 
+
+loadTeamFromLocalStorage();
 // ========== ПРОСТАЯ ЗАЩИТА (ТОЛЬКО ОЧИСТКА КОНСОЛИ) ==========
 // Очищаем консоль каждые 5 секунд
 setInterval(() => {
@@ -19,7 +21,7 @@ let isEditor = false;
 // ВСЁ! Никаких Object.defineProperty, никаких дополнительных блоков!
 
 const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
-const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbyShBvAtfwIt4RbygrJWx6O9mnJ1ZEr-ESV6CgAL3FoIZCfSwjFT2ePGpoQP_j0g4_vzA/exec';
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbxySZyEFoOV1_ftY6FLvcuUXce0H-hAqdbh_y4eT9Mr86PYz7zdajVJ4euznaZdy727/exec';
 
 const avatarMap = {
     "Zoffi" : "https://avatars.akamai.steamstatic.com/b65685aae297d33e2263633211872decb95191b6_full.jpg",
@@ -43,59 +45,6 @@ const avatarMap = {
 
 function getAvatarUrl(username) {
     return avatarMap[username] || "https://i.imgur.com/IAIJe65.png";
-}
-
-// ФОРСИРОВАННАЯ ЗАГРУЗКА ВСЕХ УЧАСТНИКОВ ИЗ ТАБЛИЦЫ
-async function forceLoadAllTeam() {
-    console.log('🔥 ПРИНУДИТЕЛЬНАЯ ЗАГРУЗКА КОМАНДЫ');
-    
-    // Очищаем localStorage
-    localStorage.removeItem('unionTeamData');
-    
-    // Загружаем напрямую из Google Sheets
-    const callbackName = 'force_load_' + Date.now();
-    const script = document.createElement('script');
-    
-    window[callbackName] = (data) => {
-        delete window[callbackName];
-        document.body.removeChild(script);
-        
-        if (data && data.length > 0) {
-            // Преобразуем данные
-            teamData = data.map((m, idx) => ({
-                id: idx + 1,
-                name: m.name,
-                role: m.role,
-                discord: m.discord,
-                steamId: m.steamId || '',
-                status: m.status || 'Онлайн',
-                eventsCount: '-',
-                joinDate: m.joinDate,
-                rating: m.rating,
-                category: m.category || 'Старший состав',
-                fullDetails: { responsibilities: "", contacts: "", achievements: "0", notes: "" }
-            }));
-            
-            // Сохраняем в localStorage
-            localStorage.setItem('unionTeamData', JSON.stringify(teamData));
-            
-            console.log(`✅ ЗАГРУЖЕНО ${teamData.length} УЧАСТНИКОВ:`, teamData.map(m => m.name));
-            
-            // Обновляем таблицу
-            renderTeamTable();
-            showNotif(`✅ Загружено ${teamData.length} участников!`);
-        } else {
-            console.error('❌ Нет данных из таблицы');
-            showNotif('❌ Ошибка загрузки данных', true);
-        }
-    };
-    
-    script.src = `${COMMENTS_API_URL}?action=getTeam&_=${Date.now()}&callback=${callbackName}`;
-    script.onerror = () => {
-        delete window[callbackName];
-        showNotif('❌ Ошибка соединения с сервером', true);
-    };
-    document.body.appendChild(script);
 }
 
 // ========== ИМПОРТ ТИКЕТОВ ИЗ CSV ==========
@@ -994,12 +943,12 @@ async function addMemberToSheet(memberData) {
             if (memberData.avatar) {
                 avatarMap[memberData.name] = memberData.avatar;
             }
-            l
-            console.log('Участник добавлен локально:', newMember);
+            
+            console.log('✅ Участник добавлен локально:', newMember);
             resolve({ success: true, id: newId });
             
         } catch (error) {
-            console.error('Ошибка при добавлении:', error);
+            console.error('❌ Ошибка при добавлении:', error);
             resolve({ success: false, error: error.message });
         }
     });
