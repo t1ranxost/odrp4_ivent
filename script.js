@@ -2736,6 +2736,7 @@ function checkAuth() {
     const saved = sessionStorage.getItem('user');
     const savedIsEditor = sessionStorage.getItem('isEditor');
     const continued = sessionStorage.getItem('continued');
+    
     if (saved && VALID_LOGINS.includes(saved)) {
         currentUser = saved;
         updateSidebarAvatar(saved);
@@ -2746,13 +2747,16 @@ function checkAuth() {
         if (continued === 'true') {
             welcomeContainer.classList.add('hidden');
             mainDashboard.style.display = 'block';
-            renderEventsTable();
             
-            // ========== ДОБАВЬ ЗАГРУЗКУ КОМАНДЫ ==========
-            refreshTeamData();  // 👈 Асинхронно загружаем команду
-            // ============================================
-            
-            refreshEventsData();
+            // ЗАГРУЖАЕМ ДАННЫЕ ПРИ СТАРТЕ
+            showGlobalLoading();
+            Promise.all([
+                refreshEventsData(),
+                refreshTeamData()
+            ]).finally(() => {
+                hideGlobalLoading();
+                renderEventsTable();
+            });
             
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item => item.classList.remove('active'));
@@ -2770,6 +2774,31 @@ function checkAuth() {
         loginOverlay.style.display = 'flex';
         welcomeContainer.classList.add('hidden');
         mainDashboard.style.display = 'none';
+    }
+}
+
+async function onContinue() {
+    showBugReportMessage();
+    sessionStorage.setItem('continued', 'true');
+    welcomeContainer.classList.add('hidden');
+    mainDashboard.style.display = 'block';
+    
+    showGlobalLoading();
+    
+    // ЗАГРУЖАЕМ ОБА НАБОРА ДАННЫХ ПАРАЛЛЕЛЬНО
+    await Promise.all([
+        refreshEventsData(),
+        refreshTeamData()
+    ]);
+    
+    hideGlobalLoading();
+    renderEventsTable();
+    
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+    const eventsTab = document.querySelector('[data-tab="events_table"]');
+    if (eventsTab) {
+        eventsTab.classList.add('active');
     }
 }
 
@@ -2853,6 +2882,19 @@ async function onContinue() {
     const eventsTab = document.querySelector('[data-tab="events_table"]');
     if (eventsTab) {
         eventsTab.classList.add('active');
+    }
+}
+
+// Принудительная загрузка команды при старте
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        if (currentUser) {
+            refreshTeamData();
+        }
+    });
+} else {
+    if (currentUser) {
+        refreshTeamData();
     }
 }
 
