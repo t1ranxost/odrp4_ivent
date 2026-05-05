@@ -19,7 +19,7 @@ let isEditor = false;
 // ВСЁ! Никаких Object.defineProperty, никаких дополнительных блоков!
 
 const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
-const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbxySZyEFoOV1_ftY6FLvcuUXce0H-hAqdbh_y4eT9Mr86PYz7zdajVJ4euznaZdy727/exec';
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbzOIdxJYvCD86xZGsCfF36D3O8LpTmNVHtgdfm5y-sN4rsL97LiXnrXlbGy442WMsJs/exec';
 
 const avatarMap = {
     "Zoffi" : "https://avatars.akamai.steamstatic.com/b65685aae297d33e2263633211872decb95191b6_full.jpg",
