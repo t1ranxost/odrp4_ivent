@@ -103,6 +103,14 @@
     </svg>
 </head>
 <body>
+    <script>
+if (window.location.search.includes('clear=1')) {
+    localStorage.clear();
+    sessionStorage.clear();
+    alert('✅ Кэш очищен! Страница перезагрузится.');
+    window.location.href = window.location.pathname;
+}
+    </script>
 <canvas id="particleCanvas"></canvas>
 
 <div id="moving-bg"></div>
