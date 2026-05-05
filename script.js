@@ -19,7 +19,7 @@ let isEditor = false;
 // ВСЁ! Никаких Object.defineProperty, никаких дополнительных блоков!
 
 const CLOUDFLARE_API = 'https://event-bot-api.roman-gonchukov.workers.dev';
-const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbz7EJ9SycgG5Wx9yADfgEeO0gkVv_QDgycrssGrq5Nqmbbu4_LhYzHeW2Dqn9f7nDIe/exec';
+const COMMENTS_API_URL = 'https://script.google.com/macros/s/AKfycbxySZyEFoOV1_ftY6FLvcuUXce0H-hAqdbh_y4eT9Mr86PYz7zdajVJ4euznaZdy727/exec';
 
 const avatarMap = {
     "Zoffi" : "https://avatars.akamai.steamstatic.com/b65685aae297d33e2263633211872decb95191b6_full.jpg",
@@ -905,39 +905,50 @@ function loadTeamFromSheet() {
     });
 }
 
-function addMemberToSheet(memberData) {
+// ВРЕМЕННО - сохранение в localStorage вместо Google Sheets
+async function addMemberToSheet(memberData) {
     return new Promise((resolve) => {
-        const callbackName = 'jsonp_add_member_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-        const script = document.createElement('script');
-        
-        window[callbackName] = (data) => {
-            delete window[callbackName];
-            document.body.removeChild(script);
-            console.log('Ответ сервера при добавлении участника:', data);
-            resolve(data);
-        };
-        
-        const params = new URLSearchParams({
-            action: 'addMember',
-            name: memberData.name,
-            role: memberData.role,
-            discord: memberData.discord,
-            steamId: memberData.steamId || '',  // 👈 ДОБАВЬ
-            avatar: memberData.avatar,
-            joinDate: memberData.joinDate,
-            rating: memberData.rating,
-            category: memberData.category,
-            status: memberData.status || 'Онлайн',
-            callback: callbackName
-        });
-        
-        script.src = `${COMMENTS_API_URL}?${params.toString()}`;
-        script.onerror = () => {
-            delete window[callbackName];
-            document.body.removeChild(script);
-            resolve({ success: false, error: 'Network error' });
-        };
-        document.body.appendChild(script);
+        try {
+            // Создаём нового участника
+            const newId = teamData.length > 0 ? Math.max(...teamData.map(m => m.id)) + 1 : 1;
+            
+            const newMember = {
+                id: newId,
+                name: memberData.name,
+                role: memberData.role,
+                discord: memberData.discord,
+                steamId: memberData.steamId || '',
+                status: memberData.status || 'Онлайн',
+                eventsCount: '-',
+                joinDate: memberData.joinDate,
+                rating: memberData.rating,
+                category: memberData.category || 'Младший состав',
+                fullDetails: {
+                    responsibilities: "",
+                    contacts: "",
+                    achievements: "0",
+                    notes: ""
+                }
+            };
+            
+            // Добавляем в массив
+            teamData.push(newMember);
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('unionTeamData', JSON.stringify(teamData));
+            
+            // Добавляем аватарку
+            if (memberData.avatar) {
+                avatarMap[memberData.name] = memberData.avatar;
+            }
+            l
+            console.log('Участник добавлен локально:', newMember);
+            resolve({ success: true, id: newId });
+            
+        } catch (error) {
+            console.error('Ошибка при добавлении:', error);
+            resolve({ success: false, error: error.message });
+        }
     });
 }
 
@@ -984,6 +995,7 @@ function saveTeamToLocalStorage() {
     localStorage.setItem('unionTeamData', JSON.stringify(teamData));
 }
 
+// Загрузка команды из localStorage при старте
 function loadTeamFromLocalStorage() {
     const saved = localStorage.getItem('unionTeamData');
     if (saved) {
@@ -991,13 +1003,16 @@ function loadTeamFromLocalStorage() {
             const parsed = JSON.parse(saved);
             if (parsed && parsed.length > 0) {
                 teamData = parsed;
-                console.log('Команда загружена из localStorage:', teamData.length, 'участников');
+                console.log('✅ Команда загружена из localStorage:', teamData.length, 'участников');
             }
         } catch(e) {
             console.error('Ошибка загрузки команды из localStorage:', e);
         }
     }
 }
+
+// Вызови эту функцию при загрузке страницы (добавь в конец checkAuth или onContinue)
+loadTeamFromLocalStorage();
 
 // ========== ФУНКЦИИ ДЛЯ РАБОТЫ С ТИКЕТАМИ ==========
 
