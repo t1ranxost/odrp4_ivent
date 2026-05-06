@@ -1856,14 +1856,6 @@ navs.forEach(n => {
                 ticketsGoal: (ticketsFromSheet["Гофикал"] && ticketsFromSheet["Гофикал"].goal) || 0,
                 inDepartment: true 
             },
-            "Foxy": { 
-                discordId: "1344959502436532304", 
-                eventsGoal: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].eventsGoal) || 0,
-                eventsDone: eventCounts["Foxy"] || 0,
-                ticketsDone: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].done) || 0,
-                ticketsGoal: (ticketsFromSheet["Foxy"] && ticketsFromSheet["Foxy"].goal) || 0,
-                inDepartment: true 
-            }
         };
         
         // СОБИРАЕМ СТРОКИ ДЛЯ КОПИРОВАНИЯ (ДРУГОЙ ОТДЕЛ)
